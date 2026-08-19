@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uber Ride Demand &amp; Supply Failure — Shubham Kumar</title>
+  <meta name="description" content="Interactive Uber case study on hourly ride demand, structural supply failure, and operations across 150,000 NCR bookings.">
+  <link rel="canonical" href="https://nothing0g.github.io/analyst/projects/uber-ride-demand/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://nothing0g.github.io/analyst/projects/uber-ride-demand/">
+  <meta property="og:title" content="Uber Ride Demand &amp; Supply Failure — Shubham Kumar">
+  <meta property="og:description" content="A source-grounded case study separating hourly ride demand from structural supply failure.">
+  <meta property="og:image" content="https://nothing0g.github.io/analyst/assets/og-card.svg">
+  <meta property="og:image:alt" content="Shubham Kumar casefile portfolio preview">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/report.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"CreativeWork","name":"Uber Ride Demand & Supply-Failure Analysis","url":"https://nothing0g.github.io/analyst/projects/uber-ride-demand/","author":{"@type":"Person","name":"Shubham Kumar","url":"https://nothing0g.github.io/analyst/"},"isPartOf":{"@type":"WebSite","url":"https://nothing0g.github.io/analyst/"},"keywords":["ride demand","operations analytics","supply failure","Python","pandas"]}
+  </script>
+</head>
+<body class="focused-report">
+  <a class="skip-link" href="#report">Skip to report</a>
+
+  <div class="scroll-progress-track" aria-hidden="true"><div class="scroll-progress" id="scrollProgress"></div></div>
+  <div class="grid-backdrop" aria-hidden="true"></div>
+  <canvas class="bg-interactive" id="bgCanvas" aria-hidden="true"></canvas>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-follow" id="cursorFollow"><span id="cursorFollowText"></span></div>
+
+  <nav class="dock" aria-label="Report navigation">
+    <div class="dock-inner">
+      <a href="#report" class="dock-item active" data-dock data-cursor-text="Report home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="dock-label">Report home</span></a>
+      <a href="#snapshot" class="dock-item" data-dock data-cursor-text="Snapshot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg><span class="dock-label">Snapshot</span></a>
+      <a href="#dashboard" class="dock-item" data-dock data-cursor-text="Dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M12 19V5M20 19v-6"/></svg><span class="dock-label">Dashboard</span></a>
+      <a href="#insights" class="dock-item" data-dock data-cursor-text="Insights"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span class="dock-label">Insights</span></a>
+      <a href="#method" class="dock-item" data-dock data-cursor-text="Method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94z"/></svg><span class="dock-label">Method</span></a>
+      <a href="../../index.html" class="dock-item" data-transition data-cursor-text="Portfolio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg><span class="dock-label">Portfolio</span></a>
+      <div class="dock-divider"></div>
+      <button class="dock-item" id="dockThemeBtn" data-cursor-text="Toggle theme"><svg id="dockThemeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></svg><span class="dock-label">Toggle theme</span></button>
+    </div>
+  </nav>
+
+  <header class="topbar report-topbar">
+    <a class="report-brand" href="../../index.html"><i></i> SHUBHAM KUMAR / CASEFILE</a>
+    <div class="topbar-right report-top-actions">
+      <button class="kbd-chip report-search" id="reportSearch" type="button" data-cursor-text="Search this report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>Search</span><kbd>⌘K</kbd></button>
+      <a class="report-top-link" data-transition data-cursor-text="Back to portfolio" href="../../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5m7 7-7-7 7-7"/></svg><span>Portfolio</span></a>
+      <button class="icon-btn report-icon-btn" id="reportThemeToggle" aria-label="Toggle theme"></button>
+    </div>
+  </header>
+
+  <main id="report" class="report-main">
+    <div class="report-shell">
+      <section class="report-section report-hero">
+        <div class="report-section-inner report-hero-grid">
+          <div>
+            <div class="report-kicker"><span class="mono">FILE / PROJECT REPORT</span><span class="rule"></span><span class="mono">CASE NO. 001 · JUN — JUL '26</span></div>
+            <h1>Uber Ride Demand &amp; Supply-Failure Analysis</h1>
+            <p class="lede">When does ride demand actually spike, does driver supply keep up, and what should ops do differently because of it?</p>
+            <div class="report-actions">
+              <a class="report-btn" data-cursor-text="Open source" href="https://github.com/Nothing0g/Uber_ride_demand_analysis" target="_blank" rel="noreferrer">View analysis on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a class="report-btn secondary" data-cursor-text="Focus dashboard" href="#dashboard">Jump to dashboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14m7-7-7 7-7-7"/></svg></a>
+            </div>
+          </div>
+          <aside class="signal-panel" aria-label="Primary case signal">
+            <span class="report-status">Resolved</span>
+            <h2>The failure rate is structural, not peak-hour.</h2>
+            <p>Demand moves nearly 9× from the overnight trough to the evening peak. The combined driver-cancellation and no-driver-found rate stays around 25% across the full day.</p>
+            <div class="signal-line"></div>
+            <div class="signal-foot"><span>Signal confidence</span><strong>Rate checked by hour</strong></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="snapshot" class="report-section" aria-labelledby="snapshot-title">
+        <div class="report-section-inner reveal">
+          <div class="section-label"><span class="mono">FILE / 01</span><span class="rule"></span><span>Executive snapshot</span></div>
+          <div class="section-heading"><h2 id="snapshot-title">What the data says first.</h2><p>One full year of NCR bookings. The dashboard separates volume from service health so a busy hour is not mistaken for a root cause.</p></div>
+          <div id="metricGrid" class="metric-grid" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section id="dashboard" class="report-section" aria-labelledby="dashboard-title">
+        <div class="report-section-inner reveal">
+          <div class="section-label"><span class="mono">FILE / 02</span><span class="rule"></span><span>Interactive dashboard</span></div>
+          <div class="section-heading"><h2 id="dashboard-title">Demand moves. Failure does not.</h2><p>Hover chart marks for exact values. The primary question is whether operational friction follows demand timing.</p></div>
+          <div class="dashboard-controls" aria-label="Uber dashboard controls">
+            <div class="control-group"><span class="control-label mono">Demand view</span><div class="segmented-control" role="group" aria-label="Demand chart scale"><button type="button" class="segment-btn active" data-uber-mode="absolute">Bookings</button><button type="button" class="segment-btn" data-uber-mode="indexed">Index to peak</button></div></div>
+            <p id="uberModeSummary" class="control-summary">Absolute bookings keep the operating-volume question visible.</p>
+          </div>
+          <div class="chart-grid">
+            <article class="chart-card span-7">
+              <div class="chart-card-header"><div><h3>Ride demand by hour of day</h3><p class="chart-question">Where does the operating day concentrate volume?</p></div><span class="chart-tag mono">VOLUME</span></div>
+              <div id="hourlyChart" class="chart-wrap tall"></div>
+              <div class="chart-legend"><span><i></i>Bookings per hour</span><span><i class="yellow"></i>Peak window: 6 PM</span></div>
+            </article>
+            <article class="chart-card span-5">
+              <div class="chart-card-header"><div><h3>Demand versus published failure band</h3><p class="chart-question">Does the documented failure range move with demand?</p></div><span class="chart-tag mono">DIAGNOSTIC</span></div>
+              <div id="failureChart" class="chart-wrap tall"></div>
+              <div class="chart-legend"><span><i></i>Demand index</span><span><i class="coral"></i>Published 24–26% band</span></div>
+            </article>
+            <article class="chart-card span-6">
+              <div class="chart-card-header"><div><h3>Weekday versus weekend demand</h3><p class="chart-question">Should staffing be built around a weekend spike?</p></div><span class="chart-tag mono">PATTERN CHECK</span></div>
+              <div id="dayChart" class="chart-wrap"></div>
+              <div class="chart-legend"><span><i></i>Average bookings per day</span><span><i class="coral"></i>Published comparison</span></div>
+            </article>
+            <article class="chart-card span-6">
+              <div class="chart-card-header"><div><h3>Pickup concentration</h3><p class="chart-question">Is the problem concentrated in a small set of city zones?</p></div><span class="chart-tag mono">GEOGRAPHY</span></div>
+              <div id="pickupChart" class="chart-wrap"></div>
+              <div class="chart-legend"><span><i></i>Bookings share</span></div>
+            </article>
+          </div>
+          <div class="evidence-strip" id="uberEvidence" aria-label="Additional documented evidence">
+            <article class="evidence-card"><span class="evidence-kicker mono">WEEK PATTERN</span><strong>&lt;2%</strong><p>Spread between the lowest and highest daily booking totals.</p></article>
+            <article class="evidence-card"><span class="evidence-kicker mono">FARE BAND</span><strong>₹499–₹519</strong><p>Published fare range across all 24 hours.</p></article>
+            <article class="evidence-card"><span class="evidence-kicker mono">DISTANCE BAND</span><strong>25.5–26.5 km</strong><p>Published trip-distance range across the day.</p></article>
+            <article class="evidence-card"><span class="evidence-kicker mono">GEOGRAPHY</span><strong>9.2%</strong><p>Share held by the top 15 of 176 pickup zones.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="insights" class="report-section" aria-labelledby="insights-title">
+        <div class="report-section-inner reveal">
+          <div class="section-label"><span class="mono">FILE / 03</span><span class="rule"></span><span>Readout</span></div>
+          <div class="section-heading"><h2 id="insights-title">Three signals worth carrying forward.</h2><p>The case is intentionally narrow: turn a time-based EDA into a better operations question.</p></div>
+          <div class="insight-grid">
+            <article class="insight-card"><span class="insight-index mono">01 / TIMING</span><h3>Hour-of-day is the real demand lever.</h3><p>Demand ranges from about 1,320 bookings at 4 AM to about 12,400 at 6 PM. The shape repeats across weekday and weekend periods.</p></article>
+            <article class="insight-card"><span class="insight-index mono">02 / FAILURE</span><h3>Raw failure counts would mislead.</h3><p>Busy hours naturally create more failed bookings. Rate-by-hour shows the underlying failure rate remains around 24–26% instead of tracking the demand curve.</p></article>
+            <article class="insight-card"><span class="insight-index mono">03 / CAVEAT</span><h3>The dataset needs an honest label.</h3><p>Flat day-of-week behavior, even pickup geography, and tight fare/distance bands suggest a synthetic or simulated dataset. The finding is useful as an analytical exercise, not an organic Uber benchmark.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="recommendation" class="report-section" aria-labelledby="recommendation-title">
+        <div class="report-section-inner reveal">
+          <div class="recommendation">
+            <div><div class="section-label" style="color:inherit"><span class="mono">FILE / 04</span><span class="rule" style="background:currentColor"></span><span>Ops recommendation</span></div><h2 id="recommendation-title">Fix the matching system, not just the rush hour.</h2></div>
+            <div><p>The data does support a change in the next question an operations team should ask.</p><ol><li><strong>Measure matching failure by segment.</strong> Break the flat aggregate into service type, pickup zone, driver availability, and cancellation reason before changing peak staffing.</li><li><strong>Use hourly demand for capacity planning.</strong> Keep the 6 PM peak visible, but treat it as a volume forecast rather than proof that it causes the failure rate.</li><li><strong>Validate against organic operational data.</strong> Re-test the finding on real dispatch logs before translating it into a production intervention.</li></ol></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="method" class="report-section" aria-labelledby="method-title">
+        <div class="report-section-inner reveal">
+          <div class="section-label"><span class="mono">FILE / 05</span><span class="rule"></span><span>Method &amp; source</span></div>
+          <div class="method-grid">
+            <article class="method-card"><h3 id="method-title">Dataset</h3><p>150,000 NCR ride bookings across 365 days, with booking status, timestamps, pickup/drop locations, fare, distance, and cancellation reasons.</p></article>
+            <article class="method-card"><h3>Approach</h3><p>Parsed timestamps into hour, day-of-week, and month fields; compared demand by time, booking status, geography, fare, and distance; and used rate rather than raw count for failure diagnostics.</p></article>
+            <article class="method-card"><h3>Tools</h3><p>Python · pandas · NumPy · Matplotlib. The interactive view is a static portfolio rendering of verified repository findings, not a live production feed.</p></article>
+            <article class="method-card span-8"><h3>Limitation</h3><p>The repository explicitly flags the dataset as likely synthetic or simulated because weekday/weekend counts, pickup concentration, and fare/distance bands are unusually flat. That caveat is part of the analysis, not hidden from the reader.</p></article>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="report-footer"><span>CASE NO. 001 · Built from the original analysis repository</span><div class="report-footer-links"><a href="../../index.html" data-transition>Back to portfolio</a><a href="../hr-employee-attrition/index.html" data-transition>Next case: HR attrition →</a></div></footer>
+  <div class="chart-tooltip" aria-hidden="true"></div>
+  <div class="cmdk-overlay" id="cmdkOverlay"><div class="cmdk-box"><div class="cmdk-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input class="cmdk-input" id="cmdkInput" type="text" placeholder="Type a command or search…" autocomplete="off"><span class="cmdk-esc">ESC</span></div><div class="cmdk-list" id="cmdkList"></div></div></div>
+  <div class="wash-overlay" id="washOverlay"></div>
+  <button class="back-to-top" id="backToTop" aria-label="Back to top" data-cursor-text="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button>
+  <div class="toast-wrap" id="toastWrap"></div>
+  <script src="../shared/uber-data.js"></script>
+  <script>window.REPORT_TYPE = 'uber';</script>
+  <script src="../shared/report-shell.js"></script>
+  <script src="../shared/report.js"></script>
+</body>
+</html>

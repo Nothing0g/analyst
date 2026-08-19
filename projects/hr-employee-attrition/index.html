@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HR Employee Attrition Analysis — Shubham Kumar</title>
+  <meta name="description" content="Interactive HR attrition case study on overtime, tenure, job roles, and recall across 1,470 IBM HR Analytics employees.">
+  <link rel="canonical" href="https://nothing0g.github.io/analyst/projects/hr-employee-attrition/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://nothing0g.github.io/analyst/projects/hr-employee-attrition/">
+  <meta property="og:title" content="HR Employee Attrition Analysis — Shubham Kumar">
+  <meta property="og:description" content="A source-grounded case study on overtime, early-career attrition, role rates, and recall-first model evaluation.">
+  <meta property="og:image" content="https://nothing0g.github.io/analyst/assets/og-card.svg">
+  <meta property="og:image:alt" content="Shubham Kumar casefile portfolio preview">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/report.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"CreativeWork","name":"HR Employee Attrition Analysis","url":"https://nothing0g.github.io/analyst/projects/hr-employee-attrition/","author":{"@type":"Person","name":"Shubham Kumar","url":"https://nothing0g.github.io/analyst/"},"isPartOf":{"@type":"WebSite","url":"https://nothing0g.github.io/analyst/"},"keywords":["HR analytics","attrition","overtime","logistic regression","random forest"]}
+  </script>
+</head>
+<body class="focused-report">
+  <a class="skip-link" href="#report">Skip to report</a>
+
+  <div class="scroll-progress-track" aria-hidden="true"><div class="scroll-progress" id="scrollProgress"></div></div>
+  <div class="grid-backdrop" aria-hidden="true"></div>
+  <canvas class="bg-interactive" id="bgCanvas" aria-hidden="true"></canvas>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-follow" id="cursorFollow"><span id="cursorFollowText"></span></div>
+
+  <nav class="dock" aria-label="Report navigation">
+    <div class="dock-inner">
+      <a href="#report" class="dock-item active" data-dock data-cursor-text="Report home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="dock-label">Report home</span></a>
+      <a href="#snapshot" class="dock-item" data-dock data-cursor-text="Snapshot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg><span class="dock-label">Snapshot</span></a>
+      <a href="#dashboard" class="dock-item" data-dock data-cursor-text="Dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M12 19V5M20 19v-6"/></svg><span class="dock-label">Dashboard</span></a>
+      <a href="#insights" class="dock-item" data-dock data-cursor-text="Insights"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span class="dock-label">Insights</span></a>
+      <a href="#method" class="dock-item" data-dock data-cursor-text="Method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94z"/></svg><span class="dock-label">Method</span></a>
+      <a href="../../index.html" class="dock-item" data-transition data-cursor-text="Portfolio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg><span class="dock-label">Portfolio</span></a>
+      <div class="dock-divider"></div>
+      <button class="dock-item" id="dockThemeBtn" data-cursor-text="Toggle theme"><svg id="dockThemeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></svg><span class="dock-label">Toggle theme</span></button>
+    </div>
+  </nav>
+
+  <header class="topbar report-topbar">
+    <a class="report-brand" href="../../index.html"><i></i> SHUBHAM KUMAR / CASEFILE</a>
+    <div class="topbar-right report-top-actions">
+      <button class="kbd-chip report-search" id="reportSearch" type="button" data-cursor-text="Search this report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>Search</span><kbd>⌘K</kbd></button>
+      <a class="report-top-link" data-transition data-cursor-text="Back to portfolio" href="../../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5m7 7-7-7 7-7"/></svg><span>Portfolio</span></a>
+      <button class="icon-btn report-icon-btn" id="reportThemeToggle" aria-label="Toggle theme"></button>
+    </div>
+  </header>
+
+  <main id="report" class="report-main">
+    <div class="report-shell">
+      <section class="report-section report-hero">
+        <div class="report-section-inner report-hero-grid">
+          <div>
+            <div class="report-kicker"><span class="mono">FILE / PROJECT REPORT</span><span class="rule"></span><span class="mono">CASE NO. 002 · JUN '26</span></div>
+            <h1>HR Employee Attrition Analysis</h1>
+            <p class="lede">Why do employees leave, and which factors actually predict it? This case turns the IBM HR Analytics dataset into a retention question a team can investigate.</p>
+            <div class="report-actions">
+              <a class="report-btn" data-cursor-text="Open source" href="https://github.com/Nothing0g/hr_employee_attrition_analysis" target="_blank" rel="noreferrer">View analysis on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a class="report-btn secondary" data-cursor-text="Focus dashboard" href="#dashboard">Jump to dashboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14m7-7-7 7-7-7"/></svg></a>
+            </div>
+          </div>
+          <aside class="signal-panel" aria-label="Primary case signal">
+            <span class="report-status">Resolved</span>
+            <h2>Overtime is the clearest retention lever.</h2>
+            <p>Employees working overtime show 30.5% observed attrition versus 10.4% for employees without overtime in the original CSV. The difference is descriptive, not a causal diagnosis.</p>
+            <div class="signal-line"></div>
+            <div class="signal-foot"><span>Signal confidence</span><strong>EDA + model agree</strong></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="snapshot" class="report-section" aria-labelledby="snapshot-title">
+        <div class="report-section-inner reveal">
+          <div class="section-label"><span class="mono">FILE / 01</span><span class="rule"></span><span>Executive snapshot</span></div>
+          <div class="section-heading"><h2 id="snapshot-title">The useful number is not accuracy.</h2><p>For a tool that flags potential leavers, recall on the leaver class matters more than a better-looking overall accuracy score.</p></div>
+          <div id="metricGrid" class="metric-grid" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section id="dashboard" class="report-section" aria-labelledby="dashboard-title">
+        <div class="report-section-inner reveal">
+          <div class="section-label"><span class="mono">FILE / 02</span><span class="rule"></span><span>Interactive dashboard</span></div>
+          <div class="section-heading"><h2 id="dashboard-title">Segment first. Model second.</h2><p>Use the filters to inspect the original sample by department and overtime status. Rates recalculate within the selected view.</p></div>
+          <div class="filter-bar" aria-label="HR dashboard filters">
+            <div class="filter-field"><label for="departmentFilter">Department</label><select id="departmentFilter"><option value="All">All departments</option><option value="Sales">Sales</option><option value="Research &amp; Development">Research &amp; Development</option><option value="Human Resources">Human Resources</option></select></div>
+            <div class="filter-field"><label for="overtimeFilter">Overtime</label><select id="overtimeFilter"><option value="All">All employees</option><option value="Yes">Works overtime</option><option value="No">No overtime</option></select></div>
+            <button class="filter-reset" id="resetFilters" type="button">Reset filters</button>
+            <div id="hrFilterSummary" class="mono" style="flex-basis:100%;color:var(--report-muted);font-size:10px;">Showing all employees. Rates are calculated within the selected view.</div>
+          </div>
+          <div class="chart-grid">
+            <article class="chart-card span-5">
+              <div class="chart-card-header"><div><h3>Attrition by overtime</h3><p class="chart-question">Which operational condition has the clearest gap?</p></div><span class="chart-tag mono">PRIMARY SIGNAL</span></div>
+              <div id="overtimeChart" class="chart-wrap"></div>
+              <div class="chart-legend"><span><i class="coral"></i>Higher observed rate</span><span><i class="green"></i>Lower observed rate</span></div>
+            </article>
+            <article class="chart-card span-7">
+              <div class="chart-card-header"><div><h3>Attrition rate by job role</h3><p class="chart-question">Which roles need rate-based attention rather than raw-count attention?</p></div><span class="chart-tag mono">SEGMENTATION</span></div>
+              <div id="roleChart" class="chart-wrap tall"></div>
+              <div class="chart-legend"><span><i></i>Observed attrition rate</span><span><i class="coral"></i>Higher-rate segment</span></div>
+            </article>
+            <article class="chart-card span-6">
+              <div class="chart-card-header"><div><h3>Attrition by tenure band</h3><p class="chart-question">Does risk concentrate in the early-career window?</p></div><span class="chart-tag mono">TENURE</span></div>
+              <div id="tenureChart" class="chart-wrap"></div>
+              <div class="chart-legend"><span><i></i>Employees grouped by years at company</span></div>
+            </article>
+            <article class="chart-card span-6">
+              <div class="chart-card-header"><div><h3>Model performance</h3><p id="modelMetricSummary" class="chart-question">Recall is the decision metric when the goal is to catch actual leavers.</p></div><div class="header-control"><span class="control-label mono">Focus</span><div class="segmented-control compact" role="group" aria-label="Model metric"><button type="button" class="segment-btn active" data-model-metric="recall">Recall</button><button type="button" class="segment-btn" data-model-metric="accuracy">Accuracy</button><button type="button" class="segment-btn" data-model-metric="f1">F1</button></div></div></div>
+              <div id="modelChart" class="chart-wrap"></div>
+              <div class="chart-legend"><span><i></i>Logistic Regression</span><span><i class="coral"></i>Random Forest</span><span id="modelMetricLegend">Selected metric: recall</span></div>
+            </article>
+            <article class="chart-card span-12">
+              <div class="chart-card-header"><div><h3>Role-level detail table</h3><p class="chart-question">Rates are more useful than raw departures when role sizes differ.</p></div><div class="header-control"><span class="control-label mono">Sort by</span><div class="segmented-control compact" role="group" aria-label="Role table sort"><button type="button" class="segment-btn active" data-role-sort="rate">Rate</button><button type="button" class="segment-btn" data-role-sort="headcount">Headcount</button><button type="button" class="segment-btn" data-role-sort="leavers">Leavers</button></div></div></div>
+              <div id="roleTable"></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="insights" class="report-section" aria-labelledby="insights-title">
+        <div class="report-section-inner reveal">
+          <div class="section-label"><span class="mono">FILE / 03</span><span class="rule"></span><span>Readout</span></div>
+          <div class="section-heading"><h2 id="insights-title">Three signals worth acting on.</h2><p>The original write-up intentionally separates descriptive EDA from model performance and avoids pretending that a small HR sample proves causation.</p></div>
+          <div class="insight-grid">
+            <article class="insight-card"><span class="insight-index mono">01 / OVERTIME</span><h3>Overtime is the strongest observed gap.</h3><p>The original CSV gives 30.5% attrition among overtime employees versus 10.4% without overtime. The PDF recommends treating overtime as the primary retention lever.</p></article>
+            <article class="insight-card"><span class="insight-index mono">02 / TENURE</span><h3>The early-career window deserves focus.</h3><p>The PDF reports median tenure of 3 years for leavers versus 6 years for stayers. That points toward targeted 0–3 year retention work rather than a broad company-wide intervention.</p></article>
+            <article class="insight-card"><span class="insight-index mono">03 / EVALUATION</span><h3>Recall changes the model decision.</h3><p>Random Forest reaches 86% accuracy but 21% recall; Logistic Regression reaches 72% accuracy but 56% recall. For identifying actual leavers, the lower-accuracy model is more useful.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="recommendation" class="report-section" aria-labelledby="recommendation-title">
+        <div class="report-section-inner reveal">
+          <div class="recommendation">
+            <div><div class="section-label" style="color:inherit"><span class="mono">FILE / 04</span><span class="rule" style="background:currentColor"></span><span>Retention recommendation</span></div><h2 id="recommendation-title">Turn the signal into a focused next test.</h2></div>
+            <div><p>The data supports a practical sequence, not a definitive causal story.</p><ol><li><strong>Audit overtime intensity and manager context.</strong> Treat overtime as the first investigation lever, then add schedule, workload, and manager notes that the current dataset does not contain.</li><li><strong>Design an early-career retention check.</strong> Focus the 0–3 year window with onboarding, manager check-ins, and exit-risk monitoring rather than spreading resources evenly across tenure.</li><li><strong>Use recall-first model evaluation.</strong> If a flagging tool is built, prioritize the leaver class and monitor precision/recall trade-offs instead of optimizing for accuracy alone.</li></ol></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="method" class="report-section" aria-labelledby="method-title">
+        <div class="report-section-inner reveal">
+          <div class="section-label"><span class="mono">FILE / 05</span><span class="rule"></span><span>Method &amp; source</span></div>
+          <div class="method-grid">
+            <article class="method-card"><h3 id="method-title">Dataset</h3><p>Original `HR_Employee_Attrition.csv`: 1,470 employees and 35 source features covering demographics, compensation, satisfaction, and tenure.</p></article>
+            <article class="method-card"><h3>Approach</h3><p>Removed constant columns, checked nulls and duplicates, mapped the target, compared attrition rates by role/overtime/tenure, and used balanced Logistic Regression and Random Forest models.</p></article>
+            <article class="method-card"><h3>Tools</h3><p>Python · pandas · NumPy · Matplotlib · Seaborn · scikit-learn. The displayed population rates are recalculated from the original repository CSV.</p></article>
+            <article class="method-card span-8"><h3>Limitation</h3><p>Attrition rates and feature importance show observed association within this sample. The original PDF notes that exit-interview text, manager notes, and engagement-survey data would be needed to explain why employees leave.</p></article>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="report-footer"><span>CASE NO. 002 · Built from the original CSV, analysis script, and results PDF</span><div class="report-footer-links"><a href="../../index.html" data-transition>Back to portfolio</a><a href="../uber-ride-demand/index.html" data-transition>Previous case: Uber demand ←</a></div></footer>
+  <div class="chart-tooltip" aria-hidden="true"></div>
+  <div class="cmdk-overlay" id="cmdkOverlay"><div class="cmdk-box"><div class="cmdk-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input class="cmdk-input" id="cmdkInput" type="text" placeholder="Type a command or search…" autocomplete="off"><span class="cmdk-esc">ESC</span></div><div class="cmdk-list" id="cmdkList"></div></div></div>
+  <div class="wash-overlay" id="washOverlay"></div>
+  <button class="back-to-top" id="backToTop" aria-label="Back to top" data-cursor-text="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button>
+  <div class="toast-wrap" id="toastWrap"></div>
+  <script src="../shared/hr-data.js"></script>
+  <script>window.REPORT_TYPE = 'hr';</script>
+  <script src="../shared/report-shell.js"></script>
+  <script src="../shared/report.js"></script>
+</body>
+</html>

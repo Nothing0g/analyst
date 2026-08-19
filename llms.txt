@@ -1,0 +1,15 @@
+# Shubham Kumar — Data & Business Analyst
+
+This is the personal portfolio of Shubham Kumar, a data analyst and business analyst working with SQL, Python, statistics, and decision-ready analysis. The site presents a profile, experience, tools, and source-grounded project case studies.
+
+## Important pages
+
+- [Portfolio homepage](https://nothing0g.github.io/analyst/)
+- [Uber ride demand case study](https://nothing0g.github.io/analyst/projects/uber-ride-demand/)
+- [HR employee attrition case study](https://nothing0g.github.io/analyst/projects/hr-employee-attrition/)
+- [Privacy note](https://nothing0g.github.io/analyst/privacy.html)
+- [GitHub source](https://github.com/Nothing0g/analyst)
+
+## Project data notes
+
+The HR case study recalculates population aggregates from the original repository CSV and labels model metrics as documented results. The Uber case study uses values explicitly published by the repository README and results PDF and flags the likely synthetic or simulated nature of the dataset. The portfolio does not present either project as a live production system.
