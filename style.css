@@ -387,16 +387,41 @@ h1,h2,h3{ font-family:var(--font-sans); margin:0; font-weight:600; letter-spacin
 /* ==========================================================
    ROADMAP — monochrome
 ========================================================== */
-.roadmap{ position:relative; padding-left:44px; margin-top:12px; }
+.roadmap{ position:relative; padding-left:44px; margin-top:12px; isolation:isolate; }
 .roadmap::before{ content:""; position:absolute; left:13px; top:6px; bottom:6px; width:2px; background:var(--border-strong); }
+/* A small light travels from the oldest role at the bottom to the next destination at the top. */
+.roadmap::after{
+  content:""; position:absolute; z-index:0; left:13px; top:6px; bottom:6px; width:2px; pointer-events:none;
+  background:linear-gradient(to top, transparent 0%, var(--fg) 20%, var(--fg) 62%, transparent 100%);
+  transform:scaleY(.02); transform-origin:bottom; opacity:0; animation:journeyTrail 6.4s linear infinite;
+}
+@keyframes journeyTrail{
+  0%,6%{ opacity:0; transform:scaleY(.02); }
+  12%{ opacity:.9; }
+  72%{ opacity:.9; transform:scaleY(1); }
+  86%,100%{ opacity:0; transform:scaleY(1); }
+}
 .roadmap-item{ position:relative; padding-bottom:26px; }
 .roadmap-item:last-child{ padding-bottom:0; }
 .roadmap-node{
-  position:absolute; left:-44px; top:2px; width:28px; height:28px; border-radius:50%;
+  position:absolute; z-index:1; left:-44px; top:2px; width:28px; height:28px; border-radius:50%;
   background:var(--bg); border:2px solid var(--fg); display:flex; align-items:center; justify-content:center; color:var(--fg);
+  animation:journeyCheckpoint 6.4s var(--ease) infinite;
+}
+.roadmap-item:nth-child(4) .roadmap-node{ animation-delay:0s; }
+.roadmap-item:nth-child(3) .roadmap-node{ animation-delay:1.4s; }
+.roadmap-item:nth-child(2) .roadmap-node{ animation-delay:2.8s; }
+.roadmap-item:nth-child(1) .roadmap-node{ animation-delay:4.2s; }
+@keyframes journeyCheckpoint{
+  0%,5%,100%{ transform:scale(1); box-shadow:0 0 0 0 color-mix(in srgb, var(--fg) 0%, transparent); }
+  12%{ transform:scale(1.13); box-shadow:0 0 0 7px color-mix(in srgb, var(--fg) 14%, transparent); }
+  24%{ transform:scale(1); box-shadow:0 0 0 0 color-mix(in srgb, var(--fg) 0%, transparent); }
 }
 .roadmap-node svg{ width:14px; height:14px; }
 .roadmap-node-next{ border-style:dashed; color:var(--fg-faint); border-color:var(--border-strong); }
+@media (prefers-reduced-motion:reduce){
+  .roadmap::after,.roadmap-node{ animation:none; }
+}
 .roadmap-card{ background:var(--bg-elevated); border:1px solid var(--border); border-radius:12px; padding:24px 26px; transition:transform .3s var(--ease), border-color .3s ease; }
 @media (hover:hover) and (pointer:fine){ .roadmap-card:hover{ transform:translateY(-3px); border-color:var(--border-strong); } }
 .roadmap-card:active{ transform:scale(0.99); }
