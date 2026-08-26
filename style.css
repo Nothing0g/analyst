@@ -34,11 +34,7 @@
 }
 
 *{ box-sizing:border-box; }
-html{ scroll-behavior:smooth; scroll-snap-type:y proximity; }
-/* proximity, not mandatory — several sections (Case Files, Toolkit) hold
-   more content than one viewport. Mandatory would trap or clip that;
-   proximity snaps cleanly where a section fits and just scrolls normally
-   through the ones that don't. */
+html{ scroll-behavior:smooth; }
 
 /* ==========================================================
    NATIVE SCROLLBAR — themed to match the site instead of
@@ -57,7 +53,7 @@ html{ scrollbar-color:var(--border-strong) var(--bg); scrollbar-width:thin; }
 ::-webkit-scrollbar-thumb:hover{ background:var(--fg-soft); }
 ::-webkit-scrollbar-corner{ background:var(--bg); }
 @media (prefers-reduced-motion: reduce){
-  html{ scroll-behavior:auto; scroll-snap-type:none; }
+  html{ scroll-behavior:auto; }
   /* Kill decorative motion loops entirely (float, pulse, shimmer, scanline, cursor) */
   *,*::before,*::after{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
   /* Reduced motion means gentler, not zero: state-comprehension transitions
@@ -255,7 +251,7 @@ h1,h2,h3{ font-family:var(--font-sans); margin:0; font-weight:600; letter-spacin
 /* ==========================================================
    HERO
 ========================================================== */
-.hero{ min-height:96vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:100px 24px 90px; position:relative; overflow:hidden; scroll-snap-align:start; }
+.hero{ min-height:96vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:100px 24px 90px; position:relative; overflow:hidden; }
 .hero-inner{ position:relative; z-index:2; max-width:720px; margin:0 auto; }
 .hero-scanline{
   position:absolute; left:0; right:0; top:8%; height:1px; z-index:1;
@@ -358,7 +354,6 @@ h1,h2,h3{ font-family:var(--font-sans); margin:0; font-weight:600; letter-spacin
 .section{
   min-height:100vh; padding:110px 0; position:relative; z-index:2;
   display:flex; flex-direction:column; justify-content:center;
-  scroll-snap-align:start;
 }
 @media(max-width:860px){ .section{ padding:76px 0; } }
 .section-label{ display:flex; align-items:center; gap:14px; margin-bottom:20px; }
