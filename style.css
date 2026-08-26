@@ -402,6 +402,7 @@ h1,h2,h3{ font-family:var(--font-sans); margin:0; font-weight:600; letter-spacin
 .roadmap-card:active{ transform:scale(0.99); }
 .roadmap-card-next{ background:transparent; border-style:dashed; }
 .roadmap-top{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:8px; }
+.roadmap-top .tl-date:only-child{ margin-left:auto; }
 .roadmap-status{ font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; font-weight:600; color:var(--fg); background:var(--surface); padding:4px 10px; border-radius:20px; }
 .roadmap-status-next{ color:var(--fg-soft); }
 
