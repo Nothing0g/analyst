@@ -135,36 +135,26 @@
       height = canvas.height = innerHeight;
       const density = width < 700 ? 5500 : 3200;
       const count = Math.floor((width * height) / density);
-      stars = Array.from({ length: count }, () => {
-        const depth = 0.12 + Math.random() * 0.88;
-        return {
-          x: Math.random() * width, y: Math.random() * height,
-          size: 0.6 + Math.random() * 1.8, depth,
-          blur: Math.round((1 - depth) * 5) * 0.42, // cache six subtle blur levels
-          angle: Math.random() * Math.PI * 2, twinklePhase: Math.random() * Math.PI * 2,
-          twinkleSpeed: 0.6 + Math.random() * 1.8,
-        };
-      }).sort((a, b) => a.blur - b.blur);
+      stars = Array.from({ length: count }, () => ({
+        x: Math.random() * width, y: Math.random() * height,
+        size: 0.6 + Math.random() * 1.8, depth: 0.12 + Math.random() * 0.88,
+        angle: Math.random() * Math.PI * 2, twinklePhase: Math.random() * Math.PI * 2,
+        twinkleSpeed: 0.6 + Math.random() * 1.8,
+      }));
     };
     build(); addEventListener('resize', build);
     let px = -9999, py = -9999;
     addEventListener('mousemove', (event) => { px = event.clientX; py = event.clientY; });
     addEventListener('touchmove', (event) => { if (event.touches[0]) { px = event.touches[0].clientX; py = event.touches[0].clientY; } }, { passive: true });
     addEventListener('mouseleave', () => { px = -9999; py = -9999; });
-    let last = performance.now(), time = 0, frameId = 0;
+    let last = performance.now(), time = 0;
     function draw(now) {
-      if (document.hidden) { frameId = 0; return; }
       const dt = Math.min(50, now - last) / 1000; last = now; time += dt;
       ctx.clearRect(0, 0, width, height);
       const dark = root.getAttribute('data-theme') === 'dark';
       const rgb = dark ? '255,255,255' : '10,10,10';
       const burst = performance.now() < bgBurstUntil;
-      let activeBlur = -1;
       stars.forEach((star) => {
-        if (star.blur !== activeBlur) {
-          activeBlur = star.blur;
-          ctx.filter = `blur(${star.blur}px)`;
-        }
         const drift = 22 * star.depth * dt;
         star.x += Math.cos(star.angle) * drift; star.y += Math.sin(star.angle) * drift;
         if (star.x < -5) star.x = width + 5; if (star.x > width + 5) star.x = -5;
@@ -181,20 +171,15 @@
         let alpha = (dark ? 0.025 + star.depth * 0.42 : 0.018 + star.depth * 0.22) * twinkle + glow * 0.12;
         if (burst) alpha = Math.min(0.55, alpha + 0.12);
         ctx.globalAlpha = Math.min(0.55, alpha);
+        ctx.filter = `blur(${((1 - star.depth) * 2.4).toFixed(2)}px)`;
         ctx.fillStyle = `rgb(${rgb})`;
         ctx.beginPath(); ctx.arc(renderX, renderY, star.size + glow * 1.2, 0, Math.PI * 2); ctx.fill();
       });
       ctx.globalAlpha = 1;
       ctx.filter = 'none';
-      if (!reduced) frameId = requestAnimationFrame(draw);
+      if (!reduced) requestAnimationFrame(draw);
     }
-    if (reduced) draw(performance.now()); else frameId = requestAnimationFrame(draw);
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden && !reduced && !frameId) {
-        last = performance.now();
-        frameId = requestAnimationFrame(draw);
-      }
-    });
+    if (reduced) draw(performance.now()); else requestAnimationFrame(draw);
   }
 
   const cmdkOverlay = $('#cmdkOverlay');

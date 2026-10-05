@@ -736,19 +736,15 @@ document.addEventListener('DOMContentLoaded', () => {
       h = canvas.height = window.innerHeight;
       const density = w < 700 ? 5500 : 3200;
       const count = Math.floor((w * h) / density);
-      stars = Array.from({ length: count }, () => {
-        const depth = 0.12 + Math.random() * 0.88;
-        return {
-          x: Math.random() * w,
-          y: Math.random() * h,
-          size: 0.6 + Math.random() * 1.8,          // varying sizes
-          depth,                                     // 0..1 — drives speed and brightness
-          blur: Math.round((1 - depth) * 5) * 0.42, // cache six subtle blur levels
-          angle: Math.random() * Math.PI * 2,       // drift direction
-          twinklePhase: Math.random() * Math.PI * 2,
-          twinkleSpeed: 0.6 + Math.random() * 1.8,  // each star sparkles at its own rate
-        };
-      }).sort((a, b) => a.blur - b.blur);
+      stars = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        size: 0.6 + Math.random() * 1.8,          // varying sizes
+        depth: 0.12 + Math.random() * 0.88,       // 0..1 — drives speed, blur, and brightness
+        angle: Math.random() * Math.PI * 2,       // drift direction
+        twinklePhase: Math.random() * Math.PI * 2,
+        twinkleSpeed: 0.6 + Math.random() * 1.8,  // each star sparkles at its own rate
+      }));
     }
     build();
     window.addEventListener('resize', build);
@@ -762,9 +758,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function isDarkMode() { return root.getAttribute('data-theme') === 'dark'; }
 
-    let last = performance.now(), t = 0, frameId = 0;
+    let last = performance.now(), t = 0;
     function draw(now) {
-      if (document.hidden) { frameId = 0; return; }
       const dt = Math.min(50, now - last) / 1000; // seconds since last frame, clamped
       last = now;
       t += dt;
@@ -774,12 +769,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const rgb = dark ? '255,255,255' : '10,10,10'; // theme-adaptive starColor
       const burst = performance.now() < bgBurstUntil;
 
-      let activeBlur = -1;
       stars.forEach(s => {
-        if (s.blur !== activeBlur) {
-          activeBlur = s.blur;
-          ctx.filter = `blur(${s.blur}px)`;
-        }
         // Always-on ambient drift, in real px/second now (not a fraction that
         // rounded away to nothing) — this is the "constant motion" baseline.
         const drift = SPEED_PX_PER_SEC * s.depth * dt;
@@ -813,6 +803,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (burst) alpha = Math.min(0.55, alpha + 0.12);
         const size = s.size + glow * 1.2;
         ctx.globalAlpha = Math.min(0.55, alpha);
+        ctx.filter = `blur(${((1 - s.depth) * 2.4).toFixed(2)}px)`;
         ctx.fillStyle = `rgb(${rgb})`;
         ctx.beginPath();
         ctx.arc(renderX, renderY, size, 0, Math.PI * 2);
@@ -821,16 +812,10 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.globalAlpha = 1;
       ctx.filter = 'none';
 
-      if (!reduced) frameId = requestAnimationFrame(draw);
+      if (!reduced) requestAnimationFrame(draw);
     }
 
-    if (reduced) draw(performance.now()); else frameId = requestAnimationFrame(draw);
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden && !reduced && !frameId) {
-        last = performance.now();
-        frameId = requestAnimationFrame(draw);
-      }
-    });
+    if (reduced) draw(performance.now()); else requestAnimationFrame(draw);
   })();
 
   /* ==========================================================
