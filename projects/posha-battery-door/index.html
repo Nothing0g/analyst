@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POSHA Battery Door Mechanism — Shubham Kumar</title>
+  <meta name="description" content="Mechanical engineering case study for a 3-piece wedge-driven battery door mechanism designed for the POSHA spindle."
+  >
+  <link rel="canonical" href="https://nothing0g.github.io/analyst/projects/posha-battery-door/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://nothing0g.github.io/analyst/projects/posha-battery-door/">
+  <meta property="og:title" content="POSHA Battery Door Mechanism — Shubham Kumar">
+  <meta property="og:description" content="Concept selection, kinematics, FEA validation, and manufacturability for a compact 3-piece battery door mechanism.">
+  <meta property="og:image" content="https://nothing0g.github.io/analyst/assets/og-card.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/report.css">
+  <link rel="stylesheet" href="posha.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"CreativeWork","name":"POSHA Battery Door Latching Mechanism","url":"https://nothing0g.github.io/analyst/projects/posha-battery-door/","author":{"@type":"Person","name":"Shubham Kumar","url":"https://nothing0g.github.io/analyst/"},"isPartOf":{"@type":"WebSite","url":"https://nothing0g.github.io/analyst/"},"keywords":["mechanical design","mechanism design","FEA","Fusion 360","DFM","battery door"]}
+  </script>
+</head>
+<body class="focused-report">
+  <a class="skip-link" href="#report">Skip to report</a>
+  <div class="report-progress"><span id="scrollProgress"></span></div>
+  <div class="grid-backdrop" aria-hidden="true"></div>
+  <canvas class="bg-interactive" id="bgCanvas" aria-hidden="true"></canvas>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-follow" id="cursorFollow"><span id="cursorFollowText"></span></div>
+
+  <nav class="dock" aria-label="Report navigation">
+    <div class="dock-inner">
+      <a href="#report" class="dock-item active" data-dock data-cursor-text="Report home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="dock-label">Report home</span></a>
+      <a href="#snapshot" class="dock-item" data-dock data-cursor-text="Snapshot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg><span class="dock-label">Snapshot</span></a>
+      <a href="#dashboard" class="dock-item" data-dock data-cursor-text="Mechanism"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M12 19V5M20 19v-6"/></svg><span class="dock-label">Mechanism</span></a>
+      <a href="#insights" class="dock-item" data-dock data-cursor-text="Validation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span class="dock-label">Validation</span></a>
+      <a href="#method" class="dock-item" data-dock data-cursor-text="Method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94z"/></svg><span class="dock-label">Method</span></a>
+      <a href="../../index.html" class="dock-item" data-transition data-cursor-text="Portfolio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg><span class="dock-label">Portfolio</span></a>
+      <div class="dock-divider"></div>
+      <button class="dock-item" id="dockThemeBtn" data-cursor-text="Toggle theme"><svg id="dockThemeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></svg><span class="dock-label">Toggle theme</span></button>
+    </div>
+  </nav>
+
+  <header class="topbar report-topbar">
+    <a class="report-brand" href="../../index.html"><i></i> SHUBHAM KUMAR / CASEFILE</a>
+    <div class="topbar-right report-top-actions">
+      <button class="kbd-chip report-search" id="reportSearch" type="button" data-cursor-text="Search this report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>Search</span><kbd>⌘K</kbd></button>
+      <a class="report-top-link" data-transition data-cursor-text="Back to portfolio" href="../../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5m7 7-7-7 7-7"/></svg><span>Portfolio</span></a>
+      <button class="icon-btn report-icon-btn" id="reportThemeToggle" aria-label="Toggle theme"></button>
+    </div>
+  </header>
+
+  <main id="report" class="report-main">
+    <div class="report-shell">
+      <section class="report-section report-hero">
+        <div class="report-section-inner report-hero-grid">
+          <div>
+            <div class="report-kicker"><span class="mono">FILE / PROJECT REPORT</span><span class="rule"></span><span class="mono">CASE NO. 004 · MECHANICAL DESIGN</span></div>
+            <h1>POSHA Battery Door Mechanism</h1>
+            <p class="lede">Can a 3-piece, wedge-driven latch make a 2-AA battery door compact, durable, and satisfying to operate?</p>
+            <div class="report-actions">
+              <a class="report-btn" data-cursor-text="Open final PDF" href="assets/Shubham_Battery_Door_Latching_Mechanism.pdf" target="_blank" rel="noreferrer">Open final project PDF <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a class="report-btn secondary" data-cursor-text="Focus mechanism" href="#dashboard">Jump to mechanism <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14m7-7-7 7-7-7"/></svg></a>
+            </div>
+          </div>
+          <aside class="signal-panel" aria-label="Primary case signal">
+            <span class="report-status">Selected concept</span>
+            <h2>Three parts. One clear force path.</h2>
+            <p>The final design uses a button plunger, guided wedge sled, and rotating latch to convert downward input into controlled unlatching motion.</p>
+            <div class="signal-line"></div>
+            <div class="signal-foot"><span>Design signal</span><strong>FoS ≈ 1.5 at 15 N</strong></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="snapshot" class="report-section" aria-labelledby="snapshot-title">
+        <div class="report-section-inner reveal">
+          <div class="section-label"><span class="mono">FILE / 01</span><span class="rule"></span><span>Executive snapshot</span></div>
+          <div class="section-heading"><h2 id="snapshot-title">The design decision first.</h2><p>Concept exploration was narrowed by degrees of freedom, assembly risk, fatigue, tolerance sensitivity, and user feel.</p></div>
+          <div class="metric-grid">
+            <article class="metric-card"><div class="metric-label mono">Final architecture</div><div class="metric-value">3</div><div class="metric-context">Parts in the selected wedge-driven system</div></article>
+            <article class="metric-card"><div class="metric-label mono">Mechanism footprint</div><div class="metric-value">15×10</div><div class="metric-context">Millimetres inside the spindle door boundary</div></article>
+            <article class="metric-card"><div class="metric-label mono">Stress result</div><div class="metric-value">40.95</div><div class="metric-context">MPa peak von-Mises stress under 15 N load</div></article>
+            <article class="metric-card"><div class="metric-label mono">High-volume cost</div><div class="metric-value">~$0.60</div><div class="metric-context">Estimated assembly cost per unit</div></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="dashboard" class="report-section" aria-labelledby="dashboard-title">
+        <div class="report-section-inner reveal">
+          <div class="section-label"><span class="mono">FILE / 02</span><span class="rule"></span><span>Mechanism walkthrough</span></div>
+          <div class="section-heading"><h2 id="dashboard-title">A straight force translation.</h2><p>Downward button input travels through a 45° wedge, rotates the latch, and lets the battery springs eject the door once the catch clears.</p></div>
+          <div class="posha-hero-schematic" role="img" aria-label="Schematic showing button plunger, wedge sled, rotating latch, and battery door movement">
+            <svg viewBox="0 0 760 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="currentColor"/></marker></defs>
+              <rect x="92" y="92" width="576" height="170" rx="10" stroke="var(--report-line-strong)" stroke-width="2" stroke-dasharray="5 6"/>
+              <rect x="128" y="116" width="116" height="44" rx="6" fill="var(--report-surface-strong)" stroke="var(--report-ink)"/>
+              <text x="186" y="143" fill="var(--report-ink)" font-family="var(--report-font-mono)" font-size="13" text-anchor="middle">BUTTON</text>
+              <path d="M186 72V108" stroke="var(--report-coral)" stroke-width="3" marker-end="url(#arrow)"/>
+              <text x="186" y="54" fill="var(--report-coral)" font-family="var(--report-font-mono)" font-size="12" text-anchor="middle">F downward</text>
+              <path d="M270 202L354 142L420 202Z" fill="var(--report-yellow)" fill-opacity=".72" stroke="var(--report-ink)" stroke-width="2"/>
+              <text x="348" y="224" fill="var(--report-ink)" font-family="var(--report-font-mono)" font-size="12" text-anchor="middle">45° WEDGE SLED</text>
+              <path d="M270 178H236" stroke="var(--report-ink)" stroke-width="2" marker-end="url(#arrow)"/>
+              <path d="M420 202H478" stroke="var(--report-ink)" stroke-width="2" marker-end="url(#arrow)"/>
+              <circle cx="532" cy="196" r="37" stroke="var(--report-ink)" stroke-width="3"/><path d="M532 196L554 176" stroke="var(--report-coral)" stroke-width="4" stroke-linecap="round"/>
+              <text x="532" y="254" fill="var(--report-ink)" font-family="var(--report-font-mono)" font-size="12" text-anchor="middle">ROTATING LATCH</text>
+              <path d="M584 134C644 104 682 78 712 44" stroke="var(--report-green)" stroke-width="3" stroke-dasharray="6 6" marker-end="url(#arrow)"/>
+              <text x="638" y="116" fill="var(--report-green)" font-family="var(--report-font-mono)" font-size="12" text-anchor="middle">DOOR POPS OPEN</text>
+              <path d="M116 276H644" stroke="var(--report-line-strong)"/>
+              <text x="380" y="306" fill="var(--report-muted)" font-family="var(--report-font-mono)" font-size="11" text-anchor="middle">Guided tracks keep the 3-part mechanism compact and repeatable</text>
+            </svg>
+          </div>
+          <p class="posha-caption">Figure reconstructed from the supplied final presentation. The schematic communicates the reported force path; it is not a manufacturing drawing.</p>
+          <div class="posha-step-grid" style="margin-top:18px">
+            <article class="posha-step"><span class="posha-step-num mono">01 / PRESS</span><h3>Button cam pressed</h3><p>Downward normal force enters through the door-outline button.</p></article>
+            <article class="posha-step"><span class="posha-step-num mono">02 / DRIVE</span><h3>Wedge sled slides</h3><p>Guided motion tracks translate vertical input into horizontal movement.</p></article>
+            <article class="posha-step"><span class="posha-step-num mono">03 / UNLATCH</span><h3>Latch rotates open</h3><p>The rotating hook disengages the door catch with a controlled action.</p></article>
+            <article class="posha-step"><span class="posha-step-num mono">04 / RESET</span><h3>Springs eject door</h3><p>AA battery contact springs provide the upward pop after clearance.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="insights" class="report-section" aria-labelledby="insights-title">
+        <div class="report-section-inner reveal">
+          <div class="section-label"><span class="mono">FILE / 03</span><span class="rule"></span><span>Validation readout</span></div>
+          <div class="section-heading"><h2 id="insights-title">Evidence before confidence.</h2><p>The design was checked as a mechanism, a material system, and a manufacturing proposition — with the remaining risks clearly named.</p></div>
+          <div class="posha-validation">
+            <article class="posha-validation-card"><div class="metric-label mono">Peak stress</div><div class="metric-value">40.95</div><div class="metric-context">MPa under 15 N horizontal load</div><div class="posha-meter"><span></span></div></article>
+            <article class="posha-validation-card"><div class="metric-label mono">Material yield</div><div class="metric-value">~65</div><div class="metric-context">MPa for POM/Delrin sliding components</div><div class="posha-meter safe"><span></span></div></article>
+            <article class="posha-validation-card"><div class="metric-label mono">Factor of safety</div><div class="metric-value">~1.5</div><div class="metric-context">Reported static structural result</div><div class="posha-meter safe"><span></span></div></article>
+            <article class="posha-validation-card"><div class="metric-label mono">Design action</div><div class="metric-value">+0.5</div><div class="metric-context">mm inner fillet increase at latch hook</div><div class="posha-meter safe"><span></span></div></article>
+          </div>
+          <div class="insight-grid" style="margin-top:18px">
+            <article class="insight-card"><span class="insight-index mono">01 / KINEMATICS</span><h3>45° keeps the math legible.</h3><p>F_horizontal = F_downward × tan(45°), giving a theoretical 1:1 force transfer before surface friction is included.</p></article>
+            <article class="insight-card"><span class="insight-index mono">02 / MATERIAL</span><h3>Low friction, high scrutiny.</h3><p>POM/Delrin supports smooth unlubricated sliding at μ≈0.20, while the latch-hook fillet remains the primary stress-riser focus.</p></article>
+            <article class="insight-card"><span class="insight-index mono">03 / CAVEAT</span><h3>Prototype still matters.</h3><p>The FEA is a static validation result. Tactile feel, friction, fatigue, and real spring/door interaction require the planned SLA prototype.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="recommendation" class="report-section" aria-labelledby="recommendation-title">
+        <div class="report-section-inner reveal">
+          <div class="recommendation">
+            <div><div class="section-label" style="color:inherit"><span class="mono">FILE / 04</span><span class="rule" style="background:currentColor"></span><span>Design decision</span></div><h2 id="recommendation-title">Choose the reliable path, then test the feel.</h2></div>
+            <div><p>The selected wedge system won because it reduced assembly complexity without accepting the long-term creep risk of the compliant flexure.</p><ol><li><strong>Prototype the 3-piece system.</strong> Use SLA printing to check button travel, tactile click, latch release, and spring-assisted door ejection.</li><li><strong>Refine the wedge angle.</strong> Compare the reported 45° starting point against real friction and wear behavior.</li><li><strong>Keep the fillet change.</strong> Increase the inner latch-hook radius by 0.5 mm to distribute bending stress and improve durability.</li></ol></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="method" class="report-section" aria-labelledby="method-title">
+        <div class="report-section-inner reveal">
+          <div class="section-label"><span class="mono">FILE / 05</span><span class="rule"></span><span>Method &amp; source</span></div>
+          <div class="method-grid">
+            <article class="method-card"><h3 id="method-title">Brief</h3><p>Design a battery door mechanism for two AA batteries. The input is downward normal force; the output is an automatic pop-open door after the latch clears.</p></article>
+            <article class="method-card"><h3>Concepts</h3><p>Compared a 5-part multi-pivot lever, a compliant flexure, and the selected 3-part wedge-driven system using degrees of freedom, assembly, tolerance risk, fatigue, and user feel.</p></article>
+            <article class="method-card"><h3>Materials &amp; BOM</h3><p>PC/ABS housing and door; POM/Delrin wedge sled and latch; stainless micro coil springs. Estimated high-volume assembly cost: approximately $0.60 per unit.</p></article>
+          </div>
+          <div class="posha-note"><strong>Source note.</strong> This report is reconstructed from the supplied final presentation and the public project folder. The embedded schematic is explanatory, not a manufacturing drawing. <a href="https://drive.google.com/drive/folders/1Qs59nAcLQbCeiZzueVf5LKAw3ijnOH68?usp=drive_link" target="_blank" rel="noreferrer">Open the public source folder ↗</a></div>
+          <div class="report-actions" style="margin-top:20px"><a class="report-btn secondary" href="assets/Shubham_Battery_Door_Latching_Mechanism.pdf" download>Download the final PDF <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v12m-5-5 5 5 5-5M5 20h14"/></svg></a></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="report-footer"><span>© 2026 Shubham Kumar · POSHA mechanism casefile</span><div class="posha-footer-links"><a href="../../index.html">Portfolio</a><a href="https://github.com/Nothing0g/analyst" target="_blank" rel="noreferrer">GitHub</a><a href="#report">Back to top</a></div></footer>
+
+  <div class="cmdk-overlay" id="cmdkOverlay"><div class="cmdk-box"><div class="cmdk-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="cmdkInput" class="cmdk-input" placeholder="Search report sections…" autocomplete="off"><kbd class="cmdk-esc">ESC</kbd></div><div class="cmdk-list" id="cmdkList"></div></div></div>
+  <div class="toast-wrap" id="toastWrap"></div>
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+  <script src="../shared/report-shell.js"></script>
+</body>
+</html>

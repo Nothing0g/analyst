@@ -265,8 +265,9 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
     card.addEventListener('click', () => {
-      if (i === 0 || i === 1) {
-        const destination = i === 0 ? 'projects/uber-ride-demand/' : 'projects/hr-employee-attrition/';
+      if (i === 0 || i === 1 || i === 3) {
+        const destinations = ['projects/uber-ride-demand/', 'projects/hr-employee-attrition/', 'projects/posha-battery-door/'];
+        const destination = destinations[i === 3 ? 2 : i];
         if (!reduced) {
           document.body.classList.add('page-exit');
           setTimeout(() => { window.location.href = destination; }, 300);
