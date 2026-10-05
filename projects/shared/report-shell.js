@@ -96,12 +96,18 @@
     root.classList.add('custom-cursor');
     let mouseX = innerWidth / 2, mouseY = innerHeight / 2, cx = mouseX, cy = mouseY;
     let scale = 1, targetScale = 1;
+    let fx = mouseX, fy = mouseY;
     addEventListener('mousemove', (event) => { cursorDot.style.opacity = '1'; mouseX = event.clientX; mouseY = event.clientY; });
     function cursorLoop() {
       cx += (mouseX - cx) * 0.26;
       cy += (mouseY - cy) * 0.26;
       scale += (targetScale - scale) * 0.2;
       cursorDot.style.transform = `translate(${cx - 9}px, ${cy - 9}px) scale(${scale})`;
+      if (cursorFollow && cursorFollowText) {
+        fx += (mouseX - fx) * 0.14;
+        fy += (mouseY - fy) * 0.14;
+        cursorFollow.style.transform = `translate(${fx + 13}px, ${fy + 15}px)`;
+      }
       requestAnimationFrame(cursorLoop);
     }
     requestAnimationFrame(cursorLoop);
@@ -110,18 +116,10 @@
       el.addEventListener('mouseleave', () => { targetScale = 1; });
     });
     if (cursorFollow && cursorFollowText) {
-      let fx = mouseX, fy = mouseY;
       $$('[data-cursor-text]').forEach((el) => {
         el.addEventListener('mouseenter', () => { cursorFollowText.textContent = el.dataset.cursorText; cursorFollow.style.opacity = '1'; });
         el.addEventListener('mouseleave', () => { cursorFollow.style.opacity = '0'; });
       });
-      function followLoop() {
-        fx += (mouseX - fx) * 0.14;
-        fy += (mouseY - fy) * 0.14;
-        cursorFollow.style.transform = `translate(${fx + 13}px, ${fy + 15}px)`;
-        requestAnimationFrame(followLoop);
-      }
-      requestAnimationFrame(followLoop);
     }
   }
 
@@ -130,10 +128,16 @@
   if (canvas) {
     const ctx = canvas.getContext('2d');
     let width, height, stars = [];
+    const constrainedDevice = Boolean(
+      (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
+      (navigator.deviceMemory && navigator.deviceMemory <= 4) ||
+      navigator.connection?.saveData
+    );
+    let lowPowerMode = constrainedDevice;
     const build = () => {
       width = canvas.width = innerWidth;
       height = canvas.height = innerHeight;
-      const density = width < 700 ? 5500 : 3200;
+      const density = lowPowerMode ? (width < 700 ? 7600 : 8600) : (width < 700 ? 5500 : 3200);
       const count = Math.floor((width * height) / density);
       stars = Array.from({ length: count }, () => ({
         x: Math.random() * width, y: Math.random() * height,
@@ -143,35 +147,52 @@
       }));
     };
     build(); addEventListener('resize', build);
+    if (navigator.getBattery) {
+      navigator.getBattery().then((battery) => {
+        const syncPowerMode = () => {
+          const next = constrainedDevice || !battery.charging;
+          if (next === lowPowerMode) return;
+          lowPowerMode = next;
+          build();
+        };
+        syncPowerMode();
+        battery.addEventListener('chargingchange', syncPowerMode);
+      }).catch(() => {});
+    }
     let px = -9999, py = -9999;
     addEventListener('mousemove', (event) => { px = event.clientX; py = event.clientY; });
     addEventListener('touchmove', (event) => { if (event.touches[0]) { px = event.touches[0].clientX; py = event.touches[0].clientY; } }, { passive: true });
     addEventListener('mouseleave', () => { px = -9999; py = -9999; });
     let last = performance.now(), time = 0;
     function draw(now) {
+      if (lowPowerMode && now - last < 42) { requestAnimationFrame(draw); return; }
       const dt = Math.min(50, now - last) / 1000; last = now; time += dt;
       ctx.clearRect(0, 0, width, height);
       const dark = root.getAttribute('data-theme') === 'dark';
       const rgb = dark ? '255,255,255' : '10,10,10';
       const burst = performance.now() < bgBurstUntil;
+      const hoverEnabled = !lowPowerMode;
+      if (!hoverEnabled) ctx.filter = 'none';
       stars.forEach((star) => {
         const drift = 22 * star.depth * dt;
         star.x += Math.cos(star.angle) * drift; star.y += Math.sin(star.angle) * drift;
         if (star.x < -5) star.x = width + 5; if (star.x > width + 5) star.x = -5;
         if (star.y < -5) star.y = height + 5; if (star.y > height + 5) star.y = -5;
         let renderX = star.x, renderY = star.y, glow = 0;
-        const dx = star.x - px, dy = star.y - py, distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 90) {
-          const strength = 1 - distance / 90;
-          const nx = distance > 0.01 ? dx / distance : 0, ny = distance > 0.01 ? dy / distance : 0;
-          renderX += nx * strength * 14; renderY += ny * strength * 14; glow = strength;
+        if (hoverEnabled) {
+          const dx = star.x - px, dy = star.y - py, distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < 90) {
+            const strength = 1 - distance / 90;
+            const nx = distance > 0.01 ? dx / distance : 0, ny = distance > 0.01 ? dy / distance : 0;
+            renderX += nx * strength * 14; renderY += ny * strength * 14; glow = strength;
+          }
         }
         const twinkle = 0.55 + 0.45 * Math.sin(time * star.twinkleSpeed + star.twinklePhase);
         // Let depth control both softness and opacity so the field recedes gently.
         let alpha = (dark ? 0.025 + star.depth * 0.42 : 0.018 + star.depth * 0.22) * twinkle + glow * 0.12;
         if (burst) alpha = Math.min(0.55, alpha + 0.12);
         ctx.globalAlpha = Math.min(0.55, alpha);
-        ctx.filter = `blur(${((1 - star.depth) * 2.4).toFixed(2)}px)`;
+        if (hoverEnabled) ctx.filter = `blur(${((1 - star.depth) * 2.4).toFixed(2)}px)`;
         ctx.fillStyle = `rgb(${rgb})`;
         ctx.beginPath(); ctx.arc(renderX, renderY, star.size + glow * 1.2, 0, Math.PI * 2); ctx.fill();
       });

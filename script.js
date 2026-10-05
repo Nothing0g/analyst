@@ -650,6 +650,8 @@ document.addEventListener('DOMContentLoaded', () => {
      up slightly on hover as feedback instead.
   ========================================================== */
   const cursorDot = document.getElementById('cursorDot');
+  const cursorFollow = document.getElementById('cursorFollow');
+  const cursorFollowText = document.getElementById('cursorFollowText');
   const finePointer = window.matchMedia('(pointer:fine)').matches;
 
   if (!reduced && finePointer) {
@@ -657,6 +659,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
     let cx = mouseX, cy = mouseY;
     let scale = 1, targetScale = 1;
+    let fx = mouseX, fy = mouseY;
+    let followEl = null;
 
     window.addEventListener('mousemove', (e) => {
       cursorDot.style.opacity = '1';
@@ -669,6 +673,11 @@ document.addEventListener('DOMContentLoaded', () => {
       cy += (mouseY - cy) * k;
       scale += (targetScale - scale) * 0.2;
       cursorDot.style.transform = `translate(${cx - 9}px, ${cy - 9}px) scale(${scale})`;
+      if (cursorFollow && cursorFollowText) {
+        fx += (mouseX - fx) * 0.14;
+        fy += (mouseY - fy) * 0.14;
+        cursorFollow.style.transform = `translate(${fx + 13}px, ${fy + 15}px)`;
+      }
       requestAnimationFrame(loop);
     }
     requestAnimationFrame(loop);
@@ -682,12 +691,7 @@ document.addEventListener('DOMContentLoaded', () => {
        whichever element under the pointer requests text via [data-cursor-text].
        Offset bottom-end from the cursor to match the reference component's
        own default (side: bottom, sideOffset: 15, align: end, alignOffset: 5). */
-    const cursorFollow = document.getElementById('cursorFollow');
-    const cursorFollowText = document.getElementById('cursorFollowText');
     if (cursorFollow && cursorFollowText) {
-      let fx = mouseX, fy = mouseY;
-      let followEl = null;
-
       document.querySelectorAll('[data-cursor-text]').forEach(el => {
         el.addEventListener('mouseenter', () => {
           followEl = el;
@@ -699,15 +703,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
 
-      function followLoop() {
-        // Slower lerp than the cursor dot itself — a visible trailing lag,
-        // like the reference component's spring (stiffness 500 / damping 50).
-        fx += (mouseX - fx) * 0.14;
-        fy += (mouseY - fy) * 0.14;
-        cursorFollow.style.transform = `translate(${fx + 13}px, ${fy + 15}px)`; // bottom-end offset
-        requestAnimationFrame(followLoop);
-      }
-      requestAnimationFrame(followLoop);
     }
   }
 
@@ -730,11 +725,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const SPEED_PX_PER_SEC = 22;  // base drift speed — was effectively ~0.3px/sec before, invisible
     const HOVER_RADIUS = 90;      // only stars this close to the pointer are nudged
     const HOVER_PUSH = 14;        // how far a star can be nudged at most, in px
+    const constrainedDevice = Boolean(
+      (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
+      (navigator.deviceMemory && navigator.deviceMemory <= 4) ||
+      navigator.connection?.saveData
+    );
+    let lowPowerMode = constrainedDevice;
 
     function build() {
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
-      const density = w < 700 ? 5500 : 3200;
+      const density = lowPowerMode ? (w < 700 ? 7600 : 8600) : (w < 700 ? 5500 : 3200);
       const count = Math.floor((w * h) / density);
       stars = Array.from({ length: count }, () => ({
         x: Math.random() * w,
@@ -748,6 +749,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     build();
     window.addEventListener('resize', build);
+    if (navigator.getBattery) {
+      navigator.getBattery().then((battery) => {
+        const syncPowerMode = () => {
+          const next = constrainedDevice || !battery.charging;
+          if (next === lowPowerMode) return;
+          lowPowerMode = next;
+          build();
+        };
+        syncPowerMode();
+        battery.addEventListener('chargingchange', syncPowerMode);
+      }).catch(() => {});
+    }
 
     let px = -9999, py = -9999; // pointer position; off-screen until first move
     window.addEventListener('mousemove', (e) => { px = e.clientX; py = e.clientY; });
@@ -760,6 +773,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let last = performance.now(), t = 0;
     function draw(now) {
+      if (lowPowerMode && now - last < 42) { requestAnimationFrame(draw); return; }
       const dt = Math.min(50, now - last) / 1000; // seconds since last frame, clamped
       last = now;
       t += dt;
@@ -768,6 +782,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const dark = isDarkMode();
       const rgb = dark ? '255,255,255' : '10,10,10'; // theme-adaptive starColor
       const burst = performance.now() < bgBurstUntil;
+      const hoverEnabled = !lowPowerMode;
+      if (!hoverEnabled) ctx.filter = 'none';
 
       stars.forEach(s => {
         // Always-on ambient drift, in real px/second now (not a fraction that
@@ -781,15 +797,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // A small, local nudge — only for stars actually near the cursor,
         // fading to zero at HOVER_RADIUS. Everything else is untouched.
         let renderX = s.x, renderY = s.y, glow = 0;
-        const dx = s.x - px, dy = s.y - py;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < HOVER_RADIUS) {
-          const strength = 1 - dist / HOVER_RADIUS;
-          const nx = dist > 0.01 ? dx / dist : 0;
-          const ny = dist > 0.01 ? dy / dist : 0;
-          renderX += nx * strength * HOVER_PUSH;
-          renderY += ny * strength * HOVER_PUSH;
-          glow = strength;
+        if (hoverEnabled) {
+          const dx = s.x - px, dy = s.y - py;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < HOVER_RADIUS) {
+            const strength = 1 - dist / HOVER_RADIUS;
+            const nx = dist > 0.01 ? dx / dist : 0;
+            const ny = dist > 0.01 ? dy / dist : 0;
+            renderX += nx * strength * HOVER_PUSH;
+            renderY += ny * strength * HOVER_PUSH;
+            glow = strength;
+          }
         }
 
         // Twinkle — brightness pulses on its own per-star cycle, independent
@@ -803,7 +821,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (burst) alpha = Math.min(0.55, alpha + 0.12);
         const size = s.size + glow * 1.2;
         ctx.globalAlpha = Math.min(0.55, alpha);
-        ctx.filter = `blur(${((1 - s.depth) * 2.4).toFixed(2)}px)`;
+        if (hoverEnabled) ctx.filter = `blur(${((1 - s.depth) * 2.4).toFixed(2)}px)`;
         ctx.fillStyle = `rgb(${rgb})`;
         ctx.beginPath();
         ctx.arc(renderX, renderY, size, 0, Math.PI * 2);
