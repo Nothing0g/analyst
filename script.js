@@ -149,21 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     },
     {
-      id: '003',
-      date: "Jun — Jul '24",
-      content: {
-        title: 'User Behavior Analytics — CultFit',
-        summary: 'Surveyed ~200 college students and isolated "lack of motivation" as the core driver behind Gen Z fitness drop-off before building a competition-based MVP.',
-        finding: 'Independently designed and shipped an MVP on Thunkable around a single lever — competition — with leaderboards and milestone rewards.',
-        stat: '1 of 1', statLabel: 'insight the MVP was built around',
-        tags: ['Survey Research', 'Customer Insight', 'Thunkable'],
-        modalDesc: 'Surveyed ~200 college students to find the real driver behind Gen Z fitness app drop-off — not price, not access, but motivation.'
-      },
-      status: 'Resolved',
-      report: null,
-      highlight: 'Presented at a Dell Aspire event; recognized for solving one problem well over spreading thin across many.'
-    },
-    {
       id: '004',
       date: "Apr '26",
       content: {
@@ -177,21 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
       status: 'Resolved',
       report: null,
       highlight: 'Reduced the mechanism to a reliable low-tolerance-risk concept while balancing manufacturability, strength, and cost.'
-    },
-    {
-      id: '005',
-      date: "Dec '25 — Jan '26",
-      content: {
-        title: 'Differential Gear Assembly',
-        summary: 'Modeled a bevel-gear differential in Fusion 360 to simulate torque distribution and variable wheel-speed output across the assembly.',
-        finding: 'Motion simulation validated gear interaction during straight-line and turning conditions, confirming correct kinematic behavior under differential speed constraints.',
-        stat: '2 modes', statLabel: 'straight-line + turning simulation',
-        tags: ['Fusion 360', 'Motion Simulation', 'Gear Design', 'Kinematics'],
-        modalDesc: 'A CAD and motion-simulation study covering the carrier housing, spider/pinion gears, side gears, and splined output shafts.'
-      },
-      status: 'Resolved',
-      report: null,
-      highlight: 'Used simulation to validate both torque distribution and variable wheel-speed output before treating the assembly as design-complete.'
     },
     {
       id: '006',
@@ -208,7 +178,22 @@ document.addEventListener('DOMContentLoaded', () => {
       report: null,
       repo: 'https://github.com/Nothing0g/loan-approval-analysis',
       highlight: 'The project treats accuracy as only one view of model quality and explicitly flags class imbalance, fairness, calibration, threshold design, and regulatory review as follow-up requirements.'
-    }
+    },
+    {
+      id: '003',
+      date: "Jun — Jul '24",
+      content: {
+        title: 'User Behavior Analytics — CultFit',
+        summary: 'Surveyed ~200 college students and isolated "lack of motivation" as the core driver behind Gen Z fitness drop-off before building a competition-based MVP.',
+        finding: 'Independently designed and shipped an MVP on Thunkable around a single lever — competition — with leaderboards and milestone rewards.',
+        stat: '1 of 1', statLabel: 'insight the MVP was built around',
+        tags: ['Survey Research', 'Customer Insight', 'Thunkable'],
+        modalDesc: 'Surveyed ~200 college students to find the real driver behind Gen Z fitness app drop-off — not price, not access, but motivation.'
+      },
+      status: 'Resolved',
+      report: null,
+      highlight: 'Presented at a Dell Aspire event; recognized for solving one problem well over spreading thin across many.'
+    },
   ];
 
   /* ==========================================================
@@ -220,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
     card.className = 'case-card spotlight-card reveal';
     card.dataset.caseIndex = i;
     card.dataset.cursorText = 'View report';
-    card.style.transitionDelay = (i * 60) + 'ms'; // stagger: 3 cards enter 60ms apart
+    card.style.transitionDelay = (i * 60) + 'ms'; // stagger case cards in 60ms steps
 
     let visual = '';
     if (c.report && c.report.chartType === 'line') {
@@ -265,9 +250,9 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
     card.addEventListener('click', () => {
-      if (i === 0 || i === 1 || i === 3) {
-        const destinations = ['projects/uber-ride-demand/', 'projects/hr-employee-attrition/', 'projects/posha-battery-door/'];
-        const destination = destinations[i === 3 ? 2 : i];
+      if (i === 0 || i === 1 || i === 2 || i === 3) {
+        const destinations = ['projects/uber-ride-demand/', 'projects/hr-employee-attrition/', 'projects/posha-battery-door/', 'projects/loan-approval/'];
+        const destination = destinations[i];
         if (!reduced) {
           document.body.classList.add('page-exit');
           setTimeout(() => { window.location.href = destination; }, 300);
