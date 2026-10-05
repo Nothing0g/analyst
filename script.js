@@ -192,6 +192,22 @@ document.addEventListener('DOMContentLoaded', () => {
       status: 'Resolved',
       report: null,
       highlight: 'Used simulation to validate both torque distribution and variable wheel-speed output before treating the assembly as design-complete.'
+    },
+    {
+      id: '006',
+      date: 'Public dataset',
+      content: {
+        title: 'Loan Approval Analysis',
+        summary: 'An exploratory, interpretable logistic-regression baseline examining which applicant attributes are associated with loan approval outcomes.',
+        finding: 'Credit history showed the strongest observed association in the selected public dataset; the baseline reached 0.784 accuracy with 0.98 recall for approved applications and 0.42 recall for not-approved applications.',
+        stat: '0.784', statLabel: 'baseline holdout accuracy',
+        tags: ['Python', 'pandas', 'Logistic Regression', 'Risk Analysis'],
+        modalDesc: 'A transparent educational analysis using applicant attributes, exploratory analysis, and a 70/30 holdout baseline. It is not a production lending system or a source of lending decisions.'
+      },
+      status: 'Baseline',
+      report: null,
+      repo: 'https://github.com/Nothing0g/loan-approval-analysis',
+      highlight: 'The project treats accuracy as only one view of model quality and explicitly flags class imbalance, fairness, calibration, threshold design, and regulatory review as follow-up requirements.'
     }
   ];
 
@@ -276,6 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalNote = document.getElementById('modalNote');
   const modalHighlight = document.getElementById('modalHighlight');
   const modalTags = document.getElementById('modalTags');
+  const modalRepoLink = document.getElementById('modalRepoLink');
 
   function renderChart(report) {
     modalChartSvg.innerHTML = '';
@@ -397,6 +414,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     modalHighlight.textContent = c.highlight || p.highlight || p.finding;
     modalTags.innerHTML = p.tags.map(t => `<span class="modal-tag">${t}</span>`).join('');
+    if (modalRepoLink) {
+      modalRepoLink.hidden = !c.repo;
+      if (c.repo) modalRepoLink.href = c.repo;
+    }
     modalOverlay.classList.add('is-open');
     document.body.style.overflow = 'hidden';
   }
