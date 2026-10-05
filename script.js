@@ -740,7 +740,7 @@ document.addEventListener('DOMContentLoaded', () => {
         x: Math.random() * w,
         y: Math.random() * h,
         size: 0.6 + Math.random() * 1.8,          // varying sizes
-        depth: 0.3 + Math.random() * 0.7,         // 0..1 — drives speed and brightness
+        depth: 0.12 + Math.random() * 0.88,       // 0..1 — drives speed, blur, and brightness
         angle: Math.random() * Math.PI * 2,       // drift direction
         twinklePhase: Math.random() * Math.PI * 2,
         twinkleSpeed: 0.6 + Math.random() * 1.8,  // each star sparkles at its own rate
@@ -797,14 +797,20 @@ document.addEventListener('DOMContentLoaded', () => {
         // even on the frames where a star's drift is barely perceptible.
         const twinkle = 0.55 + 0.45 * Math.sin(t * s.twinkleSpeed + s.twinklePhase);
 
-        let alpha = ((dark ? 0.3 : 0.14) + s.depth * (dark ? 0.5 : 0.32)) * twinkle + glow * 0.35;
-        if (burst) alpha = Math.min(1, alpha + 0.3);
+        // Depth fades the field back: distant stars are softer and much less opaque;
+        // even the nearest stars stay around half-strength instead of competing with UI.
+        let alpha = (dark ? 0.025 + s.depth * 0.42 : 0.018 + s.depth * 0.22) * twinkle + glow * 0.12;
+        if (burst) alpha = Math.min(0.55, alpha + 0.12);
         const size = s.size + glow * 1.2;
-        ctx.fillStyle = `rgba(${rgb},${Math.min(1, alpha)})`;
+        ctx.globalAlpha = Math.min(0.55, alpha);
+        ctx.filter = `blur(${((1 - s.depth) * 2.4).toFixed(2)}px)`;
+        ctx.fillStyle = `rgb(${rgb})`;
         ctx.beginPath();
         ctx.arc(renderX, renderY, size, 0, Math.PI * 2);
         ctx.fill();
       });
+      ctx.globalAlpha = 1;
+      ctx.filter = 'none';
 
       if (!reduced) requestAnimationFrame(draw);
     }

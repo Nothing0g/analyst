@@ -137,7 +137,7 @@
       const count = Math.floor((width * height) / density);
       stars = Array.from({ length: count }, () => ({
         x: Math.random() * width, y: Math.random() * height,
-        size: 0.6 + Math.random() * 1.8, depth: 0.3 + Math.random() * 0.7,
+        size: 0.6 + Math.random() * 1.8, depth: 0.12 + Math.random() * 0.88,
         angle: Math.random() * Math.PI * 2, twinklePhase: Math.random() * Math.PI * 2,
         twinkleSpeed: 0.6 + Math.random() * 1.8,
       }));
@@ -167,11 +167,16 @@
           renderX += nx * strength * 14; renderY += ny * strength * 14; glow = strength;
         }
         const twinkle = 0.55 + 0.45 * Math.sin(time * star.twinkleSpeed + star.twinklePhase);
-        let alpha = ((dark ? 0.3 : 0.14) + star.depth * (dark ? 0.5 : 0.32)) * twinkle + glow * 0.35;
-        if (burst) alpha = Math.min(1, alpha + 0.3);
-        ctx.fillStyle = `rgba(${rgb},${Math.min(1, alpha)})`;
+        // Let depth control both softness and opacity so the field recedes gently.
+        let alpha = (dark ? 0.025 + star.depth * 0.42 : 0.018 + star.depth * 0.22) * twinkle + glow * 0.12;
+        if (burst) alpha = Math.min(0.55, alpha + 0.12);
+        ctx.globalAlpha = Math.min(0.55, alpha);
+        ctx.filter = `blur(${((1 - star.depth) * 2.4).toFixed(2)}px)`;
+        ctx.fillStyle = `rgb(${rgb})`;
         ctx.beginPath(); ctx.arc(renderX, renderY, star.size + glow * 1.2, 0, Math.PI * 2); ctx.fill();
       });
+      ctx.globalAlpha = 1;
+      ctx.filter = 'none';
       if (!reduced) requestAnimationFrame(draw);
     }
     if (reduced) draw(performance.now()); else requestAnimationFrame(draw);
