@@ -128,79 +128,73 @@
   if (canvas) {
     const ctx = canvas.getContext('2d');
     let width, height, stars = [];
-    const constrainedDevice = Boolean(
-      (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
-      (navigator.deviceMemory && navigator.deviceMemory <= 4) ||
-      navigator.connection?.saveData
-    );
-    let lowPowerMode = constrainedDevice;
     const build = () => {
       width = canvas.width = innerWidth;
       height = canvas.height = innerHeight;
-      const density = lowPowerMode ? (width < 700 ? 7600 : 8600) : (width < 700 ? 5500 : 3200);
+      const density = width < 700 ? 7600 : 6200;
       const count = Math.floor((width * height) / density);
-      stars = Array.from({ length: count }, () => ({
-        x: Math.random() * width, y: Math.random() * height,
-        size: 0.6 + Math.random() * 1.8, depth: 0.12 + Math.random() * 0.88,
-        angle: Math.random() * Math.PI * 2, twinklePhase: Math.random() * Math.PI * 2,
-        twinkleSpeed: 0.6 + Math.random() * 1.8,
-      }));
+      stars = Array.from({ length: count }, () => {
+        const depth = 0.12 + Math.random() * 0.88;
+        const angle = Math.random() * Math.PI * 2;
+        return {
+          x: Math.random() * width, y: Math.random() * height,
+          size: 0.6 + Math.random() * 1.8, depth,
+          blur: Math.round((1 - depth) * 5) * 0.42, // six cached blur levels
+          cosAngle: Math.cos(angle), sinAngle: Math.sin(angle),
+          twinklePhase: Math.random() * Math.PI * 2,
+          twinkleSpeed: 0.6 + Math.random() * 1.8,
+        };
+      }).sort((a, b) => a.blur - b.blur);
     };
     build(); addEventListener('resize', build);
-    if (navigator.getBattery) {
-      navigator.getBattery().then((battery) => {
-        const syncPowerMode = () => {
-          const next = constrainedDevice || !battery.charging;
-          if (next === lowPowerMode) return;
-          lowPowerMode = next;
-          build();
-        };
-        syncPowerMode();
-        battery.addEventListener('chargingchange', syncPowerMode);
-      }).catch(() => {});
-    }
     let px = -9999, py = -9999;
     addEventListener('mousemove', (event) => { px = event.clientX; py = event.clientY; });
     addEventListener('touchmove', (event) => { if (event.touches[0]) { px = event.touches[0].clientX; py = event.touches[0].clientY; } }, { passive: true });
     addEventListener('mouseleave', () => { px = -9999; py = -9999; });
-    let last = performance.now(), time = 0;
+    let last = performance.now(), time = 0, frameId = 0;
     function draw(now) {
-      if (lowPowerMode && now - last < 42) { requestAnimationFrame(draw); return; }
+      if (document.hidden) { frameId = 0; return; }
       const dt = Math.min(50, now - last) / 1000; last = now; time += dt;
       ctx.clearRect(0, 0, width, height);
       const dark = root.getAttribute('data-theme') === 'dark';
       const rgb = dark ? '255,255,255' : '10,10,10';
       const burst = performance.now() < bgBurstUntil;
-      const hoverEnabled = !lowPowerMode;
-      if (!hoverEnabled) ctx.filter = 'none';
+      let activeBlur = -1;
+      ctx.fillStyle = `rgb(${rgb})`;
       stars.forEach((star) => {
+        if (star.blur !== activeBlur) {
+          activeBlur = star.blur;
+          ctx.filter = `blur(${star.blur}px)`;
+        }
         const drift = 22 * star.depth * dt;
-        star.x += Math.cos(star.angle) * drift; star.y += Math.sin(star.angle) * drift;
+        star.x += star.cosAngle * drift; star.y += star.sinAngle * drift;
         if (star.x < -5) star.x = width + 5; if (star.x > width + 5) star.x = -5;
         if (star.y < -5) star.y = height + 5; if (star.y > height + 5) star.y = -5;
         let renderX = star.x, renderY = star.y, glow = 0;
-        if (hoverEnabled) {
-          const dx = star.x - px, dy = star.y - py, distance = Math.sqrt(dx * dx + dy * dy);
-          if (distance < 90) {
-            const strength = 1 - distance / 90;
-            const nx = distance > 0.01 ? dx / distance : 0, ny = distance > 0.01 ? dy / distance : 0;
-            renderX += nx * strength * 14; renderY += ny * strength * 14; glow = strength;
-          }
+        const dx = star.x - px, dy = star.y - py, distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < 90) {
+          const strength = 1 - distance / 90;
+          const nx = distance > 0.01 ? dx / distance : 0, ny = distance > 0.01 ? dy / distance : 0;
+          renderX += nx * strength * 14; renderY += ny * strength * 14; glow = strength;
         }
         const twinkle = 0.55 + 0.45 * Math.sin(time * star.twinkleSpeed + star.twinklePhase);
         // Let depth control both softness and opacity so the field recedes gently.
         let alpha = (dark ? 0.025 + star.depth * 0.42 : 0.018 + star.depth * 0.22) * twinkle + glow * 0.12;
         if (burst) alpha = Math.min(0.55, alpha + 0.12);
         ctx.globalAlpha = Math.min(0.55, alpha);
-        if (hoverEnabled) ctx.filter = `blur(${((1 - star.depth) * 2.4).toFixed(2)}px)`;
-        ctx.fillStyle = `rgb(${rgb})`;
         ctx.beginPath(); ctx.arc(renderX, renderY, star.size + glow * 1.2, 0, Math.PI * 2); ctx.fill();
       });
       ctx.globalAlpha = 1;
       ctx.filter = 'none';
-      if (!reduced) requestAnimationFrame(draw);
+      if (!reduced) frameId = requestAnimationFrame(draw);
     }
-    if (reduced) draw(performance.now()); else requestAnimationFrame(draw);
+    if (reduced) draw(performance.now()); else frameId = requestAnimationFrame(draw);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && !reduced && !frameId) {
+        last = performance.now();
+        frameId = requestAnimationFrame(draw);
+      }
+    });
   }
 
   const cmdkOverlay = $('#cmdkOverlay');
