@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const root = document.documentElement;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let persona = 'da';
 
   /* ==========================================================
      THEME
@@ -91,21 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: '001',
       date: "Jun — Jul '26",
-      da: {
+      content: {
         title: 'Uber Ride Demand & Supply-Failure Analysis',
         summary: 'Time-based EDA across 150,000 NCR ride bookings over a full year — hour-of-day, day-of-week, geography, and fare patterns, not a classification task.',
         finding: 'Demand swings ~9× across the day, but day-of-week barely matters (under 2% spread). The real finding: supply failure holds flat at ~25% regardless of hour — a structural problem, not a peak-hour one.',
         stat: '9×', statLabel: 'demand swing, hour to hour',
         tags: ['Python', 'Pandas', 'NumPy', 'Matplotlib'],
         modalDesc: "150,000 NCR ride bookings across 365 days. The question wasn't whether demand spikes — it does — it was whether driver supply keeps up, and what ops should do differently because of it."
-      },
-      ba: {
-        title: "Why Ride Failures Aren't a Peak-Hour Problem",
-        summary: "A year of NCR ride bookings, examined for one question: is Uber's failure rate driven by demand timing, or something structural?",
-        finding: 'Demand swings ~9× by hour, but the booking failure rate stays flat at ~25% all day. That reframes the fix — this isn\'t a capacity problem at peak times, it\'s a constant matching failure.',
-        stat: '9×', statLabel: 'demand swing leadership might assume drives failures',
-        tags: ['Root-Cause Analysis', 'Operations', 'Data Storytelling'],
-        modalDesc: "150,000 NCR ride bookings across a full year. Leadership's instinct might be that failures track with rush-hour demand — the data says the failure rate is constant, hour to hour."
       },
       status: 'Resolved',
       report: {
@@ -128,21 +119,13 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: '002',
       date: "Jun '26",
-      da: {
+      content: {
         title: 'HR Attrition Prediction Model',
         summary: 'EDA and two classifiers on the IBM HR Analytics dataset (1,470 employees, 35 features) to find what actually predicts attrition — not just what correlates with it.',
         finding: 'Overtime is the strongest driver: 31% attrition vs. 10% for everyone else. Logistic Regression, despite lower accuracy, caught far more actual leavers than Random Forest.',
         stat: '3.1×', statLabel: 'attrition rate, overtime vs. not',
         tags: ['Python', 'scikit-learn', 'Seaborn'],
         modalDesc: '1,470 employees, 35 features — demographics, compensation, satisfaction scores, tenure. The goal was a model that actually flags at-risk employees, not just one that scores well.'
-      },
-      ba: {
-        title: 'Finding a Retention Lever HR Could Actually Use',
-        summary: 'Rather than a wall of correlations, the goal was one clear, defensible lever HR leadership could act on.',
-        finding: 'Overtime workers leave at roughly 3× the rate of everyone else — the single clearest, most actionable signal in the dataset, ranking above income and tenure.',
-        stat: '3.1×', statLabel: 'attrition rate, overtime vs. not',
-        tags: ['Decision Framing', 'People Strategy', 'Retention'],
-        modalDesc: '1,470 employees, 35 features. Rather than a broad attrition dashboard nobody acts on, the goal was one specific, implementable recommendation.'
       },
       status: 'Resolved',
       report: {
@@ -168,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: '003',
       date: "Jun — Jul '24",
-      da: {
+      content: {
         title: 'User Behavior Analytics — CultFit',
         summary: 'Surveyed ~200 college students and isolated "lack of motivation" as the core driver behind Gen Z fitness drop-off using structured survey analysis.',
         finding: 'Independently designed and shipped an MVP on Thunkable around a single lever — competition — with leaderboards and milestone rewards.',
@@ -176,20 +159,9 @@ document.addEventListener('DOMContentLoaded', () => {
         tags: ['Survey Research', 'Product', 'Thunkable'],
         modalDesc: 'Surveyed ~200 college students to find the real driver behind Gen Z fitness app drop-off — not price, not access, but motivation.'
       },
-      ba: {
-        title: 'The One Insight Behind a Fitness App MVP',
-        summary: 'Instead of guessing at feature requests, ~200 student surveys isolated the single behavioral lever worth building a product around.',
-        finding: 'Built and shipped an MVP scoped entirely around one insight — competition — resisting the urge to add unrelated features.',
-        stat: '1 of 1', statLabel: 'insight the MVP was built around',
-        tags: ['Product Framing', 'Research', 'Prioritization'],
-        modalDesc: 'Rather than building a broad feature set, the goal was to find and validate one behavioral driver worth designing an entire MVP around.'
-      },
       status: 'Resolved',
       report: null,
-      highlightOverride: {
-        da: 'Presented at a Dell Aspire event; recognized for solving one problem well over spreading thin across many.',
-        ba: 'Lesson reinforced by industry feedback at a Dell Aspire event: solve one problem exceptionally well, not several adequately.'
-      }
+      highlight: 'Presented at a Dell Aspire event; recognized for solving one problem well over spreading thin across many.'
     }
   ];
 
@@ -226,22 +198,22 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="case-top">
         <div>
           <div class="case-id mono">CASE NO. ${c.id} · ${c.date}</div>
-          <div class="case-title" data-field="title">${c[persona].title}</div>
+          <div class="case-title" data-field="title">${c.content.title}</div>
         </div>
         <div class="case-status"><span class="dt"></span>${c.status}</div>
       </div>
       <div class="case-body">
         <div class="case-text">
-          <p class="case-summary" data-field="summary">${c[persona].summary}</p>
-          <p class="case-summary" data-field="finding" style="color:var(--fg)">${c[persona].finding}</p>
-          <div class="case-tags" data-field="tags">${c[persona].tags.map(t => `<span class="case-tag">${t}</span>`).join('')}</div>
+          <p class="case-summary" data-field="summary">${c.content.summary}</p>
+          <p class="case-summary" data-field="finding" style="color:var(--fg)">${c.content.finding}</p>
+          <div class="case-tags" data-field="tags">${c.content.tags.map(t => `<span class="case-tag">${t}</span>`).join('')}</div>
           <span class="case-view-link">View full report
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </span>
         </div>
         <div>
-          <div class="case-stat" data-field="stat">${c[persona].stat}</div>
-          <div class="case-stat-label" data-field="statLabel">${c[persona].statLabel}</div>
+          <div class="case-stat" data-field="stat">${c.content.stat}</div>
+          <div class="case-stat-label" data-field="statLabel">${c.content.statLabel}</div>
           <div class="case-visual" style="margin-top:14px;">${visual}</div>
         </div>
       </div>
@@ -353,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function openModal(i) {
     const c = CASES[i];
-    const p = c[persona];
+    const p = c.content;
     modalId.textContent = `CASE NO. ${c.id} · ${c.date}`;
     modalStatus.textContent = c.status;
     modalTitle.textContent = p.title;
@@ -393,7 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
       modalNote.style.display = 'none';
     }
 
-    modalHighlight.textContent = c.highlightOverride ? c.highlightOverride[persona] : (p.highlight || p.finding);
+    modalHighlight.textContent = c.highlight || p.highlight || p.finding;
     modalTags.innerHTML = p.tags.map(t => `<span class="modal-tag">${t}</span>`).join('');
     modalOverlay.classList.add('is-open');
     document.body.style.overflow = 'hidden';
@@ -431,25 +403,18 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ==========================================================
      TERMINAL TYPING
   ========================================================== */
-  const TERMINAL_LINES = {
-    da: [
-      { p: '~ $', t: 'who_am_i' }, { p: '→', t: 'Data Analyst · Mechanical Eng. background' },
-      { p: '~ $', t: 'stack' }, { p: '→', t: 'Python · SQL · Power BI · Statistics & ML' },
-      { p: '~ $', t: 'currently' }, { p: '→', t: 'Open to DA / BA roles' }
-    ],
-    ba: [
-      { p: '~ $', t: 'who_am_i' }, { p: '→', t: 'Business Analyst · Mechanical Eng. background' },
-      { p: '~ $', t: 'focus' }, { p: '→', t: 'Case frameworks, stakeholder alignment, decisions' },
-      { p: '~ $', t: 'currently' }, { p: '→', t: 'Open to BA / DA roles' }
-    ]
-  };
+  const TERMINAL_LINES = [
+    { p: '~ $', t: 'who_am_i' }, { p: '→', t: 'Analyst · Mechanical Eng. background' },
+    { p: '~ $', t: 'stack' }, { p: '→', t: 'Python · SQL · Power BI · Statistics & ML' },
+    { p: '~ $', t: 'currently' }, { p: '→', t: 'Open to analytical and problem-solving roles' }
+  ];
   const terminalBody = document.getElementById('terminalBody');
   let terminalTimeouts = [];
-  function runTerminal(mode) {
+  function runTerminal() {
     terminalTimeouts.forEach(clearTimeout);
     terminalTimeouts = [];
     terminalBody.innerHTML = '';
-    const lines = TERMINAL_LINES[mode];
+    const lines = TERMINAL_LINES;
     let li = 0;
     function typeLine() {
       if (li >= lines.length) return;
@@ -470,7 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
     typeLine();
   }
   const termIO = new IntersectionObserver((entries) => {
-    entries.forEach(entry => { if (entry.isIntersecting) { runTerminal(persona); termIO.unobserve(entry.target); } });
+    entries.forEach(entry => { if (entry.isIntersecting) { runTerminal(); termIO.unobserve(entry.target); } });
   }, { threshold: 0.4 });
   termIO.observe(terminalBody);
 
@@ -478,7 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
      SIMPLE EASTER EGG — click the terminal's title bar 5×
   ========================================================== */
   console.log('%cLooking under the hood?', 'font-size:16px;font-weight:700;');
-  console.log('%cI\'m Shubham — I built this whole site by hand, no template. If you\'re hiring for data or business analyst roles, my email is in the footer.', 'font-size:12px;color:#888;');
+  console.log('%cI\'m Shubham — I built this whole site by hand, no template. If you\'re hiring for analytical, technical, or business problem-solving roles, my email is in the footer.', 'font-size:12px;color:#888;');
 
   const terminalBar = document.getElementById('terminalBar');
   let terminalClicks = 0, terminalClickTimer = null;
@@ -494,76 +459,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================
-     PERSONA TOGGLE
-  ========================================================== */
-  const washOverlay = document.getElementById('washOverlay');
-  const swapEls = document.querySelectorAll('.swap-text');
-  const roleSwapEl = document.querySelector('.role-swap');
-  const heroIconsDA = document.getElementById('heroIconsDA');
-  const heroIconsBA = document.getElementById('heroIconsBA');
-
-  function applySwapText(mode) {
-    swapEls.forEach(el => {
-      const val = el.getAttribute(mode === 'da' ? 'data-da' : 'data-ba');
-      if (val !== null) el.textContent = val;
-    });
-    if (roleSwapEl) roleSwapEl.textContent = mode === 'da' ? 'Data Analyst' : 'Business Analyst';
-    heroIconsDA.style.display = mode === 'da' ? 'block' : 'none';
-    heroIconsBA.style.display = mode === 'ba' ? 'block' : 'none';
-    document.querySelectorAll('.case-card').forEach(card => {
-      const i = card.dataset.caseIndex;
-      const c = CASES[i][mode];
-      card.querySelector('[data-field="title"]').textContent = c.title;
-      const summaries = card.querySelectorAll('[data-field="summary"], [data-field="finding"]');
-      summaries[0].textContent = c.summary;
-      summaries[1].textContent = c.finding;
-      card.querySelector('[data-field="tags"]').innerHTML = c.tags.map(t => `<span class="case-tag">${t}</span>`).join('');
-      card.querySelector('[data-field="stat"]').textContent = c.stat;
-      card.querySelector('[data-field="statLabel"]').textContent = c.statLabel;
-    });
-  }
-
-  function updatePersonaControls() {
-    document.querySelectorAll('[data-persona]').forEach(btn => {
-      btn.classList.toggle('active', btn.getAttribute('data-persona') === persona);
-    });
-    const dockLabel = document.getElementById('dockPersonaLabel');
-    if (dockLabel) dockLabel.textContent = persona === 'da' ? 'Switch to BA view' : 'Switch to DA view';
-  }
-
-  let personaSwapTimeout = null; // guards against overlapping swaps on rapid clicks
-
-  function switchPersona(target, silent) {
-    if (target === persona) return;
-    if (reduced) {
-      clearTimeout(personaSwapTimeout);
-      persona = target;
-      applySwapText(persona); updatePersonaControls(); runTerminal(persona);
-      if (!silent) showToast(`Switched to ${target === 'da' ? 'Data Analyst' : 'Business Analyst'} view`);
-      return;
-    }
-    clearTimeout(personaSwapTimeout); // cancel any swap still pending from a previous click
-    washOverlay.classList.remove('animate');
-    void washOverlay.offsetWidth;
-    washOverlay.classList.add('animate');
-    personaSwapTimeout = setTimeout(() => {
-      persona = target;
-      applySwapText(persona); updatePersonaControls(); runTerminal(persona);
-      if (!silent) showToast(`Switched to ${target === 'da' ? 'Data Analyst' : 'Business Analyst'} view`);
-    }, 330);
-  }
-
-  document.querySelectorAll('[data-persona]').forEach(btn => {
-    btn.addEventListener('click', () => switchPersona(btn.getAttribute('data-persona')));
-  });
-  document.getElementById('dockPersonaBtn').addEventListener('click', () => switchPersona(persona === 'da' ? 'ba' : 'da'));
-
-  applySwapText('da');
-  updatePersonaControls();
-
-  /* ==========================================================
      DOCK SCROLL-SPY — highlights whichever section is currently
-     in view as the dock's own persona/theme buttons aren't tied
+     in view; theme controls aren't tied
      to a section, so only the [data-dock] nav links participate.
   ========================================================== */
   (function initScrollSpy() {
@@ -908,7 +805,6 @@ document.addEventListener('DOMContentLoaded', () => {
       { group: 'Navigate', icon: svgIcons.cases, label: 'Go to Case Files', action: () => scrollToSection('cases') },
       { group: 'Navigate', icon: svgIcons.toolkit, label: 'Go to Toolkit', action: () => scrollToSection('toolkit') },
       { group: 'Navigate', icon: svgIcons.contact, label: 'Go to Contact', action: () => scrollToSection('contact') },
-      { group: 'View', icon: svgIcons.swap, label: persona === 'da' ? 'Switch to Business Analyst view' : 'Switch to Data Analyst view', action: () => switchPersona(persona === 'da' ? 'ba' : 'da') },
       { group: 'View', icon: svgIcons.theme, label: theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme', action: () => toggleTheme() },
       { group: 'Contact', icon: svgIcons.copy, label: 'Copy email address', hint: 'shubham1sure@gmail.com', action: () => copyText('shubham1sure@gmail.com', 'Email copied') },
       { group: 'Contact', icon: svgIcons.copy, label: 'Copy phone number', hint: '+91-7836878701', action: () => copyText('+917836878701', 'Phone copied') },

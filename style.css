@@ -188,20 +188,6 @@ h1,h2,h3{ font-family:var(--font-sans); margin:0; font-weight:600; letter-spacin
 .kbd-chip:active{ transform:scale(0.96); }
 .kbd-chip kbd{ font-family:var(--font-mono); font-size:10.5px; background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:1px 5px; }
 
-.persona-pill{ display:flex; background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:3px; gap:2px; }
-.p-opt{
-  display:flex; align-items:center; justify-content:center; padding:6px 12px; border-radius:999px;
-  font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--fg-soft);
-  transition:background .25s ease, color .25s ease, transform 120ms ease-out;
-}
-.p-opt.active{ background:var(--fg); color:var(--bg); }
-.p-opt:active{ transform:scale(0.93); }
-.p-full{ max-width:0; opacity:0; overflow:hidden; white-space:nowrap; display:inline-block; transition:max-width .35s var(--ease), opacity .2s ease, margin .35s var(--ease); }
-.p-short{ transition:opacity .2s ease, max-width .3s ease; overflow:hidden; white-space:nowrap; }
-@media (hover:hover) and (pointer:fine){
-  .persona-pill:hover .p-full{ max-width:130px; opacity:1; margin-left:5px; }
-  .persona-pill:hover .p-short{ opacity:0; max-width:0; }
-}
 
 /* ==========================================================
    DOCK NAV
@@ -260,7 +246,7 @@ h1,h2,h3{ font-family:var(--font-sans); margin:0; font-weight:600; letter-spacin
 }
 @keyframes scanSweep{ 0%{top:6%;opacity:0;} 10%{opacity:.5;} 90%{opacity:.2;} 100%{top:97%;opacity:0;} }
 
-/* floating persona icons — monochrome rounded badges, like a scattered app-icon field. Draggable. */
+
 .hero-float-icons{ position:absolute; inset:0; z-index:1; pointer-events:none; }
 .hero-float-icon{ position:absolute; pointer-events:auto; cursor:grab; touch-action:none; }
 .hero-float-icon.is-dragging{ cursor:grabbing; z-index:5; }
@@ -650,17 +636,6 @@ h1,h2,h3{ font-family:var(--font-sans); margin:0; font-weight:600; letter-spacin
 .toast.show{ transform:translateY(0); opacity:1; }
 .toast svg{ width:14px; height:14px; }
 
-/* ==========================================================
-   WASH TRANSITION (persona switch)
-========================================================== */
-.wash-overlay{ position:fixed; inset:0; z-index:250; background:var(--fg); pointer-events:none; transform:scaleY(0); transform-origin:top; opacity:0; }
-.wash-overlay.animate{ animation:washSweep .7s var(--ease) forwards; }
-@keyframes washSweep{
-  0%{ transform:scaleY(0); transform-origin:top; opacity:1; }
-  48%{ transform:scaleY(1); transform-origin:top; opacity:1; }
-  52%{ transform:scaleY(1); transform-origin:bottom; opacity:1; }
-  100%{ transform:scaleY(0); transform-origin:bottom; opacity:1; }
-}
 
 /* ==========================================================
    THEME TOGGLE — circular reveal via View Transitions API
