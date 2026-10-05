@@ -7,9 +7,10 @@ This is the personal portfolio of Shubham Kumar, a final-year Mechanical Enginee
 - [Portfolio homepage](https://nothing0g.github.io/analyst/)
 - [Uber ride demand case study](https://nothing0g.github.io/analyst/projects/uber-ride-demand/)
 - [HR employee attrition case study](https://nothing0g.github.io/analyst/projects/hr-employee-attrition/)
+- [Loan Approval Analysis case study](https://nothing0g.github.io/analyst/projects/loan-approval/)
 - [Privacy note](https://nothing0g.github.io/analyst/privacy.html)
 - [GitHub source](https://github.com/Nothing0g/analyst)
 
 ## Project data notes
 
-The HR case study recalculates population aggregates from the original repository CSV and labels model metrics as documented results. The Uber case study uses values explicitly published by the repository README and results PDF and flags the likely synthetic or simulated nature of the dataset. The portfolio does not present either project as a live production system.
+The HR case study recalculates population aggregates from the original repository CSV and labels model metrics as documented results. The Uber case study uses values explicitly published by the repository README and results PDF and flags the likely synthetic or simulated nature of the dataset. The Loan Approval case study uses the public repository's documented notebook workflow and recorded baseline output; it is educational and not a production lending system. The portfolio does not present these projects as live production systems.
