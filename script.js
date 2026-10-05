@@ -91,11 +91,11 @@ document.addEventListener('DOMContentLoaded', () => {
       id: '001',
       date: "Jun — Jul '26",
       content: {
-        title: 'Uber Ride Demand & Supply-Failure Analysis',
-        summary: 'Time-based EDA across 150,000 NCR ride bookings over a full year — hour-of-day, day-of-week, geography, and fare patterns, not a classification task.',
+        title: 'Uber Ride Demand Analytics',
+        summary: 'Time-series and pattern analysis across 150,000 ride bookings to uncover demand by hour, day, and location — with a 9× swing from 1,321 to 12,397 rides.',
         finding: 'Demand swings ~9× across the day, but day-of-week barely matters (under 2% spread). The real finding: supply failure holds flat at ~25% regardless of hour — a structural problem, not a peak-hour one.',
         stat: '9×', statLabel: 'demand swing, hour to hour',
-        tags: ['Python', 'Pandas', 'NumPy', 'Matplotlib'],
+        tags: ['Python', 'SQL', 'Time-series EDA', 'Dashboard'],
         modalDesc: "150,000 NCR ride bookings across 365 days. The question wasn't whether demand spikes — it does — it was whether driver supply keeps up, and what ops should do differently because of it."
       },
       status: 'Resolved',
@@ -120,11 +120,11 @@ document.addEventListener('DOMContentLoaded', () => {
       id: '002',
       date: "Jun '26",
       content: {
-        title: 'HR Attrition Prediction Model',
-        summary: 'EDA and two classifiers on the IBM HR Analytics dataset (1,470 employees, 35 features) to find what actually predicts attrition — not just what correlates with it.',
+        title: 'HR Employee Attrition Analysis',
+        summary: 'EDA, a filterable dashboard, and two ML models on a 1,470-employee dataset to identify actionable attrition drivers and at-risk segments.',
         finding: 'Overtime is the strongest driver: 31% attrition vs. 10% for everyone else. Logistic Regression, despite lower accuracy, caught far more actual leavers than Random Forest.',
         stat: '3.1×', statLabel: 'attrition rate, overtime vs. not',
-        tags: ['Python', 'scikit-learn', 'Seaborn'],
+        tags: ['Python', 'scikit-learn', 'Dashboard', 'Recall'],
         modalDesc: '1,470 employees, 35 features — demographics, compensation, satisfaction scores, tenure. The goal was a model that actually flags at-risk employees, not just one that scores well.'
       },
       status: 'Resolved',
@@ -153,15 +153,45 @@ document.addEventListener('DOMContentLoaded', () => {
       date: "Jun — Jul '24",
       content: {
         title: 'User Behavior Analytics — CultFit',
-        summary: 'Surveyed ~200 college students and isolated "lack of motivation" as the core driver behind Gen Z fitness drop-off using structured survey analysis.',
+        summary: 'Surveyed ~200 college students and isolated "lack of motivation" as the core driver behind Gen Z fitness drop-off before building a competition-based MVP.',
         finding: 'Independently designed and shipped an MVP on Thunkable around a single lever — competition — with leaderboards and milestone rewards.',
         stat: '1 of 1', statLabel: 'insight the MVP was built around',
-        tags: ['Survey Research', 'Product', 'Thunkable'],
+        tags: ['Survey Research', 'Customer Insight', 'Thunkable'],
         modalDesc: 'Surveyed ~200 college students to find the real driver behind Gen Z fitness app drop-off — not price, not access, but motivation.'
       },
       status: 'Resolved',
       report: null,
       highlight: 'Presented at a Dell Aspire event; recognized for solving one problem well over spreading thin across many.'
+    },
+    {
+      id: '004',
+      date: "Apr '26",
+      content: {
+        title: 'POSHA Battery Door Latching Mechanism',
+        summary: 'Selected a 3-part wedge-driven latch over two rejected concepts by comparing tolerance stack-up, fatigue, and assembly-risk trade-offs.',
+        finding: 'FEA confirmed 40.95 MPa peak stress against 65 MPa POM/Delrin yield (FoS ~1.5); a fillet-radius correction improved design-for-manufacture readiness.',
+        stat: '~$0.60', statLabel: 'estimated unit cost at volume',
+        tags: ['Fusion 360', 'FEA', 'DFM', 'Tolerance Analysis'],
+        modalDesc: 'A mechanical design study for an E-Reader spindle door latch: concept selection, stress validation, and design-for-manufacture refinement.'
+      },
+      status: 'Resolved',
+      report: null,
+      highlight: 'Reduced the mechanism to a reliable low-tolerance-risk concept while balancing manufacturability, strength, and cost.'
+    },
+    {
+      id: '005',
+      date: "Dec '25 — Jan '26",
+      content: {
+        title: 'Differential Gear Assembly',
+        summary: 'Modeled a bevel-gear differential in Fusion 360 to simulate torque distribution and variable wheel-speed output across the assembly.',
+        finding: 'Motion simulation validated gear interaction during straight-line and turning conditions, confirming correct kinematic behavior under differential speed constraints.',
+        stat: '2 modes', statLabel: 'straight-line + turning simulation',
+        tags: ['Fusion 360', 'Motion Simulation', 'Gear Design', 'Kinematics'],
+        modalDesc: 'A CAD and motion-simulation study covering the carrier housing, spider/pinion gears, side gears, and splined output shafts.'
+      },
+      status: 'Resolved',
+      report: null,
+      highlight: 'Used simulation to validate both torque distribution and variable wheel-speed output before treating the assembly as design-complete.'
     }
   ];
 
