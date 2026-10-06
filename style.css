@@ -117,8 +117,11 @@ html.performance-lite .hero-float-icons,
 html.performance-lite .hero-scanline{ display:none; }
 html.performance-lite .dock-inner,
 html.performance-lite .pulse-dot,
+html.performance-lite .hero-float-icon .hfi-inner,
+html.performance-lite .shimmer-text,
 html.performance-lite .roadmap::after,
 html.performance-lite .roadmap-node::after{ animation:none; }
+html.performance-lite .shimmer-text{ background:none; -webkit-text-fill-color:var(--fg); color:var(--fg); }
 
 /* ==========================================================
    CURSOR — a visible circle that replaces the native pointer
