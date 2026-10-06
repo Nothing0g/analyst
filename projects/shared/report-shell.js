@@ -1,6 +1,15 @@
 (() => {
   const root = document.documentElement;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const constrainedDevice = Boolean(
+    (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
+    (navigator.deviceMemory && navigator.deviceMemory <= 4) ||
+    navigator.connection?.saveData ||
+    ['slow-2g', '2g'].includes(navigator.connection?.effectiveType) ||
+    (navigator.maxTouchPoints > 0 && innerWidth < 900)
+  );
+  const performanceLite = reduced || constrainedDevice;
+  if (performanceLite) root.classList.add('performance-lite');
   const finePointer = window.matchMedia('(pointer:fine)').matches;
   const $ = (selector, scope = document) => scope.querySelector(selector);
   const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
@@ -14,6 +23,7 @@
   function paintTheme(next) {
     theme = next;
     root.setAttribute('data-theme', next);
+    document.dispatchEvent(new CustomEvent('themechange'));
     const icon = next === 'dark' ? sunIcon : moonIcon;
     ['themeIcon', 'dockThemeIcon'].forEach((id) => { const node = document.getElementById(id); if (node) node.innerHTML = icon; });
     const reportTheme = document.getElementById('reportThemeToggle');
@@ -92,7 +102,7 @@
   const cursorDot = $('#cursorDot');
   const cursorFollow = $('#cursorFollow');
   const cursorFollowText = $('#cursorFollowText');
-  if (!reduced && finePointer && cursorDot) {
+  if (!reduced && !constrainedDevice && finePointer && cursorDot) {
     root.classList.add('custom-cursor');
     let mouseX = innerWidth / 2, mouseY = innerHeight / 2, cx = mouseX, cy = mouseY;
     let scale = 1, targetScale = 1;
@@ -126,75 +136,61 @@
   let bgBurstUntil = 0;
   const canvas = $('#bgCanvas');
   if (canvas) {
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     let width, height, stars = [];
+    const animateStars = !performanceLite;
+    const density = () => performanceLite ? (innerWidth < 700 ? 14000 : 18000) : (innerWidth < 700 ? 11000 : 10000);
     const build = () => {
-      width = canvas.width = innerWidth;
-      height = canvas.height = innerHeight;
-      const density = width < 700 ? 7600 : 6200;
-      const count = Math.floor((width * height) / density);
+      width = canvas.width = innerWidth; height = canvas.height = innerHeight;
+      const count = Math.max(24, Math.floor((width * height) / density()));
       stars = Array.from({ length: count }, () => {
         const depth = 0.12 + Math.random() * 0.88;
         const angle = Math.random() * Math.PI * 2;
-        return {
-          x: Math.random() * width, y: Math.random() * height,
-          size: 0.6 + Math.random() * 1.8, depth,
-          blur: Math.round((1 - depth) * 5) * 0.42, // six cached blur levels
-          cosAngle: Math.cos(angle), sinAngle: Math.sin(angle),
-          twinklePhase: Math.random() * Math.PI * 2,
-          twinkleSpeed: 0.6 + Math.random() * 1.8,
-        };
-      }).sort((a, b) => a.blur - b.blur);
+        return { x: Math.random() * width, y: Math.random() * height, size: 0.6 + Math.random() * 1.8, depth, cosAngle: Math.cos(angle), sinAngle: Math.sin(angle), twinklePhase: Math.random() * Math.PI * 2, twinkleSpeed: 0.6 + Math.random() * 1.8 };
+      });
     };
-    build(); addEventListener('resize', build);
+    build(); addEventListener('resize', build, { passive: true });
     let px = -9999, py = -9999;
-    addEventListener('mousemove', (event) => { px = event.clientX; py = event.clientY; });
-    addEventListener('touchmove', (event) => { if (event.touches[0]) { px = event.touches[0].clientX; py = event.touches[0].clientY; } }, { passive: true });
-    addEventListener('mouseleave', () => { px = -9999; py = -9999; });
-    let last = performance.now(), time = 0, frameId = 0;
+    if (animateStars) {
+      addEventListener('mousemove', (event) => { px = event.clientX; py = event.clientY; }, { passive: true });
+      addEventListener('touchmove', (event) => { if (event.touches[0]) { px = event.touches[0].clientX; py = event.touches[0].clientY; } }, { passive: true });
+      addEventListener('mouseleave', () => { px = -9999; py = -9999; }, { passive: true });
+    }
     function draw(now) {
-      if (document.hidden) { frameId = 0; return; }
-      const dt = Math.min(50, now - last) / 1000; last = now; time += dt;
+      const dt = Math.min(50, now - (draw.last || now)) / 1000; draw.last = now;
+      const time = now / 1000;
       ctx.clearRect(0, 0, width, height);
       const dark = root.getAttribute('data-theme') === 'dark';
       const rgb = dark ? '255,255,255' : '10,10,10';
-      const burst = performance.now() < bgBurstUntil;
-      let activeBlur = -1;
+      const burst = animateStars && performance.now() < bgBurstUntil;
       ctx.fillStyle = `rgb(${rgb})`;
       stars.forEach((star) => {
-        if (star.blur !== activeBlur) {
-          activeBlur = star.blur;
-          ctx.filter = `blur(${star.blur}px)`;
+        if (animateStars) {
+          const drift = 16 * star.depth * dt;
+          star.x += star.cosAngle * drift; star.y += star.sinAngle * drift;
+          if (star.x < -5) star.x = width + 5; if (star.x > width + 5) star.x = -5;
+          if (star.y < -5) star.y = height + 5; if (star.y > height + 5) star.y = -5;
         }
-        const drift = 22 * star.depth * dt;
-        star.x += star.cosAngle * drift; star.y += star.sinAngle * drift;
-        if (star.x < -5) star.x = width + 5; if (star.x > width + 5) star.x = -5;
-        if (star.y < -5) star.y = height + 5; if (star.y > height + 5) star.y = -5;
         let renderX = star.x, renderY = star.y, glow = 0;
-        const dx = star.x - px, dy = star.y - py, distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 90) {
-          const strength = 1 - distance / 90;
-          const nx = distance > 0.01 ? dx / distance : 0, ny = distance > 0.01 ? dy / distance : 0;
-          renderX += nx * strength * 14; renderY += ny * strength * 14; glow = strength;
+        if (animateStars) {
+          const dx = star.x - px, dy = star.y - py, distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < 90) {
+            const strength = 1 - distance / 90;
+            const nx = distance > 0.01 ? dx / distance : 0, ny = distance > 0.01 ? dy / distance : 0;
+            renderX += nx * strength * 14; renderY += ny * strength * 14; glow = strength;
+          }
         }
-        const twinkle = 0.55 + 0.45 * Math.sin(time * star.twinkleSpeed + star.twinklePhase);
-        // Let depth control both softness and opacity so the field recedes gently.
+        const twinkle = animateStars ? 0.55 + 0.45 * Math.sin(time * star.twinkleSpeed + star.twinklePhase) : 0.78;
         let alpha = (dark ? 0.025 + star.depth * 0.42 : 0.018 + star.depth * 0.22) * twinkle + glow * 0.12;
         if (burst) alpha = Math.min(0.55, alpha + 0.12);
         ctx.globalAlpha = Math.min(0.55, alpha);
         ctx.beginPath(); ctx.arc(renderX, renderY, star.size + glow * 1.2, 0, Math.PI * 2); ctx.fill();
       });
       ctx.globalAlpha = 1;
-      ctx.filter = 'none';
-      if (!reduced) frameId = requestAnimationFrame(draw);
+      if (animateStars) requestAnimationFrame(draw);
     }
-    if (reduced) draw(performance.now()); else frameId = requestAnimationFrame(draw);
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden && !reduced && !frameId) {
-        last = performance.now();
-        frameId = requestAnimationFrame(draw);
-      }
-    });
+    document.addEventListener('themechange', () => draw(performance.now()));
+    draw(performance.now());
   }
 
   const cmdkOverlay = $('#cmdkOverlay');

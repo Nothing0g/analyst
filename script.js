@@ -2,6 +2,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const root = document.documentElement;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Do not make decorative effects a prerequisite for using the portfolio.
+  // Prefer the safe path on low-memory/low-core/mobile-data-constrained devices.
+  const constrainedDevice = Boolean(
+    (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
+    (navigator.deviceMemory && navigator.deviceMemory <= 4) ||
+    navigator.connection?.saveData ||
+    ['slow-2g', '2g'].includes(navigator.connection?.effectiveType) ||
+    (navigator.maxTouchPoints > 0 && window.innerWidth < 900)
+  );
+  const performanceLite = reduced || constrainedDevice;
+  if (performanceLite) root.classList.add('performance-lite');
 
   /* ==========================================================
      THEME
@@ -14,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function paintTheme(t) {
     theme = t;
     root.setAttribute('data-theme', t);
+    document.dispatchEvent(new CustomEvent('themechange'));
     const icon = t === 'dark' ? sunIcon : moonIcon;
     document.getElementById('themeIcon').innerHTML = icon;
     document.getElementById('dockThemeIcon').innerHTML = icon;
@@ -654,7 +666,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const cursorFollowText = document.getElementById('cursorFollowText');
   const finePointer = window.matchMedia('(pointer:fine)').matches;
 
-  if (!reduced && finePointer) {
+  if (!reduced && !constrainedDevice && finePointer) {
     root.classList.add('custom-cursor'); // hides the native OS pointer — see CSS
     let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
     let cx = mouseX, cy = mouseY;
@@ -707,125 +719,85 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================
-     STARS BACKGROUND — always-drifting stars (varying sizes and
-     speeds), with only a small, localized nudge near the pointer
-     instead of the whole field shifting to follow it. The first
-     version tied the entire canvas to cursor position via a
-     shared offset, which read as "the background is chasing my
-     mouse" rather than an ambient starfield you're gently poking
-     at — this version's motion is self-sustained; hovering just
-     lightly disturbs whichever stars are actually near the cursor.
+     STARS BACKGROUND — adaptive and non-blocking. The default path
+     keeps a lightweight drifting field; constrained devices get one
+     static draw instead of a permanent canvas loop.
   ========================================================== */
   let bgBurstUntil = 0;
   (function initStarsBackground() {
     const canvas = document.getElementById('bgCanvas');
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     let w, h, stars = [];
-    const SPEED_PX_PER_SEC = 22;  // base drift speed — was effectively ~0.3px/sec before, invisible
-    const HOVER_RADIUS = 90;      // only stars this close to the pointer are nudged
-    const HOVER_PUSH = 14;        // how far a star can be nudged at most, in px
+    const animateStars = !performanceLite;
+    const density = () => {
+      if (performanceLite) return window.innerWidth < 700 ? 14000 : 18000;
+      return window.innerWidth < 700 ? 11000 : 10000;
+    };
     function build() {
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
-      const density = w < 700 ? 7600 : 6200;
-      const count = Math.floor((w * h) / density);
+      const count = Math.max(24, Math.floor((w * h) / density()));
       stars = Array.from({ length: count }, () => {
         const depth = 0.12 + Math.random() * 0.88;
         const angle = Math.random() * Math.PI * 2;
         return {
-          x: Math.random() * w,
-          y: Math.random() * h,
-          size: 0.6 + Math.random() * 1.8,
-          depth,                                     // drives speed, blur, and brightness
-          blur: Math.round((1 - depth) * 5) * 0.42, // six cached blur levels
+          x: Math.random() * w, y: Math.random() * h,
+          size: 0.6 + Math.random() * 1.8, depth,
           cosAngle: Math.cos(angle), sinAngle: Math.sin(angle),
           twinklePhase: Math.random() * Math.PI * 2,
           twinkleSpeed: 0.6 + Math.random() * 1.8,
         };
-      }).sort((a, b) => a.blur - b.blur);
+      });
     }
     build();
-    window.addEventListener('resize', build);
-
-    let px = -9999, py = -9999; // pointer position; off-screen until first move
-    window.addEventListener('mousemove', (e) => { px = e.clientX; py = e.clientY; });
-    window.addEventListener('touchmove', (e) => {
-      if (e.touches && e.touches[0]) { px = e.touches[0].clientX; py = e.touches[0].clientY; }
-    }, { passive: true });
-    window.addEventListener('mouseleave', () => { px = -9999; py = -9999; });
-
-    function isDarkMode() { return root.getAttribute('data-theme') === 'dark'; }
-
-    let last = performance.now(), t = 0, frameId = 0;
+    window.addEventListener('resize', build, { passive: true });
+    let px = -9999, py = -9999;
+    if (animateStars) {
+      window.addEventListener('mousemove', (e) => { px = e.clientX; py = e.clientY; }, { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches[0]) { px = e.touches[0].clientX; py = e.touches[0].clientY; }
+      }, { passive: true });
+      window.addEventListener('mouseleave', () => { px = -9999; py = -9999; }, { passive: true });
+    }
     function draw(now) {
-      if (document.hidden) { frameId = 0; return; }
-      const dt = Math.min(50, now - last) / 1000; // seconds since last frame, clamped
-      last = now;
-      t += dt;
-
+      const dt = Math.min(50, now - (draw.last || now)) / 1000;
+      draw.last = now;
+      const time = now / 1000;
       ctx.clearRect(0, 0, w, h);
-      const dark = isDarkMode();
-      const rgb = dark ? '255,255,255' : '10,10,10'; // theme-adaptive starColor
-      const burst = performance.now() < bgBurstUntil;
-      let activeBlur = -1;
+      const dark = root.getAttribute('data-theme') === 'dark';
+      const rgb = dark ? '255,255,255' : '10,10,10';
+      const burst = animateStars && performance.now() < bgBurstUntil;
       ctx.fillStyle = `rgb(${rgb})`;
-
-      stars.forEach(s => {
-        if (s.blur !== activeBlur) {
-          activeBlur = s.blur;
-          ctx.filter = `blur(${s.blur}px)`;
+      stars.forEach((star) => {
+        if (animateStars) {
+          const drift = 16 * star.depth * dt;
+          star.x += star.cosAngle * drift; star.y += star.sinAngle * drift;
+          if (star.x < -5) star.x = w + 5; if (star.x > w + 5) star.x = -5;
+          if (star.y < -5) star.y = h + 5; if (star.y > h + 5) star.y = -5;
         }
-        // Always-on ambient drift, in real px/second now (not a fraction that
-        // rounded away to nothing) — this is the "constant motion" baseline.
-        const drift = SPEED_PX_PER_SEC * s.depth * dt;
-        s.x += s.cosAngle * drift;
-        s.y += s.sinAngle * drift;
-        if (s.x < -5) s.x = w + 5; if (s.x > w + 5) s.x = -5;
-        if (s.y < -5) s.y = h + 5; if (s.y > h + 5) s.y = -5;
-
-        // A small, local nudge — only for stars actually near the cursor,
-        // fading to zero at HOVER_RADIUS. Everything else is untouched.
-        let renderX = s.x, renderY = s.y, glow = 0;
-        const dx = s.x - px, dy = s.y - py;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < HOVER_RADIUS) {
-          const strength = 1 - dist / HOVER_RADIUS;
-          const nx = dist > 0.01 ? dx / dist : 0;
-          const ny = dist > 0.01 ? dy / dist : 0;
-          renderX += nx * strength * HOVER_PUSH;
-          renderY += ny * strength * HOVER_PUSH;
-          glow = strength;
+        let renderX = star.x, renderY = star.y, glow = 0;
+        if (animateStars) {
+          const dx = star.x - px, dy = star.y - py;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < 90) {
+            const strength = 1 - distance / 90;
+            const nx = distance > 0.01 ? dx / distance : 0;
+            const ny = distance > 0.01 ? dy / distance : 0;
+            renderX += nx * strength * 14; renderY += ny * strength * 14; glow = strength;
+          }
         }
-
-        // Twinkle — brightness pulses on its own per-star cycle, independent
-        // of position. This is what actually reads as "alive" at a glance,
-        // even on the frames where a star's drift is barely perceptible.
-        const twinkle = 0.55 + 0.45 * Math.sin(t * s.twinkleSpeed + s.twinklePhase);
-
-        // Depth fades the field back: distant stars are softer and much less opaque;
-        // even the nearest stars stay around half-strength instead of competing with UI.
-        let alpha = (dark ? 0.025 + s.depth * 0.42 : 0.018 + s.depth * 0.22) * twinkle + glow * 0.12;
+        const twinkle = animateStars ? 0.55 + 0.45 * Math.sin(time * star.twinkleSpeed + star.twinklePhase) : 0.78;
+        let alpha = (dark ? 0.025 + star.depth * 0.42 : 0.018 + star.depth * 0.22) * twinkle + glow * 0.12;
         if (burst) alpha = Math.min(0.55, alpha + 0.12);
-        const size = s.size + glow * 1.2;
         ctx.globalAlpha = Math.min(0.55, alpha);
-        ctx.beginPath();
-        ctx.arc(renderX, renderY, size, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(renderX, renderY, star.size + glow * 1.2, 0, Math.PI * 2); ctx.fill();
       });
       ctx.globalAlpha = 1;
-      ctx.filter = 'none';
-
-      if (!reduced) frameId = requestAnimationFrame(draw);
+      if (animateStars) requestAnimationFrame(draw);
     }
-
-    if (reduced) draw(performance.now()); else frameId = requestAnimationFrame(draw);
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden && !reduced && !frameId) {
-        last = performance.now();
-        frameId = requestAnimationFrame(draw);
-      }
-    });
+    document.addEventListener('themechange', () => draw(performance.now()));
+    draw(performance.now());
   })();
 
   /* ==========================================================
