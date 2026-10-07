@@ -1,3 +1,15 @@
+// Browser Back/Forward can restore this document from the bfcache after a
+// project link has applied the exit state. Always clear that transient state
+// when the page becomes visible again, including history restores.
+window.addEventListener('pageshow', () => {
+  const body = document.body;
+  if (!body) return;
+  body.classList.remove('page-exit');
+  body.style.removeProperty('opacity');
+  body.style.removeProperty('transform');
+  body.style.removeProperty('pointer-events');
+});
+
 document.addEventListener('DOMContentLoaded', () => {
 
   const root = document.documentElement;

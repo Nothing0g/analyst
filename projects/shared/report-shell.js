@@ -1,4 +1,15 @@
 (() => {
+  // A report may be restored from the browser back-forward cache after its
+  // transition-out class was applied. Recover the visible state immediately.
+  window.addEventListener('pageshow', () => {
+    const body = document.body;
+    if (!body) return;
+    body.classList.remove('page-exit');
+    body.style.removeProperty('opacity');
+    body.style.removeProperty('transform');
+    body.style.removeProperty('pointer-events');
+    body.classList.add('page-entered');
+  });
   const root = document.documentElement;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const constrainedDevice = Boolean(
