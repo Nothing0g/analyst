@@ -3,11 +3,13 @@
 These pages extend the existing portfolio without replacing its homepage:
 
 - `uber-ride-demand/index.html` — interactive report for Case No. 001.
+- `interior-lead-funnel/index.html` — synthetic-data business-analysis report for Case No. 007.
 - `hr-employee-attrition/index.html` — interactive report for Case No. 002.
 - `posha-battery-door/index.html` — mechanical design report for Case No. 004.
 - `loan-approval/index.html` — educational machine-learning report for Case No. 006.
-- Homepage case-study order: Uber Ride Demand Analytics, HR Employee Attrition Analysis, POSHA Battery Door Latching Mechanism, Loan Approval Analysis, User Behavior Analytics — CultFit.
+- Homepage case-study order: Interior Lead Funnel Leak Detector, Uber Ride Demand Analytics, HR Employee Attrition Analysis, POSHA Battery Door Latching Mechanism, Loan Approval Analysis, User Behavior Analytics — CultFit.
 - `shared/report.css` and `shared/report.js` — shared presentation and runtime.
+- `interior-lead-funnel/lead-funnel.js` — dependency-free metric-toggle chart using the project's published synthetic scorecard.
 - `shared/uber-data.js` — source snapshot containing values published in `README.md` and `Uber_Ride_Analytics_Result.pdf` from `Nothing0g/Uber_ride_demand_analysis`.
 - `shared/hr-data.js` — deterministic aggregates generated from the original `HR_Employee_Attrition.csv` using the same cleaning/target mapping documented in `HR_Employee_Attrition_Analysis.py`. Model metrics are the documented results from the original analysis/PDF.
 

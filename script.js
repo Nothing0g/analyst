@@ -106,14 +106,39 @@ document.addEventListener('DOMContentLoaded', () => {
   backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }));
 
   /* ==========================================================
-     CASE DATA — now sourced from the real repos:
+     CASE DATA — repository-backed work plus explicitly labelled sample projects:
      github.com/Nothing0g/Uber_ride_demand_analysis
      github.com/Nothing0g/hr_employee_attrition_analysis
   ========================================================== */
   const CASES = [
     {
+      id: '007',
+      date: "Oct '26",
+      route: 'projects/interior-lead-funnel/',
+      content: {
+        title: 'Interior Lead Funnel Leak Detector',
+        summary: 'A source-level funnel scorecard on 192 fictional home-interior enquiries, tracking response SLA, consultation and won rates plus a 66-lead sample follow-up queue.',
+        finding: 'In this synthetic scenario, Referral leads show a 41.7% sample win rate versus 10.4% for Paid Social; four-hour response SLA attainment ranges from 100% to 12.5%.',
+        stat: '4×', statLabel: 'sample win-rate spread, Referral vs Paid Social',
+        tags: ['SQL', 'Python', 'Funnel Analysis', 'Power BI'],
+        modalDesc: 'A reproducible business-analysis workflow for comparing acquisition-source funnel performance, measuring the inclusive four-hour response SLA, and prioritizing open-lead follow-up. All records and findings are fictional sample data.'
+      },
+      status: 'Synthetic',
+      report: {
+        legend: [{ label: 'Won rate by source', color: 'var(--fg)' }],
+        chartType: 'bars',
+        chartBars: [
+          { label: 'Referral', value: 41.7, color: 'var(--fg)' },
+          { label: 'Design Event', value: 31.3, color: 'var(--fg)' },
+          { label: 'Website', value: 20.8, color: 'var(--fg)' },
+          { label: 'Paid Social', value: 10.4, color: 'var(--fg)' }
+        ]
+      }
+    },
+    {
       id: '001',
       date: "Jun — Jul '26",
+      route: 'projects/uber-ride-demand/',
       content: {
         title: 'Uber Ride Demand Analytics',
         summary: 'Time-series and pattern analysis across 150,000 ride bookings to uncover demand by hour, day, and location — with a 9× swing from 1,321 to 12,397 rides.',
@@ -143,6 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: '002',
       date: "Jun '26",
+      route: 'projects/hr-employee-attrition/',
       content: {
         title: 'HR Employee Attrition Analysis',
         summary: 'EDA, a filterable dashboard, and two ML models on a 1,470-employee dataset to identify actionable attrition drivers and at-risk segments.',
@@ -175,6 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: '004',
       date: "Apr '26",
+      route: 'projects/posha-battery-door/',
       content: {
         title: 'POSHA Battery Door Latching Mechanism',
         summary: 'Selected a 3-part wedge-driven latch over two rejected concepts by comparing tolerance stack-up, fatigue, and assembly-risk trade-offs.',
@@ -190,6 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: '006',
       date: 'Public dataset',
+      route: 'projects/loan-approval/',
       content: {
         title: 'Loan Approval Analysis',
         summary: 'An exploratory, interpretable logistic-regression baseline examining which applicant attributes are associated with loan approval outcomes.',
@@ -274,9 +302,8 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
     card.addEventListener('click', () => {
-      if (i === 0 || i === 1 || i === 2 || i === 3) {
-        const destinations = ['projects/uber-ride-demand/', 'projects/hr-employee-attrition/', 'projects/posha-battery-door/', 'projects/loan-approval/'];
-        const destination = destinations[i];
+      if (c.route) {
+        const destination = c.route;
         if (!reduced) {
           document.body.classList.add('page-exit');
           setTimeout(() => { window.location.href = destination; }, 300);
