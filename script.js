@@ -113,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const CASES = [
     {
       id: '007',
+      featured: true,
       date: "Oct '26",
       route: 'projects/interior-lead-funnel/',
       content: {
@@ -137,6 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     {
       id: '001',
+      featured: true,
       date: "Jun — Jul '26",
       route: 'projects/uber-ride-demand/',
       content: {
@@ -233,6 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     {
       id: '003',
+      route: 'projects/cultfit-user-behavior/',
       date: "Jun — Jul '24",
       content: {
         title: 'User Behavior Analytics — CultFit',
@@ -246,21 +249,62 @@ document.addEventListener('DOMContentLoaded', () => {
       report: null,
       highlight: 'Presented at a Dell Aspire event; recognized for solving one problem well over spreading thin across many.'
     },
+    {
+      id: '008',
+      featured: true,
+      date: 'Engineering AI',
+      route: 'projects/turbine-maintenance-copilot/',
+      repo: 'https://github.com/Nothing0g/turbine-maintenance-copilot',
+      content: {
+        title: 'Turbine Maintenance Intelligence Copilot',
+        summary: 'Evidence-grounded decision support that checks telemetry quality, flags rolling anomalies, retrieves maintenance evidence, and returns bounded recommendations.',
+        finding: 'A reproducible synthetic evaluation covers 144 telemetry rows across two assets, with review triggers and evidence IDs kept visible.',
+        stat: '144', statLabel: 'synthetic telemetry rows evaluated',
+        tags: ['Python', 'Anomaly Detection', 'FastAPI', 'Evaluation'],
+        modalDesc: 'A human-in-the-loop maintenance decision-support prototype. It uses synthetic telemetry and authored procedure excerpts; it is not a plant deployment or an autonomous control system.'
+      },
+      status: 'Prototype',
+      report: null,
+      highlight: 'Trend → anomaly → retrieved procedure → bounded recommendation → human review.'
+    },
+    {
+      id: '009',
+      featured: true,
+      date: 'Engineering AI',
+      route: 'projects/pid-engineering-document-intelligence/',
+      repo: 'https://github.com/Nothing0g/pid-engineering-document-intelligence',
+      content: {
+        title: 'P&ID Engineering-Document Intelligence',
+        summary: 'Revision-aware document intelligence that extracts typed entities, validates an engineering graph, compares revisions, and answers narrow questions with source evidence.',
+        finding: 'The synthetic revision pair demonstrates added/removed item detection, a flagged dangling connection, and evidence-linked answers.',
+        stat: '2', statLabel: 'revision changes detected in the demo',
+        tags: ['Python', 'Document Intelligence', 'Graph Modeling'],
+        modalDesc: 'A deterministic prototype for structured synthetic P&ID sheets. It demonstrates traceable extraction and revision comparison, not OCR accuracy on arbitrary scanned drawings or design approval.'
+      },
+      status: 'Prototype',
+      report: null,
+      highlight: 'Treat a drawing as a graph and a revision-controlled engineering artifact—not just paragraphs.'
+    },
   ];
 
   /* ==========================================================
      RENDER CASE CARDS
   ========================================================== */
   const caseList = document.getElementById('caseList');
-  CASES.forEach((c, i) => {
-    const card = document.createElement('div');
+  ['008','009','001','007'].map(id => CASES.find(c => c.id === id)).filter(Boolean).forEach((c, i) => {
+    const card = document.createElement('a');
+    card.href = c.route;
     card.className = 'case-card spotlight-card reveal';
     card.dataset.caseIndex = i;
     card.dataset.cursorText = 'View report';
     card.style.transitionDelay = (i * 60) + 'ms'; // stagger case cards in 60ms steps
 
     let visual = '';
-    if (c.report && c.report.chartType === 'line') {
+    if (c.id === '008') {
+      visual = `<div class="project-mini-signal"><span class="mono">SYNTHETIC TELEMETRY</span><svg viewBox="0 0 200 72" aria-hidden="true"><path d="M0 50 C25 47 36 54 56 49 S88 45 103 47 S130 42 146 34 S171 38 200 15" fill="none" stroke="var(--fg-faint)" stroke-width="1.5" stroke-dasharray="4 4"/><path d="M0 52 C27 55 38 47 59 53 S91 40 108 46 S135 44 150 39 S177 30 200 27" fill="none" stroke="var(--fg)" stroke-width="2.2"/><circle cx="200" cy="27" r="4" fill="var(--bg)" stroke="var(--fg)" stroke-width="2"/></svg><span class="mono">TREND → REVIEW</span></div>`;
+    } else if (c.id === '009') {
+      visual = `<div class="project-mini-graph"><span class="mono">SYNTHETIC P&amp;ID GRAPH</span><div class="mini-graph-route"><i>TK-101</i><b>→</b><i>P-101</i><b>→</b><i>E-101</i></div><span class="mono">REV A → B <strong>· 2 CHANGES</strong></span></div>`;
+    } else if (c.report && c.report.chartType === 'line') {
       const pts = c.report.chartPoints;
       const min = Math.min(...pts), max = Math.max(...pts);
       const poly = pts.map((v, idx) => {
@@ -301,14 +345,14 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     `;
-    card.addEventListener('click', () => {
-      if (c.route) {
-        const destination = c.route;
-        if (!reduced) {
-          document.body.classList.add('page-exit');
-          setTimeout(() => { window.location.href = destination; }, 300);
-        } else window.location.href = destination;
-      } else openModal(i);
+    card.addEventListener('click', (event) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      const destination = card.href;
+      if (!reduced) {
+        document.body.classList.add('page-exit');
+        setTimeout(() => { window.location.href = destination; }, 300);
+      } else window.location.href = destination;
     });
     caseList.appendChild(card);
   });

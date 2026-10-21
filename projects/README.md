@@ -16,3 +16,13 @@ These pages extend the existing portfolio without replacing its homepage:
 The Uber repository currently publishes the README and PDF but not the underlying CSV or analysis script in the visible repository contents. For that reason, the Uber page uses only values explicitly published in those artifacts and does not invent a per-hour failure series. It shows the published 24–26% failure band and the documented quietest/busiest-hour points.
 
 The dashboard pages use no external charting dependency and are deployed as ordinary GitHub Pages-compatible static files. The existing homepage remains the source of the shared portfolio experience; the Uber, HR Attrition, POSHA, and Loan Approval case-card click handlers point to these report pages. All detail pages now load `shared/report-shell.js`, which reuses the original portfolio’s particle canvas, grid backdrop, custom circular cursor, cursor-follow label, dock navigation, command palette, scroll progress, active-section spy, theme persistence, reduced-motion handling, spotlight hover, and soft page transition. The routed homepage card handlers apply the matching `page-exit` transition before navigation, so the detail view reads as a focused continuation rather than an unrelated microsite.
+
+## Complete project archive
+
+- `index.html` — searchable, filterable index for all eight case studies, grouped into Engineering AI, Data & Analytics, and Product & Design.
+- `turbine-maintenance-copilot/index.html` — synthetic telemetry, anomaly detection, evidence retrieval, and human-review casefile.
+- `pid-engineering-document-intelligence/index.html` — synthetic P&ID revision comparison and evidence-linked engineering graph casefile.
+- `cultfit-user-behavior/index.html` — user research and competition-led MVP casefile.
+- Every card in the archive links to its individual project detail page. Existing report pages link back to the archive.
+
+The homepage now spotlights four projects in a responsive bento layout and links to this complete archive.
