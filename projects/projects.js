@@ -33,11 +33,11 @@
     });
   });
   search?.addEventListener('input', update);
-  window.addEventListener('keydown', (event) => {
-    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-      event.preventDefault();
-      search?.focus();
-    }
+  document.querySelectorAll('[data-filter-target]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const button = filterButtons.find((item) => item.dataset.filter === link.dataset.filterTarget);
+      button?.click();
+    });
   });
   update();
 })();

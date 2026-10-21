@@ -24,32 +24,47 @@
 <body class="focused-report projects-index-page">
   <a class="skip-link" href="#projectGrid">Skip to projects</a>
   <div class="scroll-progress-track" aria-hidden="true"><div class="scroll-progress" id="scrollProgress"></div></div>
+  <div class="grid-backdrop" aria-hidden="true"></div>
+  <canvas class="bg-interactive" id="bgCanvas" aria-hidden="true"></canvas>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-follow" id="cursorFollow"><span id="cursorFollowText"></span></div>
+  <nav class="dock" aria-label="Project archive navigation"><div class="dock-inner">
+    <a href="#report" class="dock-item active" data-dock data-cursor-text="Archive home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="dock-label">Archive home</span></a>
+    <a href="#projectGrid" class="dock-item" data-dock data-cursor-text="All projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span class="dock-label">All projects</span></a>
+    <a href="#engineering-ai-filter" class="dock-item" data-dock data-filter-target="engineering-ai" data-cursor-text="Engineering AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94z"/></svg><span class="dock-label">Engineering AI</span></a>
+    <a href="#analytics-filter" class="dock-item" data-dock data-filter-target="analytics" data-cursor-text="Data and analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M12 19V5M20 19v-6"/></svg><span class="dock-label">Data &amp; analytics</span></a>
+    <a href="#product-design-filter" class="dock-item" data-dock data-filter-target="product-design" data-cursor-text="Product and design"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span class="dock-label">Product &amp; design</span></a>
+    <a href="../index.html" class="dock-item" data-cursor-text="Portfolio home" data-transition><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg><span class="dock-label">Portfolio</span></a>
+    <div class="dock-divider"></div>
+    <button class="dock-item" id="dockThemeBtn" data-cursor-text="Toggle theme"><svg id="dockThemeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></svg><span class="dock-label">Toggle theme</span></button>
+  </div></nav>
 
   <header class="topbar report-topbar">
-    <a class="report-brand" href="../index.html"><i></i> SHUBHAM KUMAR / WORK INDEX</a>
+    <a class="report-brand" href="../index.html" data-transition data-cursor-text="Portfolio home"><i></i> SHUBHAM KUMAR / WORK INDEX</a>
     <div class="topbar-right report-top-actions">
-      <a class="report-top-link" href="../index.html"><span>Portfolio home</span></a>
+      <button class="kbd-chip report-search" id="reportSearch" type="button" data-cursor-text="Search projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>Search</span><kbd>⌘K</kbd></button>
+      <a class="report-top-link" data-cursor-text="Back to portfolio" href="../index.html" data-transition><span>Portfolio</span></a>
       <button class="icon-btn report-icon-btn" id="reportThemeToggle" aria-label="Toggle theme"></button>
     </div>
   </header>
 
-  <main id="report" class="work-main">
-    <section class="work-hero">
-      <div class="work-hero-inner">
+  <main id="report" class="work-main report-main">
+    <section class="work-hero report-section">
+      <div class="work-hero-inner report-section-inner">
         <p class="work-kicker mono"><span></span> PROJECT ARCHIVE <b>·</b> 08 CASEFILES</p>
         <div class="work-heading-row">
           <div>
             <h1>Work, in context.</h1>
             <p class="work-lede">A complete collection of projects across engineering systems, data analysis, and product thinking. Each casefile shows the question, the evidence, and the limits of the work.</p>
           </div>
-          <a class="work-back-link" href="../index.html">← Back to portfolio</a>
+          <a class="work-back-link" href="../index.html" data-transition>← Back to portfolio</a>
         </div>
         <div class="work-meta-row mono"><span>08 PROJECTS</span><span>03 PRACTICE AREAS</span><span>01 PRINCIPLE: EVIDENCE FIRST</span></div>
       </div>
     </section>
 
-    <section class="work-archive" aria-labelledby="archive-title">
-      <div class="work-archive-inner">
+    <section id="archive" class="work-archive report-section" aria-labelledby="archive-title">
+      <div class="work-archive-inner report-section-inner reveal">
         <div class="archive-heading">
           <div>
             <p class="archive-eyebrow mono">CASE FILES / 001—009</p>
@@ -67,14 +82,14 @@
           </label>
           <div class="filter-pills" role="group" aria-label="Filter projects by area">
             <button class="filter-pill is-active" type="button" data-filter="all" aria-pressed="true">All work <span>08</span></button>
-            <button class="filter-pill" type="button" data-filter="engineering-ai" aria-pressed="false">Engineering AI <span>02</span></button>
-            <button class="filter-pill" type="button" data-filter="analytics" aria-pressed="false">Data &amp; analytics <span>04</span></button>
-            <button class="filter-pill" type="button" data-filter="product-design" aria-pressed="false">Product &amp; design <span>02</span></button>
+            <button class="filter-pill" type="button" id="engineering-ai-filter" data-filter="engineering-ai" aria-pressed="false">Engineering AI <span>02</span></button>
+            <button class="filter-pill" type="button" id="analytics-filter" data-filter="analytics" aria-pressed="false">Data &amp; analytics <span>04</span></button>
+            <button class="filter-pill" type="button" id="product-design-filter" data-filter="product-design" aria-pressed="false">Product &amp; design <span>02</span></button>
           </div>
         </div>
 
         <div class="project-grid" id="projectGrid">
-          <a class="project-card project-card-featured" href="turbine-maintenance-copilot/" data-category="engineering-ai" data-search="turbine maintenance copilot telemetry anomaly detection python fastapi evidence retrieval synthetic">
+          <a class="project-card spotlight-card reveal project-card-featured" data-transition data-cursor-text="Open casefile" href="turbine-maintenance-copilot/" data-category="engineering-ai" data-search="turbine maintenance copilot telemetry anomaly detection python fastapi evidence retrieval synthetic">
             <div class="project-visual turbine-visual" aria-hidden="true">
               <div class="visual-top mono"><span>LP-BRG-02 / TELEMETRY</span><span class="live-dot"></span></div>
               <svg viewBox="0 0 520 150" role="presentation"><path class="visual-gridline" d="M0 30H520M0 75H520M0 120H520"/><path class="visual-line faint-line" d="M0 98 C40 90 55 108 92 93 S150 101 189 88 S251 102 290 75 S349 89 389 57 S451 68 520 27"/><path class="visual-line strong-line" d="M0 109 C40 104 60 94 96 103 S150 84 194 91 S252 76 294 82 S350 62 391 69 S450 42 520 46"/><circle class="visual-point" cx="391" cy="69" r="5"/><circle class="visual-alert" cx="520" cy="46" r="7"/></svg>
@@ -88,7 +103,7 @@
             </div>
           </a>
 
-          <a class="project-card project-card-featured" href="pid-engineering-document-intelligence/" data-category="engineering-ai" data-search="pid engineering document intelligence drawing revision graph extraction validation python evidence">
+          <a class="project-card spotlight-card reveal project-card-featured" data-transition data-cursor-text="Open casefile" href="pid-engineering-document-intelligence/" data-category="engineering-ai" data-search="pid engineering document intelligence drawing revision graph extraction validation python evidence">
             <div class="project-visual pid-visual" aria-hidden="true">
               <div class="visual-top mono"><span>P100-UTILITIES / REVISION PAIR</span><span class="revision-label">A → B</span></div>
               <div class="pid-mini-flow"><span>TK-101</span><i></i><b>P-101</b><i></i><span>E-101</span></div>
@@ -103,7 +118,7 @@
             </div>
           </a>
 
-          <a class="project-card" href="uber-ride-demand/" data-category="analytics" data-search="uber ride demand analytics supply failure operations time series python sql 150000">
+          <a class="project-card spotlight-card reveal" data-transition data-cursor-text="Open casefile" href="uber-ride-demand/" data-category="analytics" data-search="uber ride demand analytics supply failure operations time series python sql 150000">
             <div class="project-visual chart-visual" aria-hidden="true">
               <div class="visual-top mono"><span>BOOKINGS / HOUR</span><span>24H</span></div>
               <svg viewBox="0 0 520 130" role="presentation"><path class="visual-gridline" d="M0 30H520M0 65H520M0 100H520"/><path class="visual-line strong-line" d="M0 105 L22 112 L44 115 L66 118 L88 120 L110 111 L132 96 L154 78 L176 58 L198 40 L220 51 L242 63 L264 59 L286 67 L308 72 L330 64 L352 51 L374 35 L396 18 L418 26 L440 42 L462 62 L484 81 L520 99"/><path class="visual-line coral-line" d="M0 54 C70 51 95 57 150 54 S240 53 300 54 S420 55 520 52"/></svg>
@@ -117,7 +132,7 @@
             </div>
           </a>
 
-          <a class="project-card" href="interior-lead-funnel/" data-category="analytics" data-search="interior lead funnel leak detector business analysis conversion response SLA SQL python power bi synthetic">
+          <a class="project-card spotlight-card reveal" data-transition data-cursor-text="Open casefile" href="interior-lead-funnel/" data-category="analytics" data-search="interior lead funnel leak detector business analysis conversion response SLA SQL python power bi synthetic">
             <div class="project-visual funnel-visual" aria-hidden="true">
               <div class="visual-top mono"><span>LEAD FUNNEL / SAMPLE DATA</span><span>192 LEADS</span></div>
               <div class="funnel-bars"><span style="--bar:100%"><i>Enquiry</i><b>192</b></span><span style="--bar:76%"><i>Consultation</i><b>146</b></span><span style="--bar:37%"><i>Won</i><b>71</b></span></div>
@@ -131,7 +146,7 @@
             </div>
           </a>
 
-          <a class="project-card" href="hr-employee-attrition/" data-category="analytics" data-search="employee attrition HR analysis classification machine learning overtime recall dashboard python scikit-learn">
+          <a class="project-card spotlight-card reveal" data-transition data-cursor-text="Open casefile" href="hr-employee-attrition/" data-category="analytics" data-search="employee attrition HR analysis classification machine learning overtime recall dashboard python scikit-learn">
             <div class="project-visual attrition-visual" aria-hidden="true">
               <div class="visual-top mono"><span>ATTRITION / OVERTIME</span><span>1,470 EMPLOYEES</span></div>
               <div class="comparison-bars"><span><i>Overtime</i><b style="--bar:82%">31%</b></span><span><i>No overtime</i><b style="--bar:27%">10%</b></span></div>
@@ -145,7 +160,7 @@
             </div>
           </a>
 
-          <a class="project-card" href="loan-approval/" data-category="analytics" data-search="loan approval analysis logistic regression risk baseline public data python fairness">
+          <a class="project-card spotlight-card reveal" data-transition data-cursor-text="Open casefile" href="loan-approval/" data-category="analytics" data-search="loan approval analysis logistic regression risk baseline public data python fairness">
             <div class="project-visual loan-visual" aria-hidden="true">
               <div class="visual-top mono"><span>MODEL CHECK / HOLDOUT</span><span>BASELINE</span></div>
               <div class="recall-bars"><span><i>Approved recall</i><b style="--bar:98%">0.98</b></span><span><i>Not-approved recall</i><b style="--bar:42%">0.42</b></span></div>
@@ -159,7 +174,7 @@
             </div>
           </a>
 
-          <a class="project-card" href="posha-battery-door/" data-category="product-design" data-search="POSHA battery door latch mechanism mechanical design fusion 360 FEA tolerance DFM">
+          <a class="project-card spotlight-card reveal" data-transition data-cursor-text="Open casefile" href="posha-battery-door/" data-category="product-design" data-search="POSHA battery door latch mechanism mechanical design fusion 360 FEA tolerance DFM">
             <div class="project-visual mechanism-visual" aria-hidden="true">
               <div class="visual-top mono"><span>CONCEPT / FORCE PATH</span><span>3 PARTS</span></div>
               <div class="mechanism-diagram"><span class="mech-button">INPUT</span><i></i><b>45° WEDGE</b><i></i><span class="mech-latch">LATCH</span></div>
@@ -173,7 +188,7 @@
             </div>
           </a>
 
-          <a class="project-card" href="cultfit-user-behavior/" data-category="product-design" data-search="CultFit user behavior survey customer insight college students motivation Thunkable MVP fitness product">
+          <a class="project-card spotlight-card reveal" data-transition data-cursor-text="Open casefile" href="cultfit-user-behavior/" data-category="product-design" data-search="CultFit user behavior survey customer insight college students motivation Thunkable MVP fitness product">
             <div class="project-visual cultfit-visual" aria-hidden="true">
               <div class="visual-top mono"><span>USER RESEARCH / GEN Z FITNESS</span><span>~200 RESPONSES</span></div>
               <div class="motivation-pulse"><span>ACCESS</span><i></i><b>MOTIVATION</b><i></i><span>COMPETITION</span></div>
@@ -193,8 +208,13 @@
     </section>
   </main>
 
-  <footer class="report-footer work-footer"><span>© 2026 Shubham Kumar · Project archive</span><div class="report-footer-links"><a href="../index.html">Portfolio home</a><a href="mailto:shubham1sure@gmail.com">Get in touch</a></div></footer>
+  <footer class="report-footer work-footer"><span>© 2026 Shubham Kumar · Project archive</span><div class="report-footer-links"><a href="../index.html" data-transition>Portfolio home</a><a href="mailto:shubham1sure@gmail.com">Get in touch</a></div></footer>
+<div class="chart-tooltip" aria-hidden="true"></div>
+  <div class="cmdk-overlay" id="cmdkOverlay"><div class="cmdk-box"><div class="cmdk-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input class="cmdk-input" id="cmdkInput" type="text" placeholder="Type a command or search…" autocomplete="off"><span class="cmdk-esc">ESC</span></div><div class="cmdk-list" id="cmdkList"></div></div></div>
+  <div class="wash-overlay" id="washOverlay"></div>
+  <button class="back-to-top" id="backToTop" aria-label="Back to top" data-cursor-text="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button>
   <div class="toast-wrap" id="toastWrap"></div>
+
   <script src="shared/report-shell.js?v=history-v1"></script>
   <script src="projects.js"></script>
 </body>

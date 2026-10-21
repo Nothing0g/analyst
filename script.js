@@ -26,6 +26,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const performanceLite = reduced || constrainedDevice;
   if (performanceLite) root.classList.add('performance-lite');
 
+  // Give ordinary internal links the same short exit transition as case cards.
+  document.querySelectorAll('a[data-transition]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank' || link.hasAttribute('download')) return;
+      const href = link.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('http')) return;
+      event.preventDefault();
+      if (reduced) window.location.href = link.href;
+      else {
+        document.body.classList.add('page-exit');
+        setTimeout(() => { window.location.href = link.href; }, 300);
+      }
+    });
+  });
+
   /* ==========================================================
      THEME
   ========================================================== */

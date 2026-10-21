@@ -73,10 +73,11 @@
   }
   $$('a[data-transition]').forEach((link) => {
     link.addEventListener('click', (event) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank' || link.hasAttribute('download')) return;
       const href = link.getAttribute('href');
-      if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('http')) return;
+      if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('http')) return;
       event.preventDefault();
-      navigateWithTransition(href);
+      navigateWithTransition(link.href);
     });
   });
   requestAnimationFrame(() => document.body.classList.add('page-entered'));
@@ -211,6 +212,7 @@
     ['Navigate', 'Open dashboard', '#dashboard'],
     ['Navigate', 'Read the insights', '#insights'],
     ['Navigate', 'View methodology', '#method'],
+    ['Navigate', 'Browse all projects', '../'],
     ['Navigate', 'Back to portfolio', '../../index.html'],
   ];
   function closeCmdk() { cmdkOverlay?.classList.remove('is-open'); document.body.style.overflow = ''; }
@@ -222,11 +224,12 @@
     $$('.cmdk-item', cmdkList).forEach((item) => item.addEventListener('click', () => { const href = item.dataset.cmdHref; closeCmdk(); if (href.startsWith('#')) $(href)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' }); else navigateWithTransition(href); }));
   }
   function openCmdk() { if (!cmdkOverlay) return; cmdkOverlay.classList.add('is-open'); document.body.style.overflow = 'hidden'; if (cmdkInput) { cmdkInput.value = ''; renderCommands(); setTimeout(() => cmdkInput.focus(), 40); } }
-  $('#reportSearch')?.addEventListener('click', openCmdk);
+  const archiveSearch = $('body.projects-index-page #projectSearch');
+  $('#reportSearch')?.addEventListener('click', () => { if (archiveSearch) archiveSearch.focus(); else openCmdk(); });
   cmdkOverlay?.addEventListener('click', (event) => { if (event.target === cmdkOverlay) closeCmdk(); });
   cmdkInput?.addEventListener('input', () => renderCommands(cmdkInput.value));
   addEventListener('keydown', (event) => {
-    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); cmdkOverlay?.classList.contains('is-open') ? closeCmdk() : openCmdk(); }
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); if (archiveSearch) archiveSearch.focus(); else cmdkOverlay?.classList.contains('is-open') ? closeCmdk() : openCmdk(); }
     if (event.key === 'Escape') closeCmdk();
   });
 
