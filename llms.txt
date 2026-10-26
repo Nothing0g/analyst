@@ -1,10 +1,11 @@
-# Shubham Kumar — Analyst Portfolio
+# Shubham Kumar — Data, Software & AI Portfolio
 
-This is the personal portfolio of Shubham Kumar, a final-year Mechanical Engineering student at Delhi Technological University working across data science, data analytics, business problem-solving, consulting-style casework, industrial operations, technical research, SQL, Python, Excel automation, dashboards, and decision-ready analysis. The site presents a profile, experience, tools, engineering work, and source-grounded project case studies.
+This is the personal portfolio of Shubham Kumar, a Mechanical Engineering student at Delhi Technological University working across data analytics, data science, software development, product thinking, applied AI, business problem-solving, industrial operations, and technical research. The site presents experience, tools, and project case studies built with Python, SQL, machine-learning baselines, APIs, retrieval workflows, dashboards, and evaluation.
 
 ## Important pages
 
 - [Portfolio homepage](https://nothing0g.github.io/analyst/)
+- [TrueStack — Student Services AI Assistant](https://nothing0g.github.io/analyst/projects/truestack-ai-assistant/)
 - [Uber ride demand case study](https://nothing0g.github.io/analyst/projects/uber-ride-demand/)
 - [HR employee attrition case study](https://nothing0g.github.io/analyst/projects/hr-employee-attrition/)
 - [Loan Approval Analysis case study](https://nothing0g.github.io/analyst/projects/loan-approval/)
@@ -13,4 +14,4 @@ This is the personal portfolio of Shubham Kumar, a final-year Mechanical Enginee
 
 ## Project data notes
 
-The HR case study recalculates population aggregates from the original repository CSV and labels model metrics as documented results. The Uber case study uses values explicitly published by the repository README and results PDF and flags the likely synthetic or simulated nature of the dataset. The Loan Approval case study uses the public repository's documented notebook workflow and recorded baseline output; it is educational and not a production lending system. The portfolio does not present these projects as live production systems.
+The HR case study recalculates population aggregates from the original repository CSV and labels model metrics as documented results. The Uber case study uses values explicitly published by the repository README and results PDF and flags the likely synthetic or simulated nature of the dataset. The Loan Approval case study uses the public repository's documented notebook workflow and recorded baseline output; it is educational and not a production lending system. The TrueStack hackathon page identifies Shubham's team-lead and backend/integration work, labels synthetic student records and sample policies, and distinguishes structural checks from uncompleted full-stack evaluation. The portfolio does not present prototypes or sample-data analyses as live production systems.

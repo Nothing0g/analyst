@@ -300,13 +300,31 @@ document.addEventListener('DOMContentLoaded', () => {
       report: null,
       highlight: 'Treat a drawing as a graph and a revision-controlled engineering artifact—not just paragraphs.'
     },
+    {
+      id: '010',
+      featured: true,
+      date: "Oct '26",
+      route: 'projects/truestack-ai-assistant/',
+      repo: 'https://github.com/Nothing0g/TrueStack_HCLTech_aiHackathon',
+      content: {
+        title: 'TrueStack — Student Services AI Assistant',
+        summary: 'A local-first assistant that routes policy questions to cited documents and student-specific requests to deterministic, access-checked tools.',
+        finding: 'One LangGraph workflow coordinates FastAPI endpoints, policy retrieval, SQLite-backed tools, response validation, and audit traces—while clearly labeling synthetic policy examples.',
+        stat: '3', statLabel: 'people on the hackathon team',
+        tags: ['Python', 'FastAPI', 'LangGraph', 'RAG'],
+        modalDesc: 'A three-person HCLTech AI Engineer hackathon project. I led architecture, backend endpoints, workflow routing, integration, trace IDs, audit logging, and demo preparation; the UI and integrated solution were team efforts.'
+      },
+      status: 'Hackathon prototype',
+      report: null,
+      highlight: 'Team lead · Backend & integration · One controlled workflow across retrieval and deterministic tools.'
+    },
   ];
 
   /* ==========================================================
      RENDER CASE CARDS
   ========================================================== */
   const caseList = document.getElementById('caseList');
-  ['008','009','001','007'].map(id => CASES.find(c => c.id === id)).filter(Boolean).forEach((c, i) => {
+  ['010','008','001','007'].map(id => CASES.find(c => c.id === id)).filter(Boolean).forEach((c, i) => {
     const card = document.createElement('a');
     card.href = c.route;
     card.className = 'case-card spotlight-card reveal';

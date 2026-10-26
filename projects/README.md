@@ -7,7 +7,7 @@ These pages extend the existing portfolio without replacing its homepage:
 - `hr-employee-attrition/index.html` — interactive report for Case No. 002.
 - `posha-battery-door/index.html` — mechanical design report for Case No. 004.
 - `loan-approval/index.html` — educational machine-learning report for Case No. 006.
-- Homepage case-study order: Interior Lead Funnel Leak Detector, Uber Ride Demand Analytics, HR Employee Attrition Analysis, POSHA Battery Door Latching Mechanism, Loan Approval Analysis, User Behavior Analytics — CultFit.
+- Homepage featured order: TrueStack Student Services AI Assistant, Turbine Maintenance Intelligence Copilot, Uber Ride Demand Analytics, and Interior Lead Funnel Leak Detector. The full archive contains all nine case studies.
 - `shared/report.css` and `shared/report.js` — shared presentation and runtime.
 - `interior-lead-funnel/lead-funnel.js` — dependency-free metric-toggle chart using the project's published synthetic scorecard.
 - `shared/uber-data.js` — source snapshot containing values published in `README.md` and `Uber_Ride_Analytics_Result.pdf` from `Nothing0g/Uber_ride_demand_analysis`.
@@ -19,10 +19,12 @@ The dashboard pages use no external charting dependency and are deployed as ordi
 
 ## Complete project archive
 
-- `index.html` — searchable, filterable index for all eight case studies, grouped into Engineering AI, Data & Analytics, and Product & Design.
+- `truestack-ai-assistant/index.html` — Case No. 010; the HCLTech hackathon student-services assistant, with Shubham's team-lead, backend, workflow, and integration responsibilities called out separately from team work.
+
+- `index.html` — searchable, filterable index for all nine case studies, grouped into Engineering AI, Data & Analytics, and Product & Design.
 - `turbine-maintenance-copilot/index.html` — synthetic telemetry, anomaly detection, evidence retrieval, and human-review casefile.
 - `pid-engineering-document-intelligence/index.html` — synthetic P&ID revision comparison and evidence-linked engineering graph casefile.
 - `cultfit-user-behavior/index.html` — user research and competition-led MVP casefile.
 - Every card in the archive links to its individual project detail page. Existing report pages link back to the archive.
 
-The homepage now spotlights four projects in a responsive bento layout and links to this complete archive.
+The homepage spotlights four projects using the existing card layout and links to the complete nine-project archive.
