@@ -195,21 +195,57 @@ h1, h2, h3, p { margin-top: 0; }
 }
 
 
-/* Paired case sheets: each keeps its natural content height. */
-.sheet-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 14px; }
-.mini-sheet { min-width: 0; }
-.mini-sheet-main { padding: 24px clamp(18px, 2.5vw, 28px) 0; }
-.mini-sheet-main > h3 { margin: 0 0 15px; font-size: clamp(21px, 2.3vw, 27px); font-weight: 600; letter-spacing: -.03em; line-height: 1.2; }
-.mini-sheet-fields { display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; }
-.mini-sheet .sheet-field, .mini-sheet .sheet-field:nth-child(3n) { margin: 0; padding: 16px 0; }
-.mini-sheet .sheet-field h4 { margin: 0 0 7px; font-size: 13px; font-weight: 600; }
-.mini-sheet .sheet-field p { font-size: 13px; }
-.mini-sheet .mini-finding h4 { color: var(--redline); }
-.mini-sheet .finding-mark { right: 0; bottom: 8px; }
-.mini-title-block { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin: 22px clamp(18px, 2.5vw, 28px) 0; padding: 14px 0 18px; border-top: 1px solid var(--line); }
-.mini-title-block span { color: var(--pencil); font-size: 12px; }
-.mini-title-block strong { font-size: 12px; font-weight: 500; }
-.mini-title-block a { font-size: 13px; font-weight: 600; text-underline-offset: 4px; }
-.mini-title-block a:hover { text-decoration-color: var(--redline); }
-@media (max-width: 800px) { .sheet-pair { grid-template-columns: 1fr; } }
-@media (max-width: 560px) { .mini-sheet-fields { grid-template-columns: 1fr; } }
+/* Case sheets follow a drawing-review structure, with findings marked in redline. */
+.case-sheet-section { padding-top: 72px; }
+.drawing-sheet { background: var(--sheet); border: 1px solid var(--hairline-strong); min-width: 0; }
+.sheet-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 22px; padding: 20px 22px; border-bottom: 1px solid var(--hairline); }
+.sheet-kicker { margin: 0 0 8px; color: var(--pencil); font-size: 13px; }
+.sheet-head h3 { max-width: 42ch; margin: 0; font-size: clamp(20px, 2.4vw, 28px); line-height: 1.2; font-weight: 600; letter-spacing: -.03em; }
+.sheet-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 0 22px; }
+.sheet-field { position: relative; min-width: 0; margin-right: 18px; padding: 20px 18px 24px 0; border-bottom: 1px solid var(--hairline); }
+.sheet-field:nth-child(3n) { margin-right: 0; padding-right: 0; }
+.sheet-field h4 { margin: 0 0 8px; font-size: 13px; line-height: 1.35; font-weight: 600; }
+.sheet-field p { margin: 0; color: var(--pencil); font-size: 13px; line-height: 1.65; }
+.finding-field h4 { color: var(--redline); }
+.finding-mark { position: absolute; left: 0; right: 18px; bottom: 9px; height: 1px; background: var(--redline); }
+.drawing-title-block { display: flex; align-items: stretch; justify-content: flex-end; width: fit-content; max-width: 100%; margin: 20px 0 0 auto; border: 1px solid var(--hairline); }
+.drawing-title-block > div { min-width: 130px; padding: 10px 13px; border-left: 1px solid var(--hairline); }
+.drawing-title-block > div:first-child { border-left: 0; }
+.drawing-title-block span { display: block; margin-bottom: 4px; color: var(--pencil); font-size: 11px; }
+.drawing-title-block strong { display: block; font-size: 12px; font-weight: 500; }
+.drawing-title-block a { display: flex; align-items: center; padding: 10px 14px; border-left: 1px solid var(--hairline); font-size: 12px; font-weight: 600; text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 4px; white-space: nowrap; }
+.drawing-title-block a:hover { text-decoration-color: var(--redline); }
+.drawing-sheet-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 16px; }
+.mini-sheet .sheet-head h3 { max-width: 30ch; font-size: clamp(20px, 2.2vw, 25px); }
+.compact-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.compact-fields .sheet-field,
+.compact-fields .sheet-field:nth-child(3n) { margin-right: 16px; padding: 17px 16px 22px 0; }
+.compact-fields .sheet-field:nth-child(2n) { margin-right: 0; padding-right: 0; }
+.compact-fields .finding-mark { right: 16px; }
+.compact-fields .sheet-field:nth-child(2n) .finding-mark { right: 0; }
+.mini-sheet-footer { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px; padding: 14px 22px 18px; color: var(--pencil); font-size: 12px; }
+.mini-sheet-footer a { color: var(--ink); font-size: 12px; font-weight: 600; text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 4px; white-space: nowrap; }
+.mini-sheet-footer a:hover { text-decoration-color: var(--redline); }
+.register-sheet { overflow-x: auto; }
+.project-register { min-width: 900px; }
+@media (max-width: 900px) {
+  .sheet-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sheet-field, .sheet-field:nth-child(3n) { margin-right: 16px; padding-right: 16px; }
+  .sheet-field:nth-child(2n) { margin-right: 0; padding-right: 0; }
+  .sheet-field:nth-child(2n) .finding-mark { right: 0; }
+  .drawing-sheet-pair { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .sheet-head { padding: 17px 16px; }
+  .sheet-fields, .compact-fields { grid-template-columns: 1fr; padding-inline: 16px; }
+  .sheet-field, .sheet-field:nth-child(2n), .sheet-field:nth-child(3n),
+  .compact-fields .sheet-field, .compact-fields .sheet-field:nth-child(2n), .compact-fields .sheet-field:nth-child(3n) {
+    margin-right: 0; padding: 16px 0 22px;
+  }
+  .finding-mark, .compact-fields .finding-mark { right: 0; }
+  .drawing-title-block { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+  .drawing-title-block > div { min-width: 0; }
+  .drawing-title-block > div:nth-child(3) { border-top: 1px solid var(--hairline); }
+  .drawing-title-block a { grid-column: 1 / -1; min-height: 42px; border-top: 1px solid var(--hairline); border-left: 0; }
+  .mini-sheet-footer { padding-inline: 16px; }
+}
