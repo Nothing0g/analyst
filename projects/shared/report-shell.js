@@ -100,6 +100,7 @@
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
   $$('.reveal').forEach((el) => io.observe(el));
+  if (!performanceLite) root.classList.add('motion-ready');
 
   if (!reduced) {
     document.addEventListener('mousemove', (event) => {
