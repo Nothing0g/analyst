@@ -120,7 +120,10 @@
     let scale = 1, targetScale = 1;
     let fx = mouseX, fy = mouseY;
     addEventListener('mousemove', (event) => { cursorDot.style.opacity = '1'; mouseX = event.clientX; mouseY = event.clientY; });
+    let cursorFrame = 0;
     function cursorLoop() {
+      cursorFrame = 0;
+      if (document.hidden) return;
       cx += (mouseX - cx) * 0.26;
       cy += (mouseY - cy) * 0.26;
       scale += (targetScale - scale) * 0.2;
@@ -130,9 +133,16 @@
         fy += (mouseY - fy) * 0.14;
         cursorFollow.style.transform = `translate(${fx + 13}px, ${fy + 15}px)`;
       }
-      requestAnimationFrame(cursorLoop);
+      cursorFrame = requestAnimationFrame(cursorLoop);
     }
-    requestAnimationFrame(cursorLoop);
+    function scheduleCursor() {
+      if (!document.hidden && !cursorFrame) cursorFrame = requestAnimationFrame(cursorLoop);
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { cancelAnimationFrame(cursorFrame); cursorFrame = 0; }
+      else scheduleCursor();
+    });
+    scheduleCursor();
     $$('a,button,.chart-card,.metric-card,.insight-card,.method-card,.report-btn,.filter-reset').forEach((el) => {
       el.addEventListener('mouseenter', () => { targetScale = 1.6; });
       el.addEventListener('mouseleave', () => { targetScale = 1; });
@@ -161,15 +171,30 @@
         return { x: Math.random() * width, y: Math.random() * height, size: 0.6 + Math.random() * 1.8, depth, cosAngle: Math.cos(angle), sinAngle: Math.sin(angle), twinklePhase: Math.random() * Math.PI * 2, twinkleSpeed: 0.6 + Math.random() * 1.8 };
       });
     };
-    build(); addEventListener('resize', build, { passive: true });
+    let resizeFrame = 0;
+    build();
+    addEventListener('resize', () => {
+      if (resizeFrame) cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        resizeFrame = 0;
+        build();
+        if (animateStars) scheduleDraw();
+        else draw(performance.now());
+      });
+    }, { passive: true });
     let px = -9999, py = -9999;
     if (animateStars) {
       addEventListener('mousemove', (event) => { px = event.clientX; py = event.clientY; }, { passive: true });
       addEventListener('touchmove', (event) => { if (event.touches[0]) { px = event.touches[0].clientX; py = event.touches[0].clientY; } }, { passive: true });
       addEventListener('mouseleave', () => { px = -9999; py = -9999; }, { passive: true });
     }
+    let starFrame = 0;
+    let lastDraw = 0;
     function draw(now) {
-      const dt = Math.min(50, now - (draw.last || now)) / 1000; draw.last = now;
+      starFrame = 0;
+      if (document.hidden) return;
+      const dt = Math.min(50, now - (lastDraw || now)) / 1000;
+      lastDraw = now;
       const time = now / 1000;
       ctx.clearRect(0, 0, width, height);
       const dark = root.getAttribute('data-theme') === 'dark';
@@ -199,10 +224,19 @@
         ctx.beginPath(); ctx.arc(renderX, renderY, star.size + glow * 1.2, 0, Math.PI * 2); ctx.fill();
       });
       ctx.globalAlpha = 1;
-      if (animateStars) requestAnimationFrame(draw);
+      if (animateStars) starFrame = requestAnimationFrame(draw);
     }
-    document.addEventListener('themechange', () => draw(performance.now()));
-    draw(performance.now());
+    function scheduleDraw() {
+      if (document.hidden || starFrame) return;
+      if (animateStars) starFrame = requestAnimationFrame(draw);
+      else draw(performance.now());
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { cancelAnimationFrame(starFrame); starFrame = 0; }
+      else { lastDraw = 0; scheduleDraw(); }
+    });
+    document.addEventListener('themechange', scheduleDraw);
+    scheduleDraw();
   }
 
   const cmdkOverlay = $('#cmdkOverlay');
