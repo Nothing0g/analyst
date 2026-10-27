@@ -582,9 +582,9 @@ document.addEventListener('DOMContentLoaded', () => {
      TERMINAL TYPING
   ========================================================== */
   const TERMINAL_LINES = [
-    { p: '~ $', t: 'who_am_i' }, { p: '→', t: 'Data · Software · AI · Mechanical Eng.' },
-    { p: '~ $', t: 'stack' }, { p: '→', t: 'Python · SQL · FastAPI · ML · RAG' },
-    { p: '~ $', t: 'currently' }, { p: '→', t: 'Open to data, product, software and AI roles' }
+    { p: '01 /', t: 'Define the real question' },
+    { p: '02 /', t: 'Check data and assumptions' },
+    { p: '03 /', t: 'Build, test, explain' }
   ];
   const terminalBody = document.getElementById('terminalBody');
   let terminalTimeouts = [];
