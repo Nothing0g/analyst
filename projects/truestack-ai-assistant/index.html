@@ -17,6 +17,63 @@
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared/report.css">
   <link rel="stylesheet" href="../shared/case-pages.css">
+  <style>
+    /* TrueStack-only visuals; the shared report theme and layout remain unchanged. */
+    .true-route-picker{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 16px}
+    .true-route-tab{padding:9px 12px;border:1px solid var(--report-line);border-radius:5px;color:var(--report-muted);background:var(--report-bg);font:600 10px var(--report-font-mono);transition:background .18s ease,color .18s ease,border-color .18s ease}
+    .true-route-tab[aria-pressed="true"]{background:var(--report-ink);color:var(--report-bg);border-color:var(--report-ink)}
+    .true-route-tab:focus-visible{outline:2px solid var(--report-ink);outline-offset:3px}
+    .true-architecture{padding:18px;border:1px solid var(--report-line);border-radius:9px;background:color-mix(in srgb,var(--report-surface) 45%,transparent)}
+    .true-flow-row{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr);align-items:stretch;gap:8px}
+    .true-arch-node{position:relative;min-width:0;padding:15px 14px;border:1px solid var(--report-line-strong);border-radius:7px;background:var(--report-bg);transition:border-color .18s ease,background .18s ease,transform .18s ease}
+    .true-arch-node .node-num{display:block;margin-bottom:10px;color:var(--report-faint);font:600 9px var(--report-font-mono);letter-spacing:.08em}
+    .true-arch-node strong{display:block;font-size:14px;line-height:1.25;overflow-wrap:anywhere}
+    .true-arch-node p{margin:7px 0 0;color:var(--report-muted);font-size:11px;line-height:1.5;overflow-wrap:anywhere}
+    .true-arch-node.is-active{border-color:var(--report-ink);background:var(--report-surface-strong);box-shadow:inset 0 0 0 1px var(--report-ink)}
+    .true-arch-arrow{display:flex;align-items:center;justify-content:center;color:var(--report-faint);font:20px var(--report-font-mono)}
+    .true-lane-title{margin:22px 0 9px;color:var(--report-faint);font:600 9px var(--report-font-mono);letter-spacing:.1em;text-transform:uppercase}
+    .true-branches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+    .true-bottom-flow{margin-top:10px}
+    .true-ingest-flow{display:grid;grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr) 24px minmax(0,1fr);align-items:stretch;gap:8px;margin-top:16px;padding-top:16px;border-top:1px dashed var(--report-line-strong)}
+    .true-route-readout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:18px;margin-top:15px;padding:16px;border:1px solid var(--report-line);border-radius:7px;background:var(--report-bg)}
+    .true-route-readout h3{margin:0;font-size:17px;line-height:1.2}
+    .true-route-readout p{margin:7px 0 0;color:var(--report-muted);font-size:12px;line-height:1.55}
+    .true-route-readout .true-sample-prompt{padding:11px 12px;border-left:2px solid var(--report-ink);background:var(--report-surface);font:11px/1.6 var(--report-font-mono);overflow-wrap:anywhere}
+    .true-process-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:24px}
+    .true-process-step{min-width:0;padding:15px;border-top:1px solid var(--report-line-strong);background:color-mix(in srgb,var(--report-surface) 55%,transparent)}
+    .true-process-step span{display:block;color:var(--report-faint);font:600 9px var(--report-font-mono);letter-spacing:.08em}
+    .true-process-step h3{margin:15px 0 7px;font-size:14px;line-height:1.25;overflow-wrap:anywhere}
+    .true-process-step p{margin:0;color:var(--report-muted);font-size:11px;line-height:1.5}
+    .true-data-chart{display:grid;gap:13px;padding:18px;border:1px solid var(--report-line);border-radius:7px;background:var(--report-bg)}
+    .true-data-chart .chart-row{display:grid;grid-template-columns:minmax(100px,145px) minmax(0,1fr) 42px;align-items:center;gap:10px;font:10px var(--report-font-mono)}
+    .true-data-chart .chart-label{color:var(--report-muted);overflow-wrap:anywhere}
+    .true-data-chart .chart-track{height:12px;overflow:hidden;border-radius:2px;background:var(--report-surface-strong)}
+    .true-data-chart .chart-bar{height:100%;width:var(--bar-width);background:var(--report-ink);border-radius:2px}
+    .true-data-chart .chart-value{text-align:right;color:var(--report-ink)}
+    .true-data-foot{margin:9px 0 0;color:var(--report-faint);font-size:10px;line-height:1.5}
+    .true-status-list{display:grid;gap:9px}
+    .true-status-row{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;padding:12px 0;border-bottom:1px solid var(--report-line)}
+    .true-status-row:last-child{border-bottom:0}
+    .true-status-icon{display:flex;width:20px;height:20px;align-items:center;justify-content:center;border:1px solid var(--report-line-strong);border-radius:50%;font:600 10px var(--report-font-mono)}
+    .true-status-row strong{display:block;font-size:12px}
+    .true-status-row p{margin:4px 0 0;color:var(--report-muted);font-size:11px;line-height:1.5}
+    @media(max-width:760px){
+      .true-flow-row,.true-ingest-flow{grid-template-columns:minmax(0,1fr);gap:5px}
+      .true-arch-arrow{min-height:20px;transform:rotate(90deg)}
+      .true-branches{grid-template-columns:1fr}
+      .true-route-readout{grid-template-columns:1fr}
+      .true-process-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .true-process-step:last-child{grid-column:1/-1}
+    }
+    @media(max-width:480px){
+      .true-architecture{padding:11px}
+      .true-process-grid{grid-template-columns:1fr}
+      .true-process-step:last-child{grid-column:auto}
+      .true-data-chart .chart-row{grid-template-columns:95px minmax(0,1fr) 30px;gap:7px;font-size:9px}
+      .true-route-tab{flex:1 1 135px;text-align:left}
+    }
+    html.performance-lite .true-route-tab,html.performance-lite .true-arch-node{transition:none}
+  </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"CreativeWork","name":"TrueStack — Student Services AI Assistant","url":"https://nothing0g.github.io/analyst/projects/truestack-ai-assistant/","author":{"@type":"Person","name":"Shubham Kumar"},"keywords":["AI engineering","FastAPI","LangGraph","RAG","Python","software integration","evaluation"]}</script>
 </head>
 <body class="focused-report">
@@ -31,9 +88,11 @@
     <div class="dock-inner">
       <a href="#report" class="dock-item active" data-dock data-cursor-text="Report home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="dock-label">Report home</span></a>
       <a href="#snapshot" class="dock-item" data-dock data-cursor-text="Snapshot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg><span class="dock-label">Snapshot</span></a>
+      <a href="#architecture" class="dock-item" data-dock data-cursor-text="Architecture"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="8.5" y="14" width="7" height="7" rx="1"/><path d="M10 6.5h4M7 10v2h5v2M17.5 10v2h-5.5"/></svg><span class="dock-label">Architecture</span></a>
       <a href="#workflow" class="dock-item" data-dock data-cursor-text="Workflow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M12 19V5M20 19v-6"/></svg><span class="dock-label">Workflow</span></a>
       <a href="#ownership" class="dock-item" data-dock data-cursor-text="My role"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span class="dock-label">My role</span></a>
       <a href="#evaluation" class="dock-item" data-dock data-cursor-text="Evaluation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M12 19V5M20 19v-6"/></svg><span class="dock-label">Evaluation</span></a>
+      <a href="#data-footprint" class="dock-item" data-dock data-cursor-text="Data footprint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19H21M8 16V11M12 16V7M16 16V9M20 16V3"/></svg><span class="dock-label">Data footprint</span></a>
       <a href="#method" class="dock-item" data-dock data-cursor-text="Boundaries"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94z"/></svg><span class="dock-label">Boundaries</span></a>
       <a href="../" class="dock-item" data-cursor-text="All projects" data-transition><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span class="dock-label">All projects</span></a>
       <a href="../../index.html" class="dock-item" data-cursor-text="Portfolio" data-transition><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg><span class="dock-label">Portfolio</span></a>
@@ -54,7 +113,7 @@
 
   <main id="report" class="report-main"><div class="report-shell">
     <section class="report-section report-hero"><div class="report-section-inner report-hero-grid"><div>
-      <div class="report-kicker"><span class="mono">FILE / AI &amp; SOFTWARE</span><span class="rule"></span><span class="mono">CASE NO. 010 · HACKATHON TEAM PROJECT</span></div>
+      <div class="report-kicker"><span class="mono">FILE / AI &amp; SOFTWARE</span><span class="rule"></span><span class="mono">CASE NO. 009 · HACKATHON TEAM PROJECT</span></div>
       <h1>TrueStack — Student Services AI Assistant</h1>
       <p class="lede">How do you answer student questions with useful, source-backed guidance while keeping personal-record calculations deterministic, private, and auditable?</p>
       <div class="report-actions">
@@ -74,6 +133,50 @@
       </div>
     </div></section>
 
+    <section id="architecture" class="report-section"><div class="report-section-inner reveal">
+      <div class="section-label"><span class="mono">FILE / 02</span><span class="rule"></span><span>Interactive architecture map</span></div>
+      <div class="section-heading"><h2>One workflow. Four request paths.</h2><p>Choose a request type to highlight the components that take part. This is a map of the repository's design, not a live backend connection.</p></div>
+      <div class="true-route-picker" role="group" aria-label="Choose a request path">
+        <button class="true-route-tab" type="button" data-route-choice="policy" aria-pressed="true">Policy question</button>
+        <button class="true-route-tab" type="button" data-route-choice="records" aria-pressed="false">Student record</button>
+        <button class="true-route-tab" type="button" data-route-choice="general" aria-pressed="false">General question</button>
+        <button class="true-route-tab" type="button" data-route-choice="ingest" aria-pressed="false">Document ingestion</button>
+      </div>
+      <div class="true-architecture">
+        <div class="true-flow-row">
+          <article class="true-arch-node" data-node="ui"><span class="node-num">01 / CLIENT</span><strong>Streamlit UI</strong><p>Question, selected context, and response presentation</p></article>
+          <div class="true-arch-arrow" aria-hidden="true">→</div>
+          <article class="true-arch-node" data-node="api"><span class="node-num">02 / API</span><strong>FastAPI + Pydantic</strong><p>Request validation, identity header, structured response contract</p></article>
+          <div class="true-arch-arrow" aria-hidden="true">→</div>
+          <article class="true-arch-node is-active" data-node="workflow"><span class="node-num">03 / CONTROL</span><strong>LangGraph workflow</strong><p>One controlled route through retrieval, tools, checks, and response</p></article>
+        </div>
+        <p class="true-lane-title">Request-dependent components</p>
+        <div class="true-branches">
+          <article class="true-arch-node is-active" data-node="retrieval"><span class="node-num">04A / RETRIEVAL</span><strong>Embeddings + ChromaDB</strong><p>Search policy chunks and retain source, section, version, and page metadata</p></article>
+          <article class="true-arch-node" data-node="tools"><span class="node-num">04B / TOOLS</span><strong>Deterministic Python tools</strong><p>Calculate attendance, results, and eligibility using explicit rules</p></article>
+          <article class="true-arch-node" data-node="model"><span class="node-num">04C / LANGUAGE</span><strong>Local Qwen via Ollama</strong><p>Language responses and explanations when local inference is configured</p></article>
+        </div>
+        <div class="true-flow-row true-bottom-flow">
+          <article class="true-arch-node is-active" data-node="evidence"><span class="node-num">05 / GUARDRAILS</span><strong>Evidence + policy checks</strong><p>Source precedence, authorization, uncertainty, and refusal paths</p></article>
+          <div class="true-arch-arrow" aria-hidden="true">→</div>
+          <article class="true-arch-node" data-node="validation"><span class="node-num">06 / VALIDATE</span><strong>Response validation</strong><p>Check response type, citations, required fields, and boundary behavior</p></article>
+          <div class="true-arch-arrow" aria-hidden="true">→</div>
+          <article class="true-arch-node" data-node="audit"><span class="node-num">07 / OUTPUT</span><strong>Answer + trace</strong><p>Source citations, trace ID, and audit record</p></article>
+        </div>
+        <div class="true-ingest-flow">
+          <article class="true-arch-node" data-node="ingest"><span class="node-num">UPLOAD</span><strong>POST /ingest</strong><p>File plus source metadata</p></article>
+          <div class="true-arch-arrow" aria-hidden="true">→</div>
+          <article class="true-arch-node" data-node="extract"><span class="node-num">PROCESS</span><strong>Extract + chunk</strong><p>Prepare searchable text with source anchors</p></article>
+          <div class="true-arch-arrow" aria-hidden="true">→</div>
+          <article class="true-arch-node" data-node="source-register"><span class="node-num">STORE</span><strong>ChromaDB + SQLite register</strong><p>Index chunks and persist source metadata separately</p></article>
+        </div>
+      </div>
+      <div class="true-route-readout" aria-live="polite">
+        <div><span id="trueRouteTitle" class="mono" style="display:block;color:var(--report-faint);font-size:9px;letter-spacing:.08em">POLICY QUESTION PATH</span><h3 id="trueRouteHeading" style="margin-top:10px">Retrieve before explaining.</h3><p id="trueRouteDescription">A policy question searches source-indexed chunks, checks document scope and precedence, and only then composes a citation-aware explanation.</p></div>
+        <div><span class="mono" style="display:block;color:var(--report-faint);font-size:9px;letter-spacing:.08em;margin-bottom:8px">ILLUSTRATIVE REQUEST</span><div class="true-sample-prompt" id="trueRoutePrompt">“What does the placement policy say about PPO reporting?”</div><p id="trueRoutePath" style="margin-top:9px">Streamlit → FastAPI → LangGraph → retrieval → evidence checks → Qwen → response validation.</p></div>
+      </div>
+    </div></section>
+
     <section id="workflow" class="report-section"><div class="report-section-inner reveal">
       <div class="section-label"><span class="mono">FILE / 02</span><span class="rule"></span><span>System workflow</span></div>
       <div class="section-heading"><h2>Route by request—not by guesswork.</h2><p>FastAPI validates the request, then the central workflow selects the appropriate retrieval or tool path and returns structured output with trace information.</p></div>
@@ -86,6 +189,13 @@
         <article class="method-card"><h3>Retrieval</h3><p>Sentence Transformers and ChromaDB are included for indexed document retrieval; source metadata and policy precedence matter alongside similarity.</p></article>
         <article class="method-card"><h3>Deterministic tools</h3><p>SQLite-backed student, attendance, results, and eligibility scenarios keep calculations in code instead of asking a language model to invent numbers.</p></article>
         <article class="method-card"><h3>Local model path</h3><p>When configured for real inference, local Qwen runs through Ollama. Mock mode is intended for pipeline smoke tests, not model-quality claims.</p></article>
+      </div>
+      <div class="true-process-grid" aria-label="Request lifecycle">
+        <article class="true-process-step"><span>STEP 01</span><h3>Receive + validate</h3><p>Parse the request and validate the payload. Personal-data tools require a trusted student identity.</p></article>
+        <article class="true-process-step"><span>STEP 02</span><h3>Route by intent</h3><p>Use the workflow's rules-based routing for policy, record, calculation, and general-chat paths.</p></article>
+        <article class="true-process-step"><span>STEP 03</span><h3>Fetch or calculate</h3><p>Retrieve source passages or run deterministic Python tools over SQLite records.</p></article>
+        <article class="true-process-step"><span>STEP 04</span><h3>Check the evidence</h3><p>Apply source applicability, supersession, authority, recency, and conflict handling.</p></article>
+        <article class="true-process-step"><span>STEP 05</span><h3>Return a traceable result</h3><p>Validate the answer structure and retain citations, trace ID, audit metadata, or a clear refusal.</p></article>
       </div>
     </div></section>
 
@@ -110,6 +220,31 @@
       </div>
     </div></section>
 
+    <section id="data-footprint" class="report-section"><div class="report-section-inner reveal">
+      <div class="section-label"><span class="mono">FILE / 05</span><span class="rule"></span><span>Data &amp; evaluation evidence</span></div>
+      <div class="section-heading"><h2>Show what was checked—not just a success badge.</h2><p>The latest repository report records repeatable structural and deterministic-tool checks, but it explicitly does not claim a completed end-to-end RAG/LLM evaluation.</p></div>
+      <div class="chart-grid">
+        <article class="chart-card span-7">
+          <div class="chart-card-header"><div><span class="mono" style="font-size:9px;color:var(--report-faint)">SYNTHETIC DEMO DATA</span><h3 style="margin:8px 0 0;font-size:19px">Data footprint</h3></div><span class="report-status">Fictional records</span></div>
+          <div class="true-data-chart" role="img" aria-label="Data counts: 30 students, 6 courses, 90 attendance rows, 90 result rows">
+            <div class="chart-row"><span class="chart-label">Students</span><div class="chart-track"><div class="chart-bar" style="--bar-width:33.33%"></div></div><span class="chart-value">30</span></div>
+            <div class="chart-row"><span class="chart-label">Courses</span><div class="chart-track"><div class="chart-bar" style="--bar-width:6.67%"></div></div><span class="chart-value">6</span></div>
+            <div class="chart-row"><span class="chart-label">Attendance rows</span><div class="chart-track"><div class="chart-bar" style="--bar-width:100%"></div></div><span class="chart-value">90</span></div>
+            <div class="chart-row"><span class="chart-label">Result rows</span><div class="chart-track"><div class="chart-bar" style="--bar-width:100%"></div></div><span class="chart-value">90</span></div>
+          </div>
+          <p class="true-data-foot">Bars use the same count scale (maximum = 90 rows). The student records and policy edge-case fixtures are synthetic and must not be treated as real academic records.</p>
+        </article>
+        <article class="chart-card span-5">
+          <div class="chart-card-header"><div><span class="mono" style="font-size:9px;color:var(--report-faint)">DOCUMENTED CHECKS</span><h3 style="margin:8px 0 0;font-size:19px">Evaluation status</h3></div><span class="report-status">Partial</span></div>
+          <div class="true-status-list">
+            <div class="true-status-row"><span class="true-status-icon">✓</span><div><strong>29 evaluation cases</strong><p>Case structure and required categories checked.</p></div></div>
+            <div class="true-status-row"><span class="true-status-icon">✓</span><div><strong>7 independent tool-oracle cases</strong><p>Reported as passing against independent calculations from source CSV values.</p></div></div>
+            <div class="true-status-row"><span class="true-status-icon">…</span><div><strong>Full RAG / LLM run pending</strong><p>Live retrieval, local-model behavior, citation support, and seven new routing regression tests still required verification in the report dated 23 October 2026.</p></div></div>
+          </div>
+        </article>
+      </div>
+    </div></section>
+
     <section id="method" class="report-section"><div class="report-section-inner reveal">
       <div class="section-label"><span class="mono">FILE / 05</span><span class="rule"></span><span>Boundaries &amp; responsible use</span></div>
       <div class="recommendation"><div><h2>A demo—not an official student service.</h2></div><div><p>The project demonstrates routing, grounding, privacy checks, and auditable calculations. It is not connected to DTU’s live student systems and must not be used to make real academic decisions.</p>
@@ -128,11 +263,69 @@
     </div></section>
   </div></main>
 
-  <footer class="report-footer"><span>CASE NO. 010 · TrueStack student services AI assistant</span><div class="report-footer-links"><a href="../" data-transition>All projects</a><a href="https://github.com/Nothing0g/TrueStack_HCLTech_aiHackathon" target="_blank" rel="noreferrer">Source repository ↗</a><a href="../../index.html" data-transition>Portfolio</a></div></footer>
+  <footer class="report-footer"><span>CASE NO. 009 · TrueStack student services AI assistant</span><div class="report-footer-links"><a href="../" data-transition>All projects</a><a href="https://github.com/Nothing0g/TrueStack_HCLTech_aiHackathon" target="_blank" rel="noreferrer">Source repository ↗</a><a href="../../index.html" data-transition>Portfolio</a></div></footer>
   <div class="cmdk-overlay" id="cmdkOverlay"><div class="cmdk-box"><div class="cmdk-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input class="cmdk-input" id="cmdkInput" type="text" placeholder="Type a command or search…" autocomplete="off"><span class="cmdk-esc">ESC</span></div><div class="cmdk-list" id="cmdkList"></div></div></div>
   <div class="wash-overlay" id="washOverlay"></div>
   <button class="back-to-top" id="backToTop" aria-label="Back to top" data-cursor-text="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button>
   <div class="toast-wrap" id="toastWrap"></div>
   <script src="../shared/report-shell.js?v=history-v1"></script>
-</body>
+  <script>
+    (() => {
+      const routeConfigs = {
+        policy: {
+          title: 'POLICY QUESTION PATH',
+          heading: 'Retrieve before explaining.',
+          description: 'A policy question searches source-indexed chunks, checks document scope and precedence, and only then composes a citation-aware explanation.',
+          prompt: '“What does the placement policy say about PPO reporting?”',
+          path: 'Streamlit → FastAPI → LangGraph → retrieval → evidence checks → Qwen → response validation.',
+          nodes: ['ui','api','workflow','retrieval','evidence','model','validation','audit']
+        },
+        records: {
+          title: 'STUDENT RECORD PATH',
+          heading: 'Calculate with code, not model guesses.',
+          description: 'Student-specific requests require trusted identity context. Python tools read the relevant SQLite records and apply explicit calculation rules; unauthorized cross-student requests are rejected before personal-data tools run.',
+          prompt: '“What is my attendance?”',
+          path: 'Streamlit + trusted student ID → FastAPI → LangGraph → Python tools → SQLite → checks → response validation + audit.',
+          nodes: ['ui','api','workflow','tools','evidence','validation','audit']
+        },
+        general: {
+          title: 'GENERAL QUESTION PATH',
+          heading: 'Use the language model for language tasks.',
+          description: 'General questions can be answered using the configured local Qwen model through Ollama. Mock mode is for pipeline smoke testing and is not evidence of real model quality.',
+          prompt: '“Explain the difference between precision and recall.”',
+          path: 'Streamlit → FastAPI → LangGraph → local Qwen / Ollama → response validation → trace.',
+          nodes: ['ui','api','workflow','model','validation','audit']
+        },
+        ingest: {
+          title: 'DOCUMENT INGESTION PATH',
+          heading: 'Index a document without activating its rules.',
+          description: 'The ingestion endpoint accepts a file and source metadata, extracts and chunks text, updates the retrieval index and keeps source-register metadata in SQLite. A newly indexed policy number does not automatically become an active calculation rule.',
+          prompt: 'POST /ingest — file + structured source metadata',
+          path: 'Upload → extraction / chunking → ChromaDB index + SQLite source register; rule activation is a separate, reviewed step.',
+          nodes: ['ingest','extract','source-register','retrieval']
+        }
+      };
+      const buttons = Array.from(document.querySelectorAll('[data-route-choice]'));
+      const nodes = Array.from(document.querySelectorAll('[data-node]'));
+      const title = document.getElementById('trueRouteTitle');
+      const heading = document.getElementById('trueRouteHeading');
+      const description = document.getElementById('trueRouteDescription');
+      const prompt = document.getElementById('trueRoutePrompt');
+      const path = document.getElementById('trueRoutePath');
+      function selectRoute(name) {
+        const config = routeConfigs[name];
+        if (!config) return;
+        buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.routeChoice === name)));
+        nodes.forEach(node => node.classList.toggle('is-active', config.nodes.includes(node.dataset.node)));
+        title.textContent = config.title;
+        heading.textContent = config.heading;
+        description.textContent = config.description;
+        prompt.textContent = config.prompt;
+        path.textContent = config.path;
+      }
+      buttons.forEach(button => button.addEventListener('click', () => selectRoute(button.dataset.routeChoice)));
+      selectRoute('policy');
+    })();
+  </script>
+ </body>
 </html>
