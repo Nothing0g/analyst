@@ -108,3 +108,46 @@ html.performance-lite .projects-index-page .project-card.reveal{opacity:1;transf
 html.performance-lite .project-card,html.performance-lite .project-card *{transition-duration:.01ms!important}
 html.performance-lite .project-card:hover{transform:none;box-shadow:none}
 html.performance-lite .spotlight-card::before{display:none}
+
+
+/* VISUAL POLISH PASS — cleaner card hierarchy and less decorative movement. */
+.projects-index-page .project-grid{gap:18px}
+.projects-index-page .project-card{border-radius:8px;box-shadow:none}
+.projects-index-page .project-card:hover{transform:translateY(-2px);box-shadow:none;border-color:var(--report-line-strong)}
+.projects-index-page .project-visual{min-height:168px;padding:13px 15px}
+.projects-index-page .project-card-featured .project-visual{min-height:178px}
+.projects-index-page .project-card-body{padding:20px}
+.projects-index-page .project-meta{font-size:9px;letter-spacing:.06em}
+.projects-index-page .project-status{font-size:8px;line-height:1.4}
+.projects-index-page .project-card h3{font-size:clamp(18px,1.65vw,22px);line-height:1.22;letter-spacing:-.035em;margin:14px 0 9px}
+.projects-index-page .project-card p{font-size:13px;line-height:1.65}
+.projects-index-page .project-tags{gap:6px}
+.projects-index-page .project-tags span{font-size:9px;padding:5px 8px}
+.projects-index-page .project-open{font-size:10px}
+.projects-index-page .filter-pills{gap:8px}
+.projects-index-page .filter-pill{min-height:40px;padding:9px 12px}
+.projects-index-page .work-hero{padding-top:80px;padding-bottom:54px}
+.projects-index-page .work-archive{padding-top:56px;padding-bottom:76px}
+.projects-index-page .work-lede{max-width:64ch;font-size:16px;line-height:1.65}
+.projects-index-page .archive-controls{gap:12px;padding:14px}
+.projects-index-page .search-wrap{min-height:48px}
+.projects-index-page .search-wrap input{font-size:14px}
+.projects-index-page .project-card.reveal{opacity:1;transform:none;transition:transform .2s ease,border-color .2s ease}
+.projects-index-page.motion-ready .project-card.reveal:not(.is-visible){opacity:0;transform:translateY(12px)}
+.projects-index-page.motion-ready .project-card.reveal.is-visible{opacity:1;transform:none}
+html.performance-lite .projects-index-page .project-card.reveal{opacity:1;transform:none;transition:none}
+html.performance-lite .projects-index-page .project-card:hover{transform:none;box-shadow:none}
+@media(max-width:760px){
+  .projects-index-page .work-hero{padding-top:62px;padding-bottom:40px}
+  .projects-index-page .work-archive{padding-top:44px;padding-bottom:58px}
+  .projects-index-page .project-card-body{padding:17px}
+  .projects-index-page .project-card h3{font-size:20px}
+  .projects-index-page .project-card p{font-size:13px}
+}
+@media(pointer:coarse){
+  .projects-index-page .project-card:hover{transform:none;box-shadow:none}
+  .projects-index-page .spotlight-card::before{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .projects-index-page .project-card,.projects-index-page .project-card.reveal{transition:none;opacity:1;transform:none}
+}
