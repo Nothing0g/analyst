@@ -28,3 +28,13 @@
 .motivation-connector{color:var(--report-faint);font-size:20px}
 @media(max-width:760px){.case-flow{grid-template-columns:1fr;gap:8px}.case-flow>i{justify-self:center;transform:rotate(90deg)}.case-flow article h3{margin-top:14px}.case-flow-simple>i{transform:rotate(90deg)}.pid-revision-figure{grid-template-columns:1fr}}
 @media(max-width:600px){.case-observation{padding:12px}.case-observation-head{font-size:7px}.case-observation svg{min-height:135px}.case-chart-label{font-size:12px}.motivation-map{grid-template-columns:1fr;gap:11px;padding:14px}.motivation-connector{justify-self:center;transform:rotate(90deg)}}
+
+
+/* Checked-sheet overrides for shared project-specific diagrams */
+.case-flow article,.case-observation,.pid-sheet,.motivation-map,.motivation-node { border-radius:0; box-shadow:none; }
+.case-flow article>span,.case-observation-head,.motivation-node .mono { font:12px/1.45 var(--report-font-sans); letter-spacing:0; text-transform:lowercase; }
+.case-flow>i,.motivation-connector { color:var(--report-muted); }
+.pid-sheet { border-color:var(--report-line-strong); }
+.pid-sheet figcaption { color:var(--report-muted); font:12px/1.45 var(--report-font-sans); }
+.pid-sheet figcaption .mono { color:var(--report-ink); font:12px/1.45 var(--report-font-mono); }
+.case-observation>p { color:var(--report-muted); font:12px/1.55 var(--report-font-sans); }
