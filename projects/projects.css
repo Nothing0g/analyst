@@ -72,12 +72,15 @@ html{scroll-snap-type:none}
 .mech-button,.mech-latch{padding:8px 9px;border:1px solid var(--report-line-strong);border-radius:4px;background:var(--report-bg)}
 .mechanism-diagram b,.motivation-pulse b{padding:11px 13px;border:1px solid var(--report-ink);border-radius:4px;background:var(--report-bg);font-weight:600}
 .motivation-pulse>span{padding:6px 8px;border:1px solid var(--report-line);border-radius:4px;background:var(--report-bg)}
-.project-card-body{display:flex;flex:1;flex-direction:column;padding:18px 19px 17px}
-.project-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--report-faint);font-size:8px;letter-spacing:.075em}
-.project-status{flex:none;padding:3px 6px;border:1px solid var(--report-line);border-radius:3px;color:var(--report-muted);font-size:7px}
-.project-card h3{margin:15px 0 8px;font-size:clamp(17px,2vw,21px);line-height:1.14;letter-spacing:-.04em}
-.project-card p{max-width:600px;margin:0;color:var(--report-muted);font-size:12px;line-height:1.6}
-.project-card-foot{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-top:auto;padding-top:18px}
+.project-card-body{display:flex;flex:1;flex-direction:column;min-width:0;padding:18px 19px 17px}
+.project-meta{display:flex;flex-wrap:wrap;align-items:flex-start;gap:7px 10px;min-width:0;color:var(--report-faint);font-size:8px;letter-spacing:.075em;line-height:1.45}
+.project-meta>span:first-child{flex:1 1 135px;min-width:0;overflow-wrap:anywhere}
+.project-status{flex:0 1 auto;max-width:100%;min-width:0;padding:3px 6px;border:1px solid var(--report-line);border-radius:3px;color:var(--report-muted);font-size:7px;white-space:normal;overflow-wrap:anywhere;line-height:1.35}
+.project-card h3{margin:15px 0 8px;font-size:clamp(17px,2vw,21px);line-height:1.14;letter-spacing:-.04em;overflow-wrap:anywhere;hyphens:auto}
+.project-card p{max-width:600px;margin:0;color:var(--report-muted);font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+.project-card-foot{display:flex;justify-content:space-between;align-items:end;gap:12px;min-width:0;margin-top:auto;padding-top:18px}
+.project-tags{min-width:0}
+.project-open{max-width:100%;overflow-wrap:anywhere}
 .project-tags{display:flex;flex-wrap:wrap;gap:5px}
 .project-tags span{padding:4px 7px;border:1px solid var(--report-line);border-radius:20px;color:var(--report-muted);font:8px var(--report-font-mono)}
 .project-open{flex:none;color:var(--report-ink);font:600 9px var(--report-font-mono)}
@@ -98,3 +101,10 @@ html{scroll-snap-type:none}
 .projects-index-page .project-card:nth-child(1){transition-delay:0ms}.projects-index-page .project-card:nth-child(2){transition-delay:60ms}.projects-index-page .project-card:nth-child(3){transition-delay:120ms}.projects-index-page .project-card:nth-child(4){transition-delay:180ms}
 .projects-index-page .project-card:nth-child(n+5){transition-delay:0ms}
 @media(prefers-reduced-motion:reduce){.projects-index-page .project-card.reveal{opacity:1;transform:none}}
+
+
+/* Lightweight mode: keep all project information visible without scroll-reveal motion. */
+html.performance-lite .projects-index-page .project-card.reveal{opacity:1;transform:none;transition:none}
+html.performance-lite .project-card,html.performance-lite .project-card *{transition-duration:.01ms!important}
+html.performance-lite .project-card:hover{transform:none;box-shadow:none}
+html.performance-lite .spotlight-card::before{display:none}
