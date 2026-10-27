@@ -68,10 +68,10 @@
       <figure class="hero-evidence" aria-labelledby="hero-chart-title">
         <div class="figure-head">
           <div>
-            <p class="figure-kicker">From the project register · Case 001</p>
+            <p class="figure-kicker">Ride-demand analysis</p>
             <h2 id="hero-chart-title">Demand changes. Failure barely moves.</h2>
           </div>
-          <span class="figure-number">01</span>
+          
         </div>
         <svg class="demand-chart" viewBox="0 0 560 240" role="img" aria-labelledby="chart-title chart-desc">
           <title id="chart-title">Hourly demand and reported service-failure range</title>
@@ -115,46 +115,130 @@
             <tr><th scope="col">Case</th><th scope="col">Project and question</th><th scope="col">Finding</th><th scope="col">Data</th><th scope="col">Status</th></tr>
           </thead>
           <tbody>
-            <tr class="register-row" data-search="uber demand supply failure bookings python pandas time series operations">
-              <td class="case-id">001</td><td><a class="project-name" href="projects/uber-ride-demand/"><span>Uber ride demand analytics</span></a><p>Does service failure rise with hourly demand?</p></td>
-              <td>Demand swings about 9×; the published failure rate stays near 24–26% by hour.</td><td>150,000 bookings; flagged as likely synthetic or simulated</td><td><span class="status"><i></i>Reported, caveat noted</span></td>
+
+            <tr class="register-row" data-search="uber demand supply failure bookings python pandas time series operations synthetic simulation">
+              <td class="case-id">001</td>
+              <td><a class="project-name" href="projects/uber-ride-demand/"><span>Uber ride demand analytics</span></a><p>Does service failure rise with hourly demand?</p></td>
+              <td>Demand swings about 9×; the published failure rate stays near 24–26% by hour.</td>
+              <td>150,000 bookings; likely simulated</td>
+              <td><span class="status"><i></i>Reported, caveat noted</span></td>
             </tr>
             <tr class="register-row" data-search="hr employee attrition overtime classification machine learning scikit learn python">
-              <td class="case-id">002</td><td><a class="project-name" href="projects/hr-employee-attrition/"><span>Employee attrition analysis</span></a><p>Which employee groups show different attrition rates?</p></td>
-              <td>Observed attrition was 30.5% for overtime employees versus 10.4% without overtime; this is not causal proof.</td><td>1,470 employee records; original CSV</td><td><span class="status"><i></i>Reported</span></td>
+              <td class="case-id">002</td>
+              <td><a class="project-name" href="projects/hr-employee-attrition/"><span>Employee attrition analysis</span></a><p>Which groups show different attrition rates?</p></td>
+              <td>Observed attrition was 30.5% for overtime employees versus 10.4% without overtime; this is not causal proof.</td>
+              <td>1,470 employee records; source CSV</td>
+              <td><span class="status"><i></i>Reported</span></td>
             </tr>
             <tr class="register-row" data-search="cultfit fitness user behavior survey product research motivation competition thunkable">
-              <td class="case-id">003</td><td><a class="project-name" href="projects/cultfit-user-behavior/"><span>CultFit user behavior</span></a><p>What might get college students to stay engaged?</p></td>
-              <td>A competition-led MVP responds to a motivation hypothesis; its effect was not measured.</td><td>Survey of about 200 college students</td><td><span class="status"><i></i>Field study</span></td>
+              <td class="case-id">003</td>
+              <td><a class="project-name" href="projects/cultfit-user-behavior/"><span>CultFit user behaviour</span></a><p>What might get college students to stay engaged?</p></td>
+              <td>A competition-led MVP responds to a motivation hypothesis; its impact was not measured.</td>
+              <td>Survey of about 200 college students</td>
+              <td><span class="status"><i></i>Field study</span></td>
             </tr>
             <tr class="register-row" data-search="posha battery door latch mechanical engineering CAD tolerance fatigue design">
-              <td class="case-id">004</td><td><a class="project-name" href="projects/posha-battery-door/"><span>POSHA battery-door latch</span></a><p>How can a compact latch release reliably?</p></td>
-              <td>A three-part, wedge-driven concept was selected after strength, tolerance, fatigue, and assembly trade-offs.</td><td>CAD mechanism; no statistical sample</td><td><span class="status"><i></i>Design report</span></td>
+              <td class="case-id">004</td>
+              <td><a class="project-name" href="projects/posha-battery-door/"><span>POSHA battery-door latch</span></a><p>How can a compact latch release reliably?</p></td>
+              <td>A three-part, wedge-driven concept was selected after strength, tolerance, fatigue, and assembly trade-offs.</td>
+              <td>CAD mechanism; no statistical sample</td>
+              <td><span class="status"><i></i>Design report</span></td>
             </tr>
             <tr class="register-row" data-search="loan approval logistic regression model credit history fairness baseline python">
-              <td class="case-id">005</td><td><a class="project-name" href="projects/loan-approval/"><span>Loan approval baseline</span></a><p>Which selected fields are associated with approval?</p></td>
-              <td>Credit history is the strongest observed relationship in the selected-field exploration; this is not a lending-ready model.</td><td>Public Kaggle dataset; sample size is documented in the report</td><td><span class="status"><i></i>Baseline</span></td>
+              <td class="case-id">005</td>
+              <td><a class="project-name" href="projects/loan-approval/"><span>Loan approval baseline</span></a><p>Which selected fields are associated with approval?</p></td>
+              <td>Credit history is the strongest observed relationship in the selected-field exploration; this is not a lending-ready model.</td>
+              <td>Public Kaggle dataset; sample size not stated here</td>
+              <td><span class="status"><i></i>Baseline</span></td>
             </tr>
             <tr class="register-row" data-search="interior lead funnel business analysis conversion response SLA SQL python synthetic">
-              <td class="case-id">006</td><td><a class="project-name" href="projects/interior-lead-funnel/"><span>Interior lead-funnel analysis</span></a><p>Where should a team investigate delayed or lost leads?</p></td>
-              <td>Referral leads showed a 41.7% sample win rate versus 10.4% for Paid Social in a fictional cohort.</td><td>192 fictional lead records</td><td><span class="status"><i></i>Synthetic</span></td>
+              <td class="case-id">006</td>
+              <td><a class="project-name" href="projects/interior-lead-funnel/"><span>Interior lead-funnel analysis</span></a><p>Where should a sales team investigate delayed or lost leads?</p></td>
+              <td>Referral leads had a 41.7% sample win rate versus 10.4% for Paid Social in a fictional cohort.</td>
+              <td>192 fictional lead records</td>
+              <td><span class="status"><i></i>Synthetic</span></td>
             </tr>
             <tr class="register-row" data-search="turbine maintenance copilot telemetry anomaly detection fastapi evidence retrieval prototype synthetic">
-              <td class="case-id">007</td><td><a class="project-name" href="projects/turbine-maintenance-copilot/"><span>Turbine maintenance copilot</span></a><p>Can an assistant return traceable, bounded maintenance evidence?</p></td>
-              <td>Synthetic tests trigger human review and keep evidence IDs visible; they do not establish field reliability.</td><td>Authored telemetry examples; 144 evaluated rows</td><td><span class="status"><i></i>Prototype</span></td>
+              <td class="case-id">007</td>
+              <td><a class="project-name" href="projects/turbine-maintenance-copilot/"><span>Turbine maintenance copilot</span></a><p>Can a maintenance assistant return traceable, bounded evidence?</p></td>
+              <td>Synthetic tests trigger human review and keep evidence IDs visible; they do not establish field reliability.</td>
+              <td>Authored telemetry examples; 144 evaluated rows</td>
+              <td><span class="status"><i></i>Prototype</span></td>
             </tr>
             <tr class="register-row" data-search="PID P&ID engineering document intelligence revision graph extraction validation prototype synthetic">
-              <td class="case-id">008</td><td><a class="project-name" href="projects/pid-engineering-document-intelligence/"><span>P&amp;ID document intelligence</span></a><p>Can drawing changes become a traceable engineering graph?</p></td>
-              <td>The example comparison catches additions and removals; it does not claim arbitrary OCR.</td><td>Two authored synthetic P&amp;ID sheets</td><td><span class="status"><i></i>Prototype</span></td>
+              <td class="case-id">008</td>
+              <td><a class="project-name" href="projects/pid-engineering-document-intelligence/"><span>P&amp;ID document intelligence</span></a><p>Can drawing changes become a traceable engineering graph?</p></td>
+              <td>The comparison catches additions and removals across two authored examples; it does not claim arbitrary OCR.</td>
+              <td>Two authored synthetic P&amp;ID sheets</td>
+              <td><span class="status"><i></i>Prototype</span></td>
             </tr>
             <tr class="register-row" data-search="TrueStack student services AI assistant LangGraph FastAPI RAG SQLite hackathon prototype">
-              <td class="case-id">009</td><td><a class="project-name" href="projects/truestack-ai-assistant/"><span>TrueStack student-services assistant</span></a><p>Can policy and student-data questions take different safe paths?</p></td>
-              <td>One workflow joins cited policy retrieval with deterministic, access-checked tools and response validation.</td><td>Hackathon prototype; local test data</td><td><span class="status"><i></i>Hackathon prototype</span></td>
+              <td class="case-id">009</td>
+              <td><a class="project-name" href="projects/truestack-ai-assistant/"><span>TrueStack student-services assistant</span></a><p>Can policy and student-data questions take different safe paths?</p></td>
+              <td>One workflow joins cited policy retrieval with deterministic, access-checked tools and response validation.</td>
+              <td>Hackathon prototype; local test data</td>
+              <td><span class="status"><i></i>Hackathon prototype</span></td>
             </tr>
           </tbody>
         </table>
         <p class="register-footnote">Sample sizes and data descriptions follow the project reports where stated. Synthetic and prototype results are labelled as such; they should not be read as production outcomes.</p>
         <p class="no-results" id="registerEmpty" hidden>No reports match that search.</p>
+      </div>
+    </section>
+
+
+    <section class="content-section case-sheet-section" aria-labelledby="lead-sheet-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">A closer look</p><h2 id="lead-sheet-title">Interior lead-funnel analysis.</h2></div>
+        <p class="section-intro">One business question, with the data, method, finding, and limits in one place.</p>
+      </div>
+      <article class="drawing-sheet lead-sheet">
+        <div class="sheet-head">
+          <div><p class="sheet-kicker">Business analysis</p><h3>Which sources convert—and where does follow-up slip?</h3></div>
+          <span class="status"><i></i>Synthetic sample</span>
+        </div>
+        <div class="sheet-fields">
+          <div class="sheet-field"><h4>Data</h4><p>192 fictional home-interior enquiries and a 66-lead sample follow-up queue. No real customer records were used.</p></div>
+          <div class="sheet-field"><h4>Method</h4><p>Compared source-level consultation and won rates, then measured attainment of a four-hour response target.</p></div>
+          <div class="sheet-field finding-field"><h4>Finding</h4><p>Referral leads had a 41.7% sample win rate versus 10.4% for paid social. Response-target attainment also varied sharply by source.</p><span class="finding-mark" aria-hidden="true"></span></div>
+          <div class="sheet-field"><h4>Limits</h4><p>The records are synthetic. This demonstrates an analysis workflow, not real channel performance or evidence that source alone causes conversion.</p></div>
+          <div class="sheet-field"><h4>Next check</h4><p>Validate source definitions, compare lead quality and spend, and test whether faster follow-up changes conversion before recommending budget shifts.</p></div>
+        </div>
+        <div class="drawing-title-block">
+          <div><span>Prepared by</span><strong>Shubham Kumar</strong></div>
+          <div><span>Tools</span><strong>SQL · Python · Power BI</strong></div>
+          <div><span>Revision</span><strong class="mono">01</strong></div>
+          <a href="projects/interior-lead-funnel/">Read the full report</a>
+        </div>
+      </article>
+    </section>
+
+    <section class="content-section case-sheet-section" aria-labelledby="paired-sheets-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">Other work</p><h2 id="paired-sheets-title">Different questions need different methods.</h2></div>
+        <p class="section-intro">Two shorter examples: one classification problem and one applied-AI workflow. Both include what still needs proving.</p>
+      </div>
+      <div class="drawing-sheet-pair">
+        <article class="drawing-sheet mini-sheet">
+          <div class="sheet-head"><div><p class="sheet-kicker">Data analysis</p><h3>Employee attrition analysis</h3></div><span class="status"><i></i>Reported</span></div>
+          <div class="sheet-fields compact-fields">
+            <div class="sheet-field"><h4>Question</h4><p>Which groups show higher attrition, and which model catches leavers?</p></div>
+            <div class="sheet-field"><h4>Data</h4><p>1,470 employee records from a benchmark dataset.</p></div>
+            <div class="sheet-field finding-field"><h4>Finding</h4><p>Attrition was 30.5% for overtime employees versus 10.4% without overtime. Logistic Regression caught more leavers than Random Forest despite lower accuracy.</p><span class="finding-mark" aria-hidden="true"></span></div>
+            <div class="sheet-field"><h4>Limits</h4><p>This is an observed association, not proof that overtime causes exits. Model performance also depends on class balance and the chosen split.</p></div>
+          </div>
+          <div class="mini-sheet-footer"><span>Python · pandas · scikit-learn</span><a href="projects/hr-employee-attrition/">Read report</a></div>
+        </article>
+        <article class="drawing-sheet mini-sheet">
+          <div class="sheet-head"><div><p class="sheet-kicker">Applied AI</p><h3>TrueStack student-services assistant</h3></div><span class="status"><i></i>Hackathon prototype</span></div>
+          <div class="sheet-fields compact-fields">
+            <div class="sheet-field"><h4>Question</h4><p>How should policy questions and personal-record requests take different paths?</p></div>
+            <div class="sheet-field"><h4>Data</h4><p>Synthetic policy examples and local demo records.</p></div>
+            <div class="sheet-field finding-field"><h4>Finding</h4><p>A LangGraph workflow routes policy questions to cited retrieval and student-specific requests to deterministic, access-checked tools.</p><span class="finding-mark" aria-hidden="true"></span></div>
+            <div class="sheet-field"><h4>Limits</h4><p>This is a hackathon prototype, not a production campus service. The policy and student examples are synthetic and need further testing.</p></div>
+          </div>
+          <div class="mini-sheet-footer"><span>FastAPI · LangGraph · RAG · SQLite</span><a href="projects/truestack-ai-assistant/">Read report</a></div>
+        </article>
       </div>
     </section>
 
