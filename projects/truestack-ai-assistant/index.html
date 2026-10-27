@@ -14,7 +14,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared/report.css?v=checked-sheet-20261027">
   <link rel="stylesheet" href="../shared/case-pages.css">
   <style>
@@ -78,21 +78,17 @@
 </head>
 <body class="focused-report">
   <a class="skip-link" href="#report">Skip to case study</a>
-  <header class="topbar report-topbar">
-    <a class="report-brand" href="../../index.html">Shubham Kumar <span>· DTU</span></a>
-    <nav class="report-site-nav" aria-label="Main navigation">
-      <a href="../">Work</a>
-      <a href="../../index.html#about">About</a>
-      <a href="mailto:shubham1sure@gmail.com">Contact</a>
-      <button class="theme-toggle report-theme-toggle" id="reportThemeToggle" type="button" aria-label="Switch theme" title="Switch theme">
-        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-      </button>
+  <header class="site-header report-site-header">
+    <a class="wordmark" href="../../index.html">Shubham Kumar<span class="wordmark-period">.</span></a>
+    <nav aria-label="Main navigation">
+      <a href="../../index.html#work">Work</a><a href="../../index.html#about">About</a><a href="mailto:shubham1sure@gmail.com">Contact</a>
+      <button class="theme-toggle" id="reportThemeToggle" type="button" aria-label="Switch theme" aria-pressed="false"><svg id="reportThemeIcon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></svg></button>
     </nav>
   </header>
 
   <main id="report" class="report-main"><div class="report-shell">
     <section class="report-section report-hero"><div class="report-section-inner report-hero-grid"><div>
-      <div class="report-kicker"><span class="mono">FILE / AI &amp; SOFTWARE</span><span class="rule"></span><span class="mono">CASE NO. 009 · HACKATHON TEAM PROJECT</span></div>
+      <div class="report-kicker"><span>Case 009</span><span class="rule"></span><span>Method, findings and limits</span></div>
       <h1>TrueStack — Student Services AI Assistant</h1>
       <p class="lede">How do you answer student questions with useful, source-backed guidance while keeping personal-record calculations deterministic, private, and auditable?</p>
       <div class="report-actions">
@@ -101,7 +97,7 @@
       </div>
     </div><aside class="signal-panel"><span class="report-status">Hackathon prototype</span><h2>One controlled workflow. Different tools.</h2><p>Policy retrieval, deterministic Python tools, and response validation sit inside a single routed process rather than a collection of autonomous agents.</p><div class="signal-line"></div><div class="signal-foot"><span>My contribution</span><strong>Team lead · Backend &amp; integration</strong></div></aside></div></section>
 
-    <section id="snapshot" class="report-section"><div class="report-section-inner reveal">
+    <section id="snapshot" class="report-section"><div class="report-section-inner">
       <div class="section-label"><span class="mono">FILE / 01</span><span class="rule"></span><span>Project snapshot</span></div>
       <div class="section-heading"><h2>Ground answers in the right kind of evidence.</h2><p>The assistant routes each request to document retrieval, deterministic data tools, or general conversation according to the question and available evidence.</p></div>
       <div class="metric-grid">
@@ -112,7 +108,7 @@
       </div>
     </div></section>
 
-    <section id="architecture" class="report-section"><div class="report-section-inner reveal">
+    <section id="architecture" class="report-section"><div class="report-section-inner">
       <div class="section-label"><span class="mono">FILE / 02</span><span class="rule"></span><span>Interactive architecture map</span></div>
       <div class="section-heading"><h2>One workflow. Four request paths.</h2><p>Choose a request type to highlight the components that take part. This is a map of the repository's design, not a live backend connection.</p></div>
       <div class="true-route-picker" role="group" aria-label="Choose a request path">
@@ -158,7 +154,7 @@
       </div>
     </div></section>
 
-    <section id="workflow" class="report-section"><div class="report-section-inner reveal">
+    <section id="workflow" class="report-section"><div class="report-section-inner">
       <div class="section-label"><span class="mono">FILE / 02</span><span class="rule"></span><span>System workflow</span></div>
       <div class="section-heading"><h2>Route by request—not by guesswork.</h2><p>FastAPI validates the request, then the central workflow selects the appropriate retrieval or tool path and returns structured output with trace information.</p></div>
       <div class="case-flow">
@@ -180,7 +176,7 @@
       </div>
     </div></section>
 
-    <section id="ownership" class="report-section"><div class="report-section-inner reveal">
+    <section id="ownership" class="report-section"><div class="report-section-inner">
       <div class="section-label"><span class="mono">FILE / 03</span><span class="rule"></span><span>My role in the team</span></div>
       <div class="section-heading"><h2>Team lead, backend, and integration.</h2><p>This was a three-person project. My main ownership was the end-to-end workflow and the interfaces that let the separate components work as one application; the UI and final integration were team efforts.</p></div>
       <div class="insight-grid">
@@ -191,7 +187,7 @@
       <p class="section-copy">The team split component work across policy and retrieval, student data and deterministic tools, and the central backend workflow. The repository README documents that ownership division and identifies the Streamlit interface and final integration as team efforts.</p>
     </div></section>
 
-    <section id="evaluation" class="report-section"><div class="report-section-inner reveal">
+    <section id="evaluation" class="report-section"><div class="report-section-inner">
       <div class="section-label"><span class="mono">FILE / 04</span><span class="rule"></span><span>Evaluation status</span></div>
       <div class="section-heading"><h2>Separate checks from claims.</h2><p>The repository contains a structured evaluation set and independent checks for deterministic-tool outputs. Its dated report explicitly distinguishes those checks from a full end-to-end RAG/LLM evaluation.</p></div>
       <div class="insight-grid">
@@ -201,7 +197,7 @@
       </div>
     </div></section>
 
-    <section id="data-footprint" class="report-section"><div class="report-section-inner reveal">
+    <section id="data-footprint" class="report-section"><div class="report-section-inner">
       <div class="section-label"><span class="mono">FILE / 05</span><span class="rule"></span><span>Data &amp; evaluation evidence</span></div>
       <div class="section-heading"><h2>Show what was checked—not just a success badge.</h2><p>The latest repository report records repeatable structural and deterministic-tool checks, but it explicitly does not claim a completed end-to-end RAG/LLM evaluation.</p></div>
       <div class="chart-grid">
@@ -226,7 +222,7 @@
       </div>
     </div></section>
 
-    <section id="method" class="report-section"><div class="report-section-inner reveal">
+    <section id="method" class="report-section"><div class="report-section-inner">
       <div class="section-label"><span class="mono">FILE / 05</span><span class="rule"></span><span>Boundaries &amp; responsible use</span></div>
       <div class="recommendation"><div><h2>A demo—not an official student service.</h2></div><div><p>The project demonstrates routing, grounding, privacy checks, and auditable calculations. It is not connected to DTU’s live student systems and must not be used to make real academic decisions.</p>
         <ol>
@@ -244,11 +240,7 @@
     </div></section>
   </div></main>
 
-  <footer class="report-footer"><span>CASE NO. 009 · TrueStack student services AI assistant</span><div class="report-footer-links"><a href="../" data-transition>All projects</a><a href="https://github.com/Nothing0g/TrueStack_HCLTech_aiHackathon" target="_blank" rel="noreferrer">Source repository ↗</a><a href="../../index.html" data-transition>Portfolio</a></div></footer>
-  <div class="cmdk-overlay" id="cmdkOverlay"><div class="cmdk-box"><div class="cmdk-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input class="cmdk-input" id="cmdkInput" type="text" placeholder="Type a command or search…" autocomplete="off"><span class="cmdk-esc">ESC</span></div><div class="cmdk-list" id="cmdkList"></div></div></div>
-  <div class="wash-overlay" id="washOverlay"></div>
-  <button class="back-to-top" id="backToTop" aria-label="Back to top" data-cursor-text="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button>
-  <div class="toast-wrap" id="toastWrap"></div>
+  <footer class="report-footer"><span>Case 009 · Source, method and limits included</span><div class="report-footer-links"><a href="../">All reports</a><a href="../../index.html#work">Work index</a><a href="mailto:shubham1sure@gmail.com">Contact</a></div></footer>
   <script src="../shared/report-shell.js?v=checked-sheet-20261027"></script>
   <script>
     (() => {
