@@ -2,232 +2,118 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>All Projects &amp; Case Studies — Shubham Kumar</title>
-  <meta name="description" content="Explore nine case studies by Shubham Kumar across data analytics, data science, software, product thinking, and applied AI.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project register | Shubham Kumar</title>
+  <meta name="description" content="Nine case studies by Shubham Kumar across business and data analysis, product work, engineering and applied AI. Each includes context and data limitations.">
   <link rel="canonical" href="https://nothing0g.github.io/analyst/projects/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://nothing0g.github.io/analyst/projects/">
-  <meta property="og:title" content="All Projects &amp; Case Studies — Shubham Kumar">
-  <meta property="og:description" content="A complete archive of case studies across analytics, software, product thinking, and applied AI.">
+  <meta property="og:title" content="Project register | Shubham Kumar">
+  <meta property="og:description" content="Nine case studies across data analysis, product work, engineering and applied AI.">
   <meta property="og:image" content="https://nothing0g.github.io/analyst/assets/og-card.svg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="shared/report.css?v=editorial-studio-20261027">
-  <link rel="stylesheet" href="projects.css?v=editorial-studio-20261027">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css?v=checked-sheet-20261027">
+  <link rel="stylesheet" href="projects.css?v=checked-sheet-20261027">
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"CollectionPage","name":"Shubham Kumar — Project Case Studies","url":"https://nothing0g.github.io/analyst/projects/","about":{"@type":"Person","name":"Shubham Kumar"},"numberOfItems":9}
   </script>
 </head>
-<body class="focused-report projects-index-page">
-  <a class="skip-link" href="#projectGrid">Skip to projects</a>
-  <div class="scroll-progress-track" aria-hidden="true"><div class="scroll-progress" id="scrollProgress"></div></div>
-  <div class="grid-backdrop" aria-hidden="true"></div>
-  <canvas class="bg-interactive" id="bgCanvas" aria-hidden="true"></canvas>
-  <div class="cursor-dot" id="cursorDot"></div>
-  <div class="cursor-follow" id="cursorFollow"><span id="cursorFollowText"></span></div>
-  <nav class="dock" aria-label="Project archive navigation"><div class="dock-inner">
-    <a href="#report" class="dock-item active" data-dock data-cursor-text="Archive home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="dock-label">Overview</span></a>
-    <a href="#projectGrid" class="dock-item" data-dock data-cursor-text="All projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span class="dock-label">Projects</span></a>
-    <a href="../index.html" class="dock-item" data-cursor-text="Portfolio home" data-transition><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg><span class="dock-label">Portfolio</span></a>
-    <div class="dock-divider"></div>
-    <button class="dock-item" id="dockThemeBtn" data-cursor-text="Toggle theme"><svg id="dockThemeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></svg><span class="dock-label">Toggle theme</span></button>
-  </div></nav>
-
-  <header class="topbar report-topbar">
-    <a class="report-brand" href="../index.html" data-transition data-cursor-text="Portfolio home"><i></i> SHUBHAM KUMAR / WORK INDEX</a>
-    <div class="topbar-right report-top-actions">
-      <button class="kbd-chip report-search" id="reportSearch" type="button" data-cursor-text="Search projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>Search</span><kbd>⌘K</kbd></button>
-      <a class="report-top-link" data-cursor-text="Back to portfolio" href="../index.html" data-transition><span>Portfolio</span></a>
-      <button class="icon-btn report-icon-btn" id="reportThemeToggle" aria-label="Toggle theme"></button>
-    </div>
+<body class="archive-page" id="top">
+  <a class="skip-link" href="#projectGrid">Skip to project register</a>
+  <header class="topbar">
+    <a class="wordmark" href="../index.html">Shubham Kumar <span>· DTU</span></a>
+    <nav aria-label="Main navigation">
+      <a href="../index.html">Home</a>
+      <a href="#projectGrid" aria-current="page">Work</a>
+      <a href="../index.html#about">About</a>
+      <a href="mailto:shubham1sure@gmail.com">Contact</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+    </nav>
   </header>
-
-  <main id="report" class="work-main report-main">
-    <section class="work-hero report-section">
-      <div class="work-hero-inner report-section-inner">
-        <p class="work-kicker mono"><span></span> PROJECT ARCHIVE <b>·</b> 09 CASEFILES</p>
-        <div class="work-heading-row">
-          <div>
-            <h1>Work, in context.</h1>
-            <p class="work-lede">A collection of case studies across data analytics, data science, software development, product thinking, and applied AI. Each casefile shows the question, evidence, implementation choices, and limitations.</p>
-          </div>
-          <a class="work-back-link" href="../index.html" data-transition>← Back to portfolio</a>
-        </div>
-        <div class="work-meta-row mono"><span>09 PROJECTS</span><span>03 PRACTICE AREAS</span><span>01 PRINCIPLE: EVIDENCE FIRST</span></div>
-      </div>
+  <main class="page-width archive-main" id="main">
+    <section class="archive-hero">
+      <p class="small-label">Work archive</p>
+      <h1>Projects, with the working shown.</h1>
+      <p>Nine case studies across business analysis, data science, product work, engineering and applied AI. The register makes the question, finding, data source and status easy to compare before you open a report.</p>
+      <div class="archive-meta"><span>9 case studies</span><span>3 practice areas</span><span>Limits stated where relevant</span></div>
     </section>
-
-    <section id="archive" class="work-archive report-section" aria-labelledby="archive-title">
-      <div class="work-archive-inner report-section-inner reveal">
-        <div class="archive-heading">
-          <div>
-            <p class="archive-eyebrow mono">CASE FILES / 001—009</p>
-            <h2 id="archive-title">Browse the archive</h2>
-          </div>
-          <p id="resultCount" class="result-count mono" aria-live="polite">9 projects</p>
+    <section class="archive-section" aria-labelledby="registerTitle">
+      <div class="archive-controls">
+        <div>
+          <h2 id="registerTitle">Project register</h2>
+          <p id="resultCount" aria-live="polite">Showing 9 projects</p>
         </div>
-
-        <div class="archive-controls">
-          <label class="search-wrap">
-            <span class="sr-only">Search projects</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16 16 5 5"></path></svg>
-            <input id="projectSearch" type="search" placeholder="Search projects, tools, or topics" autocomplete="off">
-            <kbd>⌘ K</kbd>
+        <div class="archive-tools">
+          <label class="search-control"><span>Search the register</span><input id="projectSearch" type="search" placeholder="Name, tool, method or finding" autocomplete="off"></label>
+          <label class="filter-control"><span>Practice area</span>
+            <select id="projectFilter">
+              <option value="all">All areas</option>
+              <option value="analytics">Data and analytics</option>
+              <option value="product-design">Product and design</option>
+              <option value="engineering-ai">Engineering and AI</option>
+            </select>
           </label>
-          <div class="filter-pills" role="group" aria-label="Filter projects by area">
-            <button class="filter-pill is-active" type="button" data-filter="all" aria-pressed="true">All work <span>09</span></button>
-            <button class="filter-pill" type="button" id="engineering-ai-filter" data-filter="engineering-ai" aria-pressed="false">Engineering AI <span>03</span></button>
-            <button class="filter-pill" type="button" id="analytics-filter" data-filter="analytics" aria-pressed="false">Data &amp; analytics <span>04</span></button>
-            <button class="filter-pill" type="button" id="product-design-filter" data-filter="product-design" aria-pressed="false">Product &amp; design <span>02</span></button>
-          </div>
         </div>
-
-        <div class="project-grid" id="projectGrid">
-          <a class="project-card spotlight-card reveal" data-transition data-cursor-text="Open casefile" href="uber-ride-demand/" data-category="analytics" data-search="uber ride demand analytics supply failure operations time series python sql 150000">
-            <div class="project-visual chart-visual" aria-hidden="true">
-              <div class="visual-top mono"><span>BOOKINGS / HOUR</span><span>24H</span></div>
-              <svg viewBox="0 0 520 130" role="presentation"><path class="visual-gridline" d="M0 30H520M0 65H520M0 100H520"/><path class="visual-line strong-line" d="M0 105 L22 112 L44 115 L66 118 L88 120 L110 111 L132 96 L154 78 L176 58 L198 40 L220 51 L242 63 L264 59 L286 67 L308 72 L330 64 L352 51 L374 35 L396 18 L418 26 L440 42 L462 62 L484 81 L520 99"/><path class="visual-line coral-line" d="M0 54 C70 51 95 57 150 54 S240 53 300 54 S420 55 520 52"/></svg>
-              <div class="visual-bottom mono"><span>~9× DEMAND SWING</span><span>~25% FAILURE, FLAT</span></div>
-            </div>
-            <div class="project-card-body">
-              <div class="project-meta mono"><span>CASE 001 · ANALYTICS</span><span class="project-status">REPORTED</span></div>
-              <h3>Uber Ride Demand Analytics</h3>
-              <p>Separate changing ride volume from service health across 150,000 bookings to ask whether supply failure follows peak demand.</p>
-              <div class="project-card-foot"><div class="project-tags"><span>Python</span><span>Time series</span><span>Operations</span></div><span class="project-open">Read case <b>↗</b></span></div>
-            </div>
-          </a>
-
-          <a class="project-card spotlight-card reveal" data-transition data-cursor-text="Open casefile" href="hr-employee-attrition/" data-category="analytics" data-search="employee attrition HR analysis classification machine learning overtime recall dashboard python scikit-learn">
-            <div class="project-visual attrition-visual" aria-hidden="true">
-              <div class="visual-top mono"><span>ATTRITION / OVERTIME</span><span>1,470 EMPLOYEES</span></div>
-              <div class="comparison-bars"><span><i>Overtime</i><b style="--bar:82%">31%</b></span><span><i>No overtime</i><b style="--bar:27%">10%</b></span></div>
-              <div class="visual-bottom mono"><span>3.1× RATE DIFFERENCE</span><span>EDA + MODEL</span></div>
-            </div>
-            <div class="project-card-body">
-              <div class="project-meta mono"><span>CASE 002 · ANALYTICS</span><span class="project-status">REPORTED</span></div>
-              <h3>HR Employee Attrition Analysis</h3>
-              <p>Explore employee attrition drivers and compare models with a focus on identifying leavers—not accuracy alone.</p>
-              <div class="project-card-foot"><div class="project-tags"><span>Python</span><span>scikit-learn</span><span>Classification</span></div><span class="project-open">Read case <b>↗</b></span></div>
-            </div>
-          </a>
-
-          <a class="project-card spotlight-card reveal" data-transition data-cursor-text="Open casefile" href="cultfit-user-behavior/" data-category="product-design" data-search="CultFit user behavior survey customer insight college students motivation Thunkable MVP fitness product">
-            <div class="project-visual cultfit-visual" aria-hidden="true">
-              <div class="visual-top mono"><span>USER RESEARCH / GEN Z FITNESS</span><span>~200 RESPONSES</span></div>
-              <div class="motivation-pulse"><span>ACCESS</span><i></i><b>MOTIVATION</b><i></i><span>COMPETITION</span></div>
-              <div class="visual-bottom mono"><span>ONE INSIGHT → ONE MVP</span><span>THUNKABLE</span></div>
-            </div>
-            <div class="project-card-body">
-              <div class="project-meta mono"><span>CASE 003 · PRODUCT &amp; DESIGN</span><span class="project-status">FIELD STUDY</span></div>
-              <h3>User Behavior Analytics — CultFit</h3>
-              <p>Survey research that surfaced motivation as a core barrier to fitness-app use, followed by a competition-led MVP concept.</p>
-              <div class="project-card-foot"><div class="project-tags"><span>Survey research</span><span>Customer insight</span><span>Thunkable</span></div><span class="project-open">Read case <b>↗</b></span></div>
-            </div>
-          </a>
-
-          <a class="project-card spotlight-card reveal" data-transition data-cursor-text="Open casefile" href="posha-battery-door/" data-category="product-design" data-search="POSHA battery door latch mechanism mechanical design fusion 360 FEA tolerance DFM">
-            <div class="project-visual mechanism-visual" aria-hidden="true">
-              <div class="visual-top mono"><span>CONCEPT / FORCE PATH</span><span>3 PARTS</span></div>
-              <div class="mechanism-diagram"><span class="mech-button">INPUT</span><i></i><b>45° WEDGE</b><i></i><span class="mech-latch">LATCH</span></div>
-              <div class="visual-bottom mono"><span>40.95 MPa PEAK STRESS</span><span>FoS ≈ 1.5</span></div>
-            </div>
-            <div class="project-card-body">
-              <div class="project-meta mono"><span>CASE 004 · PRODUCT &amp; DESIGN</span><span class="project-status">REPORTED</span></div>
-              <h3>POSHA Battery Door Latching Mechanism</h3>
-              <p>A three-part wedge-driven latch concept selected through tolerance, fatigue, assembly-risk, and strength trade-offs.</p>
-              <div class="project-card-foot"><div class="project-tags"><span>Fusion 360</span><span>FEA</span><span>DFM</span></div><span class="project-open">Read case <b>↗</b></span></div>
-            </div>
-          </a>
-
-          <a class="project-card spotlight-card reveal" data-transition data-cursor-text="Open casefile" href="loan-approval/" data-category="analytics" data-search="loan approval analysis logistic regression risk baseline public data python fairness">
-            <div class="project-visual loan-visual" aria-hidden="true">
-              <div class="visual-top mono"><span>MODEL CHECK / HOLDOUT</span><span>BASELINE</span></div>
-              <div class="recall-bars"><span><i>Approved recall</i><b style="--bar:98%">0.98</b></span><span><i>Not-approved recall</i><b style="--bar:42%">0.42</b></span></div>
-              <div class="visual-bottom mono"><span>ACCURACY ≠ WHOLE STORY</span><span>70 / 30 SPLIT</span></div>
-            </div>
-            <div class="project-card-body">
-              <div class="project-meta mono"><span>CASE 005 · ANALYTICS</span><span class="project-status">BASELINE</span></div>
-              <h3>Loan Approval Analysis</h3>
-              <p>An interpretable logistic-regression baseline that examines associations while making class imbalance and fairness limits explicit.</p>
-              <div class="project-card-foot"><div class="project-tags"><span>Python</span><span>Logistic regression</span><span>Risk analysis</span></div><span class="project-open">Read case <b>↗</b></span></div>
-            </div>
-          </a>
-
-          <a class="project-card spotlight-card reveal" data-transition data-cursor-text="Open casefile" href="interior-lead-funnel/" data-category="analytics" data-search="interior lead funnel leak detector business analysis conversion response SLA SQL python power bi synthetic">
-            <div class="project-visual funnel-visual" aria-hidden="true">
-              <div class="visual-top mono"><span>LEAD FUNNEL / SAMPLE DATA</span><span>192 LEADS</span></div>
-              <div class="funnel-bars"><span style="--bar:100%"><i>Enquiry</i><b>192</b></span><span style="--bar:76%"><i>Consultation</i><b>146</b></span><span style="--bar:37%"><i>Won</i><b>71</b></span></div>
-              <div class="visual-bottom mono"><span>4-HOUR RESPONSE SLA</span><span>BY SOURCE</span></div>
-            </div>
-            <div class="project-card-body">
-              <div class="project-meta mono"><span>CASE 006 · ANALYTICS</span><span class="project-status">SYNTHETIC</span></div>
-              <h3>Interior Lead Funnel Leak Detector</h3>
-              <p>A source-level funnel scorecard for 192 fictional enquiries, tracking response speed, consultation, wins, and a follow-up queue.</p>
-              <div class="project-card-foot"><div class="project-tags"><span>SQL</span><span>Python</span><span>Funnel analysis</span></div><span class="project-open">Read case <b>↗</b></span></div>
-            </div>
-          </a>
-
-          <a class="project-card spotlight-card reveal project-card-featured" data-transition data-cursor-text="Open casefile" href="turbine-maintenance-copilot/" data-category="engineering-ai" data-search="turbine maintenance copilot telemetry anomaly detection python fastapi evidence retrieval synthetic">
-            <div class="project-visual turbine-visual" aria-hidden="true">
-              <div class="visual-top mono"><span>LP-BRG-02 / TELEMETRY</span><span class="live-dot"></span></div>
-              <svg viewBox="0 0 520 150" role="presentation"><path class="visual-gridline" d="M0 30H520M0 75H520M0 120H520"/><path class="visual-line faint-line" d="M0 98 C40 90 55 108 92 93 S150 101 189 88 S251 102 290 75 S349 89 389 57 S451 68 520 27"/><path class="visual-line strong-line" d="M0 109 C40 104 60 94 96 103 S150 84 194 91 S252 76 294 82 S350 62 391 69 S450 42 520 46"/><circle class="visual-point" cx="391" cy="69" r="5"/><circle class="visual-alert" cx="520" cy="46" r="7"/></svg>
-              <div class="visual-bottom mono"><span>TREND → REVIEW</span><span>144 ROWS</span></div>
-            </div>
-            <div class="project-card-body">
-              <div class="project-meta mono"><span>CASE 007 · ENGINEERING AI</span><span class="project-status">PROTOTYPE</span></div>
-              <h3>Turbine Maintenance Intelligence Copilot</h3>
-              <p>Telemetry quality, rolling anomaly detection, and transparent maintenance-evidence retrieval—combined into a bounded, human-reviewed recommendation.</p>
-              <div class="project-card-foot"><div class="project-tags"><span>Python</span><span>Anomaly detection</span><span>FastAPI</span></div><span class="project-open">Read case <b>↗</b></span></div>
-            </div>
-          </a>
-
-          <a class="project-card spotlight-card reveal project-card-featured" data-transition data-cursor-text="Open casefile" href="pid-engineering-document-intelligence/" data-category="engineering-ai" data-search="pid engineering document intelligence drawing revision graph extraction validation python evidence">
-            <div class="project-visual pid-visual" aria-hidden="true">
-              <div class="visual-top mono"><span>P100-UTILITIES / REVISION PAIR</span><span class="revision-label">A → B</span></div>
-              <div class="pid-mini-flow"><span>TK-101</span><i></i><b>P-101</b><i></i><span>E-101</span></div>
-              <div class="pid-changes"><span><b>+ FT-101</b> added instrument</span><span><b>− PT-101</b> removed instrument</span><span><b>✓ 5</b> entities linked to evidence</span></div>
-              <div class="visual-bottom mono"><span>GRAPH VALIDATION</span><span>SYNTHETIC P&amp;ID</span></div>
-            </div>
-            <div class="project-card-body">
-              <div class="project-meta mono"><span>CASE 008 · ENGINEERING AI</span><span class="project-status">PROTOTYPE</span></div>
-              <h3>P&amp;ID Engineering-Document Intelligence</h3>
-              <p>Turn a drawing into a traceable engineering graph: extract typed entities, compare revisions, validate connections, and answer narrow questions with source evidence.</p>
-              <div class="project-card-foot"><div class="project-tags"><span>Document AI</span><span>Graph modeling</span><span>Revision diff</span></div><span class="project-open">Read case <b>↗</b></span></div>
-            </div>
-          </a>
-
-          <a class="project-card spotlight-card reveal project-card-featured" data-transition data-cursor-text="Open casefile" href="truestack-ai-assistant/" data-category="engineering-ai" data-search="truestack HCLTech AI hackathon student services assistant team lead backend integration FastAPI LangGraph RAG SQLite citations privacy software">
-            <div class="project-visual pid-visual" aria-hidden="true">
-              <div class="visual-top mono"><span>REQUEST / ROUTED WORKFLOW</span><span class="revision-label">LOCAL</span></div>
-              <div class="pid-mini-flow"><span>QUESTION</span><i></i><b>LANGGRAPH</b><i></i><span>TOOLS</span></div>
-              <div class="pid-changes"><span><b>RAG</b> cited policy</span><span><b>SQL</b> deterministic tools</span><span><b>✓</b> audit trace</span></div>
-              <div class="visual-bottom mono"><span>FASTAPI + PYDANTIC</span><span>TEAM-LED</span></div>
-            </div>
-            <div class="project-card-body">
-              <div class="project-meta mono"><span>CASE 009 · ENGINEERING AI</span><span class="project-status">HACKATHON</span></div>
-              <h3>TrueStack — Student Services AI Assistant</h3>
-              <p>A local-first assistant that combines source-cited policy retrieval with deterministic, access-checked student-data tools through one workflow.</p>
-              <div class="project-card-foot"><div class="project-tags"><span>FastAPI</span><span>LangGraph</span><span>RAG</span></div><span class="project-open">Read case <b>↗</b></span></div>
-            </div>
-          </a>
-        </div>
-        <div class="empty-state" id="emptyState" hidden>No projects match that search. Try a different keyword or filter.</div>
-        <p class="archive-note">The engineering AI demos use synthetic telemetry, authored procedures, and synthetic P&amp;ID sheets. They are portfolio prototypes—not plant deployments, autonomous systems, design approvals, or safety certifications.</p>
       </div>
+      <div class="archive-table-wrap" role="region" aria-label="Filterable project register" tabindex="0">
+        <table class="archive-table" id="projectGrid">
+          <caption>Case studies, with each project linked to its report.</caption>
+          <thead><tr><th scope="col">ID</th><th scope="col">Project and question</th><th scope="col">Finding</th><th scope="col">Data</th><th scope="col">Status</th></tr></thead>
+          <tbody>
+            <tr data-category="analytics" data-search="interior lead funnel leak detector sql python power bi conversion referral paid social sla synthetic home interior leads">
+              <td class="mono archive-id">006</td><td><a href="interior-lead-funnel/" class="archive-project-title">Interior lead funnel leak detector</a><p>Which lead sources convert, and where does follow-up slip?</p></td>
+              <td>Referral win rate was 41.7% versus 10.4% for paid social in the sample.</td><td>192 fictional enquiries</td><td><span class="status"><i></i>Synthetic sample</span></td>
+            </tr>
+            <tr data-category="analytics" data-search="uber ride demand supply failure time series operations python sql hourly rides synthetic simulated ncr">
+              <td class="mono archive-id">001</td><td><a href="uber-ride-demand/" class="archive-project-title">Ride demand and supply failure</a><p>Does supply failure only rise during busy hours?</p></td>
+              <td>Demand changed by about 9×; supply failure stayed near 25% across hours.</td><td>150,000 ride records; likely synthetic or simulated</td><td><span class="status"><i></i>Resolved</span></td>
+            </tr>
+            <tr data-category="analytics" data-search="hr employee attrition overtime logistic regression random forest python scikit learn dashboard 1470">
+              <td class="mono archive-id">002</td><td><a href="hr-employee-attrition/" class="archive-project-title">Employee attrition analysis</a><p>Which employee segments show higher attrition?</p></td>
+              <td>Attrition was about 31% among employees working overtime versus 10% among others.</td><td>1,470 employee records</td><td><span class="status"><i></i>Resolved</span></td>
+            </tr>
+            <tr data-category="analytics" data-search="loan approval credit history logistic regression accuracy recall python pandas baseline public dataset">
+              <td class="mono archive-id">005</td><td><a href="loan-approval/" class="archive-project-title">Loan approval baseline</a><p>What can a simple, interpretable model reveal?</p></td>
+              <td>Credit history had the strongest observed association in the selected dataset.</td><td>Public applicant dataset; logistic-regression baseline</td><td><span class="status"><i></i>Baseline</span></td>
+            </tr>
+            <tr data-category="product-design" data-search="cultfit user behaviour fitness survey college students motivation competition leaderboard thunkable mvp">
+              <td class="mono archive-id">003</td><td><a href="cultfit-user-behavior/" class="archive-project-title">CultFit user behaviour research</a><p>What might help students stay engaged with fitness?</p></td>
+              <td>Survey feedback pointed to motivation; a competition-based MVP explored that idea.</td><td>Survey of about 200 college students</td><td><span class="status"><i></i>Research and MVP</span></td>
+            </tr>
+            <tr data-category="product-design" data-search="posha battery door latching mechanism fusion 360 fea fatigue tolerance design for manufacture">
+              <td class="mono archive-id">004</td><td><a href="posha-battery-door/" class="archive-project-title">POSHA battery-door mechanism</a><p>Which latch concept balances strength and assembly?</p></td>
+              <td>FEA showed 40.95 MPa peak stress against a 65 MPa material yield assumption.</td><td>CAD, FEA and tolerance analysis</td><td><span class="status"><i></i>Selected concept</span></td>
+            </tr>
+            <tr data-category="engineering-ai" data-search="turbine maintenance intelligence copilot telemetry anomaly detection fastapi evidence review synthetic data">
+              <td class="mono archive-id">007</td><td><a href="turbine-maintenance-copilot/" class="archive-project-title">Turbine maintenance intelligence copilot</a><p>Can telemetry and maintenance evidence support a bounded review?</p></td>
+              <td>The demo keeps data-quality checks, anomaly flags and evidence IDs visible.</td><td>144 synthetic telemetry rows, two assets</td><td><span class="status"><i></i>Prototype</span></td>
+            </tr>
+            <tr data-category="engineering-ai" data-search="pid engineering document intelligence revision compare graph validation evidence synthetic drawings">
+              <td class="mono archive-id">008</td><td><a href="pid-engineering-document-intelligence/" class="archive-project-title">P&amp;ID document intelligence</a><p>Can drawing revisions be compared with traceable evidence?</p></td>
+              <td>The demo identifies revision changes and flags a dangling connection.</td><td>Synthetic P&amp;ID revision pair</td><td><span class="status"><i></i>Prototype</span></td>
+            </tr>
+            <tr data-category="engineering-ai" data-search="truestack student services ai assistant fastapi langgraph rag sqlite hackathon synthetic policy">
+              <td class="mono archive-id">009</td><td><a href="truestack-ai-assistant/" class="archive-project-title">TrueStack student services assistant</a><p>How can policy retrieval and student tools share one workflow?</p></td>
+              <td>RAG and access-checked deterministic tools run through one LangGraph workflow.</td><td>Hackathon prototype with synthetic policy examples</td><td><span class="status"><i></i>Hackathon prototype</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p id="emptyState" class="empty-state" hidden>No projects match that search. Try another term or area.</p>
+      <p class="archive-footnote">Synthetic and simulated datasets are identified in the register and in the relevant case report. Findings from those datasets are examples of method, not real-company benchmarks.</p>
     </section>
   </main>
-
-  <footer class="report-footer work-footer"><span>© 2026 Shubham Kumar · Project archive</span><div class="report-footer-links"><a href="../index.html" data-transition>Portfolio home</a><a href="mailto:shubham1sure@gmail.com">Get in touch</a></div></footer>
-<div class="chart-tooltip" aria-hidden="true"></div>
-  <div class="cmdk-overlay" id="cmdkOverlay"><div class="cmdk-box"><div class="cmdk-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input class="cmdk-input" id="cmdkInput" type="text" placeholder="Type a command or search…" autocomplete="off"><span class="cmdk-esc">ESC</span></div><div class="cmdk-list" id="cmdkList"></div></div></div>
-  <div class="wash-overlay" id="washOverlay"></div>
-  <button class="back-to-top" id="backToTop" aria-label="Back to top" data-cursor-text="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button>
-  <div class="toast-wrap" id="toastWrap"></div>
-
-  <script src="shared/report-shell.js?v=editorial-studio-20261027"></script>
-  <script src="projects.js"></script>
+  <footer class="site-footer page-width">
+    <span>© 2026 Shubham Kumar</span>
+    <a href="../index.html">Portfolio home</a>
+    <a href="mailto:shubham1sure@gmail.com">Contact</a>
+  </footer>
+  <script src="../script.js?v=checked-sheet-20261027"></script>
+  <script src="projects.js?v=checked-sheet-20261027"></script>
 </body>
 </html>
