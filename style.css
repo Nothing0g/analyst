@@ -1130,3 +1130,14 @@ footer,.footer{color:var(--fg-faint)}
 
 /* The decorative cursor is disabled in this visual direction; preserve the native pointer. */
 html.custom-cursor,html.custom-cursor *{cursor:auto!important}
+
+
+/* Final consistency pass: restrained accent and section boundaries. */
+.case-card:nth-child(2),.case-card:nth-child(3),.case-card:nth-child(4){border-top-color:var(--border-strong)}
+.section{border-top:1px solid var(--border)}
+#about,#toolkit{background:var(--bg-elevated)}
+#experience,#cases,#contact{background:var(--bg)}
+.hero-proof-item+.hero-proof-item{border-left:1px solid var(--border);padding-left:20px}
+@media(max-width:640px){
+  .hero-proof-item+.hero-proof-item{border-left:0;padding-left:0}
+}
