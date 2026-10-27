@@ -1,43 +1,30 @@
 (() => {
-  const cards = Array.from(document.querySelectorAll('.project-card'));
-  const filterButtons = Array.from(document.querySelectorAll('.filter-pill'));
+  const rows = Array.from(document.querySelectorAll('#projectGrid tbody tr'));
   const search = document.getElementById('projectSearch');
+  const filter = document.getElementById('projectFilter');
   const count = document.getElementById('resultCount');
   const empty = document.getElementById('emptyState');
-  let activeFilter = 'all';
 
   function update() {
     const query = (search?.value || '').trim().toLowerCase();
-    let shown = 0;
-    cards.forEach((card) => {
-      const categoryMatches = activeFilter === 'all' || card.dataset.category === activeFilter;
-      const searchText = `${card.dataset.search || ''} ${card.textContent || ''}`.toLowerCase();
-      const searchMatches = !query || searchText.includes(query);
-      const visible = categoryMatches && searchMatches;
-      card.hidden = !visible;
-      if (visible) shown += 1;
+    const category = filter?.value || 'all';
+    let visibleCount = 0;
+    rows.forEach((row) => {
+      const matchesCategory = category === 'all' || row.dataset.category === category;
+      const matchesQuery = !query || (row.dataset.search + ' ' + row.textContent).toLowerCase().includes(query);
+      const visible = matchesCategory && matchesQuery;
+      row.hidden = !visible;
+      if (visible) visibleCount += 1;
     });
-    if (count) count.textContent = `${shown} ${shown === 1 ? 'project' : 'projects'}`;
-    if (empty) empty.hidden = shown !== 0;
+    if (count) count.textContent = 'Showing ' + visibleCount + (visibleCount === 1 ? ' project' : ' projects');
+    if (empty) empty.hidden = visibleCount !== 0;
   }
-
-  filterButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      activeFilter = button.dataset.filter || 'all';
-      filterButtons.forEach((item) => {
-        const selected = item === button;
-        item.classList.toggle('is-active', selected);
-        item.setAttribute('aria-pressed', String(selected));
-      });
-      update();
-    });
-  });
   search?.addEventListener('input', update);
-  document.querySelectorAll('[data-filter-target]').forEach((link) => {
-    link.addEventListener('click', () => {
-      const button = filterButtons.find((item) => item.dataset.filter === link.dataset.filterTarget);
-      button?.click();
-    });
+  filter?.addEventListener('change', update);
+  window.addEventListener('keydown', (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+      if (search) { event.preventDefault(); search.focus(); }
+    }
   });
   update();
 })();
