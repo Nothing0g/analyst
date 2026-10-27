@@ -15,7 +15,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared/report.css?v=checked-sheet-20261027">
   <link rel="stylesheet" href="posha.css">
   <script type="application/ld+json">
@@ -24,15 +24,11 @@
 </head>
 <body class="focused-report">
   <a class="skip-link" href="#report">Skip to case study</a>
-  <header class="topbar report-topbar">
-    <a class="report-brand" href="../../index.html">Shubham Kumar <span>· DTU</span></a>
-    <nav class="report-site-nav" aria-label="Main navigation">
-      <a href="../">Work</a>
-      <a href="../../index.html#about">About</a>
-      <a href="mailto:shubham1sure@gmail.com">Contact</a>
-      <button class="theme-toggle report-theme-toggle" id="reportThemeToggle" type="button" aria-label="Switch theme" title="Switch theme">
-        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-      </button>
+  <header class="site-header report-site-header">
+    <a class="wordmark" href="../../index.html">Shubham Kumar<span class="wordmark-period">.</span></a>
+    <nav aria-label="Main navigation">
+      <a href="../../index.html#work">Work</a><a href="../../index.html#about">About</a><a href="mailto:shubham1sure@gmail.com">Contact</a>
+      <button class="theme-toggle" id="reportThemeToggle" type="button" aria-label="Switch theme" aria-pressed="false"><svg id="reportThemeIcon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></svg></button>
     </nav>
   </header>
 
@@ -41,12 +37,12 @@
       <section class="report-section report-hero">
         <div class="report-section-inner report-hero-grid">
           <div>
-            <div class="report-kicker"><span class="mono">FILE / PROJECT REPORT</span><span class="rule"></span><span class="mono">CASE NO. 004 · MECHANICAL DESIGN</span></div>
+            <div class="report-kicker"><span>Case 004</span><span class="rule"></span><span>Method, findings and limits</span></div>
             <h1>POSHA Battery Door Mechanism</h1>
             <p class="lede">Can a 3-piece, wedge-driven latch make a 2-AA battery door compact, durable, and satisfying to operate?</p>
             <div class="report-actions">
-              <a class="report-btn" data-cursor-text="Open final PDF" href="assets/Shubham_Battery_Door_Latching_Mechanism.pdf" target="_blank" rel="noreferrer">Open final project PDF <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-              <a class="report-btn secondary" data-cursor-text="Focus mechanism" href="#dashboard">Jump to mechanism <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14m7-7-7 7-7-7"/></svg></a>
+              <a class="report-btn" href="assets/Shubham_Battery_Door_Latching_Mechanism.pdf" target="_blank" rel="noreferrer">Open final project PDF <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a class="report-btn secondary" href="#dashboard">Jump to mechanism <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14m7-7-7 7-7-7"/></svg></a>
             </div>
           </div>
           <aside class="signal-panel" aria-label="Primary case signal">
@@ -60,7 +56,7 @@
       </section>
 
       <section id="snapshot" class="report-section" aria-labelledby="snapshot-title">
-        <div class="report-section-inner reveal">
+        <div class="report-section-inner">
           <div class="section-label"><span class="mono">FILE / 01</span><span class="rule"></span><span>Executive snapshot</span></div>
           <div class="section-heading"><h2 id="snapshot-title">The design decision first.</h2><p>Concept exploration was narrowed by degrees of freedom, assembly risk, fatigue, tolerance sensitivity, and user feel.</p></div>
           <div class="metric-grid">
@@ -73,7 +69,7 @@
       </section>
 
       <section id="dashboard" class="report-section" aria-labelledby="dashboard-title">
-        <div class="report-section-inner reveal">
+        <div class="report-section-inner">
           <div class="section-label"><span class="mono">FILE / 02</span><span class="rule"></span><span>Mechanism walkthrough</span></div>
           <div class="section-heading"><h2 id="dashboard-title">A straight force translation.</h2><p>Downward button input travels through a 45° wedge, rotates the latch, and lets the battery springs eject the door once the catch clears.</p></div>
           <div class="posha-hero-schematic" role="img" aria-label="Schematic showing button plunger, wedge sled, rotating latch, and battery door movement">
@@ -107,7 +103,7 @@
       </section>
 
       <section id="insights" class="report-section" aria-labelledby="insights-title">
-        <div class="report-section-inner reveal">
+        <div class="report-section-inner">
           <div class="section-label"><span class="mono">FILE / 03</span><span class="rule"></span><span>Validation readout</span></div>
           <div class="section-heading"><h2 id="insights-title">Evidence before confidence.</h2><p>The design was checked as a mechanism, a material system, and a manufacturing proposition — with the remaining risks clearly named.</p></div>
           <div class="posha-validation">
@@ -125,7 +121,7 @@
       </section>
 
       <section id="recommendation" class="report-section" aria-labelledby="recommendation-title">
-        <div class="report-section-inner reveal">
+        <div class="report-section-inner">
           <div class="recommendation">
             <div><div class="section-label" style="color:inherit"><span class="mono">FILE / 04</span><span class="rule" style="background:currentColor"></span><span>Design decision</span></div><h2 id="recommendation-title">Choose the reliable path, then test the feel.</h2></div>
             <div><p>The selected wedge system won because it reduced assembly complexity without accepting the long-term creep risk of the compliant flexure.</p><ol><li><strong>Prototype the 3-piece system.</strong> Use SLA printing to check button travel, tactile click, latch release, and spring-assisted door ejection.</li><li><strong>Refine the wedge angle.</strong> Compare the reported 45° starting point against real friction and wear behavior.</li><li><strong>Keep the fillet change.</strong> Increase the inner latch-hook radius by 0.5 mm to distribute bending stress and improve durability.</li></ol></div>
@@ -134,7 +130,7 @@
       </section>
 
       <section id="method" class="report-section" aria-labelledby="method-title">
-        <div class="report-section-inner reveal">
+        <div class="report-section-inner">
           <div class="section-label"><span class="mono">FILE / 05</span><span class="rule"></span><span>Method &amp; source</span></div>
           <div class="method-grid">
             <article class="method-card"><h3 id="method-title">Brief</h3><p>Design a battery door mechanism for two AA batteries. The input is downward normal force; the output is an automatic pop-open door after the latch clears.</p></article>
@@ -148,11 +144,8 @@
     </div>
   </main>
 
-  <footer class="report-footer"><span>© 2026 Shubham Kumar · POSHA mechanism casefile</span><div class="posha-footer-links"><a href="../" data-transition>All projects</a><a href="../../index.html">Portfolio</a><a href="https://github.com/Nothing0g/analyst" target="_blank" rel="noreferrer">GitHub</a><a href="#report">Back to top</a></div></footer>
+  <footer class="report-footer"><span>Case 004 · Source, method and limits included</span><div class="report-footer-links"><a href="../">All reports</a><a href="../../index.html#work">Work index</a><a href="mailto:shubham1sure@gmail.com">Contact</a></div></footer>
 
-  <div class="cmdk-overlay" id="cmdkOverlay"><div class="cmdk-box"><div class="cmdk-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="cmdkInput" class="cmdk-input" placeholder="Search report sections…" autocomplete="off"><kbd class="cmdk-esc">ESC</kbd></div><div class="cmdk-list" id="cmdkList"></div></div></div>
-  <div class="toast-wrap" id="toastWrap"></div>
-  <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
   <script src="../shared/report-shell.js?v=checked-sheet-20261027"></script>
 </body>
 </html>
