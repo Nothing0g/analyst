@@ -569,9 +569,1452 @@ document.addEventListener('DOMContentLoaded', () => {
      TERMINAL TYPING
   ========================================================== */
   const TERMINAL_LINES = [
-    { p: '~ $', t: 'who_am_i' }, { p: '→', t: 'Analyst · Mechanical Eng. background' },
-    { p: '~ $', t: 'stack' }, { p: '→', t: 'Python · SQL · Power BI · Statistics & ML' },
-    { p: '~ $', t: 'currently' }, { p: '→', t: 'Open to analytical and problem-solving roles' }
+    { p: '~ 
+  const terminalBody = document.getElementById('terminalBody');
+  let terminalTimeouts = [];
+  function runTerminal() {
+    terminalTimeouts.forEach(clearTimeout);
+    terminalTimeouts = [];
+    terminalBody.innerHTML = '';
+    const lines = TERMINAL_LINES;
+    let li = 0;
+    function typeLine() {
+      if (li >= lines.length) return;
+      const { p, t } = lines[li];
+      const row = document.createElement('div');
+      const prompt = document.createElement('span');
+      prompt.className = 'tp'; prompt.textContent = p + ' ';
+      const text = document.createElement('span');
+      row.appendChild(prompt); row.appendChild(text);
+      terminalBody.appendChild(row);
+      let ci = 0;
+      function typeChar() {
+        if (ci < t.length) { text.textContent += t[ci]; ci++; terminalTimeouts.push(setTimeout(typeChar, 16)); }
+        else { li++; terminalTimeouts.push(setTimeout(typeLine, 240)); }
+      }
+      typeChar();
+    }
+    typeLine();
+  }
+  const termIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) { runTerminal(); termIO.unobserve(entry.target); } });
+  }, { threshold: 0.4 });
+  termIO.observe(terminalBody);
+
+  /* ==========================================================
+     SIMPLE EASTER EGG — click the terminal's title bar 5×
+  ========================================================== */
+  console.log('%cLooking under the hood?', 'font-size:16px;font-weight:700;');
+  console.log('%cI\'m Shubham — I built this whole site by hand, no template. If you\'re hiring for analytical, technical, or business problem-solving roles, my email is in the footer.', 'font-size:12px;color:#888;');
+
+  const terminalBar = document.getElementById('terminalBar');
+  let terminalClicks = 0, terminalClickTimer = null;
+  terminalBar.addEventListener('click', () => {
+    terminalClicks++;
+    clearTimeout(terminalClickTimer);
+    terminalClickTimer = setTimeout(() => { terminalClicks = 0; }, 1500);
+    if (terminalClicks >= 5) {
+      terminalClicks = 0;
+      bgBurstUntil = performance.now() + 2200;
+      showToast('🔓 You found it — thanks for looking closely');
+    }
+  });
+
+  /* ==========================================================
+     DOCK SCROLL-SPY — highlights whichever section is currently
+     in view; theme controls aren't tied
+     to a section, so only the [data-dock] nav links participate.
+  ========================================================== */
+  (function initScrollSpy() {
+    const navLinks = Array.from(document.querySelectorAll('.dock-item[data-dock]'));
+    const sections = navLinks
+      .map(link => document.getElementById(link.getAttribute('href').slice(1)))
+      .filter(Boolean);
+    if (!sections.length) return;
+
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.id;
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      });
+    }, { rootMargin: '-45% 0px -45% 0px' }); // fires when a section crosses the viewport's vertical center
+
+    sections.forEach(s => spy.observe(s));
+  })();
+
+  /* ==========================================================
+     DRAGGABLE HERO ICONS — rubber-banded at the edges instead of a hard
+     clamp, and released with real momentum (velocity is tracked during
+     the drag and projected forward on release), per Apple's fluid-
+     interfaces model: things resist softly at boundaries and carry
+     their motion forward instead of just stopping where you let go.
+  ========================================================== */
+  const heroEl = document.getElementById('hero');
+
+  // Apple's rubberband formula (Designing Fluid Interfaces, WWDC 2018) —
+  // resistance grows the further past the boundary you drag, never a hard stop.
+  function rubberband(overshoot, dimension, constant = 0.55) {
+    return (overshoot * dimension * constant) / (dimension + constant * Math.abs(overshoot));
+  }
+  // Momentum projection — where a flick would come to rest if it kept decelerating.
+  function project(velocity, decelerationRate = 0.998) {
+    return (velocity / 1000) * decelerationRate / (1 - decelerationRate);
+  }
+
+  document.querySelectorAll('.hero-float-icon').forEach(icon => {
+    let settleRAF = null; // handle for any in-progress release animation
+
+    icon.addEventListener('pointerdown', (e) => {
+      // Grabbing the icon mid-flight (while it's still settling from a
+      // previous release) cancels that animation and starts fresh from
+      // wherever it currently, visually is — never a jump.
+      if (settleRAF) { cancelAnimationFrame(settleRAF); settleRAF = null; }
+
+      icon.setPointerCapture(e.pointerId);
+      icon.classList.add('is-dragging');
+      const heroRect = heroEl.getBoundingClientRect();
+      const iconRect = icon.getBoundingClientRect();
+      const offsetX = e.clientX - iconRect.left;
+      const offsetY = e.clientY - iconRect.top;
+      const minX = 0, maxX = heroRect.width - iconRect.width;
+      const minY = 0, maxY = heroRect.height - iconRect.height;
+
+      let curX = iconRect.left - heroRect.left, curY = iconRect.top - heroRect.top;
+      const history = []; // recent {x,y,t} samples, for release velocity
+
+      function onMove(ev) {
+        let nx = ev.clientX - heroRect.left - offsetX;
+        let ny = ev.clientY - heroRect.top - offsetY;
+        if (reduced) {
+          // reduced motion: hard clamp, no rubber-band resistance
+          nx = Math.max(minX, Math.min(maxX, nx));
+          ny = Math.max(minY, Math.min(maxY, ny));
+        } else {
+          // Soft resistance past the edges instead of stopping dead
+          if (nx < minX) nx = minX + rubberband(nx - minX, heroRect.width);
+          else if (nx > maxX) nx = maxX + rubberband(nx - maxX, heroRect.width);
+          if (ny < minY) ny = minY + rubberband(ny - minY, heroRect.height);
+          else if (ny > maxY) ny = maxY + rubberband(ny - maxY, heroRect.height);
+        }
+
+        curX = nx; curY = ny;
+        icon.style.left = nx + 'px'; icon.style.top = ny + 'px';
+        icon.style.right = 'auto'; icon.style.bottom = 'auto';
+
+        history.push({ x: nx, y: ny, t: performance.now() });
+        if (history.length > 5) history.shift();
+      }
+
+      function onUp() {
+        icon.classList.remove('is-dragging');
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+
+        if (reduced) return; // already in-bounds, no momentum/overshoot to add
+
+        // Velocity from the last two samples (px/s)
+        let vx = 0, vy = 0;
+        if (history.length >= 2) {
+          const a = history[0], b = history[history.length - 1];
+          const dt = Math.max(1, b.t - a.t);
+          vx = ((b.x - a.x) / dt) * 1000;
+          vy = ((b.y - a.y) / dt) * 1000;
+        }
+
+        // Where the flick would come to rest, clamped back into bounds —
+        // the resting position is never allowed to stay out-of-bounds
+        let targetX = curX + project(vx);
+        let targetY = curY + project(vy);
+        targetX = Math.max(minX, Math.min(maxX, targetX));
+        targetY = Math.max(minY, Math.min(maxY, targetY));
+
+        // Spring toward the resting point, carrying the release velocity —
+        // a touch of bounce here is correct per Apple's rule: overshoot is
+        // earned specifically because this gesture carried real momentum.
+        let px = curX, py = curY;
+        let pvx = vx / 60, pvy = vy / 60; // px/s -> px/frame, roughly
+        const stiffness = 0.14, damping = 0.72;
+
+        function settle() {
+          const fx = (targetX - px) * stiffness;
+          const fy = (targetY - py) * stiffness;
+          pvx = (pvx + fx) * damping;
+          pvy = (pvy + fy) * damping;
+          px += pvx; py += pvy;
+          icon.style.left = px + 'px'; icon.style.top = py + 'px';
+
+          if (Math.abs(pvx) < 0.05 && Math.abs(pvy) < 0.05 &&
+              Math.abs(targetX - px) < 0.5 && Math.abs(targetY - py) < 0.5) {
+            icon.style.left = targetX + 'px'; icon.style.top = targetY + 'px';
+            settleRAF = null;
+            return;
+          }
+          settleRAF = requestAnimationFrame(settle);
+        }
+        settleRAF = requestAnimationFrame(settle);
+      }
+
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+    });
+  });
+
+  /* ==========================================================
+     CURSOR — a small, fixed-size dot that spring-follows the
+     mouse. Every earlier round of this feature tried to morph the
+     cursor to exactly cover whatever button it hovered — which
+     kept breaking in new ways (distorted radius from scale
+     transforms, a hazy gradient blob, invisible-via-blend-mode
+     against light backgrounds, and finally just opaquely hiding
+     the button's own label text). The actual fix is to stop
+     trying to make the cursor become the button. It stays small,
+     so it can never cover what you're reading, and just scales
+     up slightly on hover as feedback instead.
+  ========================================================== */
+  const cursorDot = document.getElementById('cursorDot');
+  const cursorFollow = document.getElementById('cursorFollow');
+  const cursorFollowText = document.getElementById('cursorFollowText');
+  const finePointer = window.matchMedia('(pointer:fine)').matches;
+
+  if (!reduced && !constrainedDevice && finePointer) {
+    root.classList.add('custom-cursor'); // hides the native OS pointer — see CSS
+    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+    let cx = mouseX, cy = mouseY;
+    let scale = 1, targetScale = 1;
+    let fx = mouseX, fy = mouseY;
+    let followEl = null;
+
+    window.addEventListener('mousemove', (e) => {
+      cursorDot.style.opacity = '1';
+      mouseX = e.clientX; mouseY = e.clientY;
+    });
+
+    let cursorFrame = 0;
+    function loop() {
+      cursorFrame = 0;
+      if (document.hidden) return;
+      const k = 0.26;
+      cx += (mouseX - cx) * k;
+      cy += (mouseY - cy) * k;
+      scale += (targetScale - scale) * 0.2;
+      cursorDot.style.transform = `translate(${cx - 9}px, ${cy - 9}px) scale(${scale})`;
+      if (cursorFollow && cursorFollowText) {
+        fx += (mouseX - fx) * 0.14;
+        fy += (mouseY - fy) * 0.14;
+        cursorFollow.style.transform = `translate(${fx + 13}px, ${fy + 15}px)`;
+      }
+      cursorFrame = requestAnimationFrame(loop);
+    }
+    function scheduleCursor() {
+      if (!document.hidden && !cursorFrame) cursorFrame = requestAnimationFrame(loop);
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { cancelAnimationFrame(cursorFrame); cursorFrame = 0; }
+      else scheduleCursor();
+    });
+    scheduleCursor();
+
+    document.querySelectorAll('a, button, .case-card, .roadmap-card').forEach(el => {
+      el.addEventListener('mouseenter', () => { targetScale = 1.6; });
+      el.addEventListener('mouseleave', () => { targetScale = 1; });
+    });
+
+    /* CURSOR FOLLOW — a trailing label with its own, laggier spring, showing
+       whichever element under the pointer requests text via [data-cursor-text].
+       Offset bottom-end from the cursor to match the reference component's
+       own default (side: bottom, sideOffset: 15, align: end, alignOffset: 5). */
+    if (cursorFollow && cursorFollowText) {
+      document.querySelectorAll('[data-cursor-text]').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          followEl = el;
+          cursorFollowText.textContent = el.dataset.cursorText;
+          cursorFollow.style.opacity = '1';
+        });
+        el.addEventListener('mouseleave', () => {
+          if (followEl === el) { followEl = null; cursorFollow.style.opacity = '0'; }
+        });
+      });
+
+    }
+  }
+
+  /* ==========================================================
+     STARS BACKGROUND — adaptive and non-blocking. The default path
+     keeps a lightweight drifting field; constrained devices get one
+     static draw instead of a permanent canvas loop.
+  ========================================================== */
+  let bgBurstUntil = 0;
+  (function initStarsBackground() {
+    const canvas = document.getElementById('bgCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    let w, h, stars = [];
+    const animateStars = !performanceLite;
+    const density = () => {
+      if (performanceLite) return window.innerWidth < 700 ? 14000 : 18000;
+      return window.innerWidth < 700 ? 11000 : 10000;
+    };
+    function build() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      const count = Math.max(24, Math.floor((w * h) / density()));
+      stars = Array.from({ length: count }, () => {
+        const depth = 0.12 + Math.random() * 0.88;
+        const angle = Math.random() * Math.PI * 2;
+        return {
+          x: Math.random() * w, y: Math.random() * h,
+          size: 0.6 + Math.random() * 1.8, depth,
+          cosAngle: Math.cos(angle), sinAngle: Math.sin(angle),
+          twinklePhase: Math.random() * Math.PI * 2,
+          twinkleSpeed: 0.6 + Math.random() * 1.8,
+        };
+      });
+    }
+    let resizeFrame = 0;
+    build();
+    window.addEventListener('resize', () => {
+      if (resizeFrame) cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        resizeFrame = 0;
+        build();
+        if (animateStars) scheduleDraw();
+        else draw(performance.now());
+      });
+    }, { passive: true });
+    let px = -9999, py = -9999;
+    if (animateStars) {
+      window.addEventListener('mousemove', (e) => { px = e.clientX; py = e.clientY; }, { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches[0]) { px = e.touches[0].clientX; py = e.touches[0].clientY; }
+      }, { passive: true });
+      window.addEventListener('mouseleave', () => { px = -9999; py = -9999; }, { passive: true });
+    }
+    let starFrame = 0;
+    let lastDraw = 0;
+    function draw(now) {
+      starFrame = 0;
+      if (document.hidden) return;
+      const dt = Math.min(50, now - (lastDraw || now)) / 1000;
+      lastDraw = now;
+      const time = now / 1000;
+      ctx.clearRect(0, 0, w, h);
+      const dark = root.getAttribute('data-theme') === 'dark';
+      const rgb = dark ? '255,255,255' : '10,10,10';
+      const burst = animateStars && performance.now() < bgBurstUntil;
+      ctx.fillStyle = `rgb(${rgb})`;
+      stars.forEach((star) => {
+        if (animateStars) {
+          const drift = 16 * star.depth * dt;
+          star.x += star.cosAngle * drift; star.y += star.sinAngle * drift;
+          if (star.x < -5) star.x = w + 5; if (star.x > w + 5) star.x = -5;
+          if (star.y < -5) star.y = h + 5; if (star.y > h + 5) star.y = -5;
+        }
+        let renderX = star.x, renderY = star.y, glow = 0;
+        if (animateStars) {
+          const dx = star.x - px, dy = star.y - py;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < 90) {
+            const strength = 1 - distance / 90;
+            const nx = distance > 0.01 ? dx / distance : 0;
+            const ny = distance > 0.01 ? dy / distance : 0;
+            renderX += nx * strength * 14; renderY += ny * strength * 14; glow = strength;
+          }
+        }
+        const twinkle = animateStars ? 0.55 + 0.45 * Math.sin(time * star.twinkleSpeed + star.twinklePhase) : 0.78;
+        let alpha = (dark ? 0.025 + star.depth * 0.42 : 0.018 + star.depth * 0.22) * twinkle + glow * 0.12;
+        if (burst) alpha = Math.min(0.55, alpha + 0.12);
+        ctx.globalAlpha = Math.min(0.55, alpha);
+        ctx.beginPath(); ctx.arc(renderX, renderY, star.size + glow * 1.2, 0, Math.PI * 2); ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+      if (animateStars) starFrame = requestAnimationFrame(draw);
+    }
+    function scheduleDraw() {
+      if (document.hidden || starFrame) return;
+      if (animateStars) starFrame = requestAnimationFrame(draw);
+      else draw(performance.now());
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { cancelAnimationFrame(starFrame); starFrame = 0; }
+      else { lastDraw = 0; scheduleDraw(); }
+    });
+    document.addEventListener('themechange', scheduleDraw);
+    scheduleDraw();
+  })();
+
+  /* ==========================================================
+     COMMAND PALETTE
+  ========================================================== */
+  const cmdkOverlay = document.getElementById('cmdkOverlay');
+  const cmdkInput = document.getElementById('cmdkInput');
+  const cmdkList = document.getElementById('cmdkList');
+  let cmdkActiveIndex = 0;
+  let cmdkFiltered = [];
+
+  const svgIcons = {
+    home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+    profile: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>',
+    log: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M12 19V5M20 19v-6"/></svg>',
+    cases: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+    toolkit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94z"/></svg>',
+    contact: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>',
+    swap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M8 17V9M13 17V5M18 17v-8"/></svg>',
+    theme: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
+    copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+    external: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14L21 3"/></svg>'
+  };
+
+  function getCommands() {
+    return [
+      { group: 'Navigate', icon: svgIcons.home, label: 'Go to Home', action: () => scrollToSection('hero') },
+      { group: 'Navigate', icon: svgIcons.profile, label: 'Go to Profile', action: () => scrollToSection('about') },
+      { group: 'Navigate', icon: svgIcons.log, label: 'Go to Case Log', action: () => scrollToSection('experience') },
+      { group: 'Navigate', icon: svgIcons.cases, label: 'Go to Case Files', action: () => scrollToSection('cases') },
+      { group: 'Navigate', icon: svgIcons.toolkit, label: 'Go to Toolkit', action: () => scrollToSection('toolkit') },
+      { group: 'Navigate', icon: svgIcons.contact, label: 'Go to Contact', action: () => scrollToSection('contact') },
+      { group: 'View', icon: svgIcons.theme, label: theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme', action: () => toggleTheme() },
+      { group: 'Contact', icon: svgIcons.copy, label: 'Copy email address', hint: 'shubham1sure@gmail.com', action: () => copyText('shubham1sure@gmail.com', 'Email copied') },
+      { group: 'Contact', icon: svgIcons.copy, label: 'Copy phone number', hint: '+91-7836878701', action: () => copyText('+917836878701', 'Phone copied') },
+      { group: 'Contact', icon: svgIcons.external, label: 'Send an email', action: () => window.location.href = 'mailto:shubham1sure@gmail.com' }
+    ];
+  }
+
+  function scrollToSection(id) {
+    document.getElementById(id)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+  }
+
+  function renderCmdk(query) {
+    const all = getCommands();
+    const q = (query || '').toLowerCase().trim();
+    cmdkFiltered = q ? all.filter(c => c.label.toLowerCase().includes(q) || c.group.toLowerCase().includes(q)) : all;
+    cmdkActiveIndex = 0;
+    if (cmdkFiltered.length === 0) {
+      cmdkList.innerHTML = `<div class="cmdk-empty">No commands found for "${query}"</div>`;
+      return;
+    }
+    let html = '', lastGroup = '';
+    cmdkFiltered.forEach((c, i) => {
+      if (c.group !== lastGroup) { html += `<div class="cmdk-group-label">${c.group}</div>`; lastGroup = c.group; }
+      html += `<div class="cmdk-item${i === 0 ? ' active' : ''}" data-idx="${i}">${c.icon}<span>${c.label}</span>${c.hint ? `<span class="cmdk-item-hint">${c.hint}</span>` : ''}</div>`;
+    });
+    cmdkList.innerHTML = html;
+    cmdkList.querySelectorAll('.cmdk-item').forEach(el => {
+      el.addEventListener('click', () => runCmdkItem(parseInt(el.dataset.idx, 10)));
+      el.addEventListener('mouseenter', () => setCmdkActive(parseInt(el.dataset.idx, 10)));
+    });
+  }
+  function setCmdkActive(idx) {
+    cmdkActiveIndex = idx;
+    cmdkList.querySelectorAll('.cmdk-item').forEach(el => el.classList.toggle('active', parseInt(el.dataset.idx, 10) === idx));
+  }
+  function runCmdkItem(idx) {
+    const cmd = cmdkFiltered[idx];
+    if (!cmd) return;
+    closeCmdk();
+    setTimeout(() => cmd.action(), 120);
+  }
+  function openCmdk() {
+    cmdkOverlay.classList.add('is-open');
+    cmdkInput.value = '';
+    renderCmdk('');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => cmdkInput.focus(), 50);
+  }
+  function closeCmdk() {
+    cmdkOverlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('cmdkTrigger').addEventListener('click', openCmdk);
+  cmdkOverlay.addEventListener('click', (e) => { if (e.target === cmdkOverlay) closeCmdk(); });
+  cmdkInput.addEventListener('input', () => renderCmdk(cmdkInput.value));
+
+  document.addEventListener('keydown', (e) => {
+    const isK = e.key === 'k' || e.key === 'K';
+    if ((e.metaKey || e.ctrlKey) && isK) {
+      e.preventDefault();
+      cmdkOverlay.classList.contains('is-open') ? closeCmdk() : openCmdk();
+      return;
+    }
+    if (e.key === 'Escape') {
+      if (cmdkOverlay.classList.contains('is-open')) { closeCmdk(); return; }
+      if (modalOverlay.classList.contains('is-open')) { closeModal(); return; }
+    }
+    if (cmdkOverlay.classList.contains('is-open')) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); setCmdkActive(Math.min(cmdkActiveIndex + 1, cmdkFiltered.length - 1)); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); setCmdkActive(Math.max(cmdkActiveIndex - 1, 0)); }
+      if (e.key === 'Enter') { e.preventDefault(); runCmdkItem(cmdkActiveIndex); }
+    }
+  });
+
+});
+, t: 'who_am_i' }, { p: '→', t: 'Data · Software · AI · Mechanical Eng.' },
+    { p: '~ 
+  const terminalBody = document.getElementById('terminalBody');
+  let terminalTimeouts = [];
+  function runTerminal() {
+    terminalTimeouts.forEach(clearTimeout);
+    terminalTimeouts = [];
+    terminalBody.innerHTML = '';
+    const lines = TERMINAL_LINES;
+    let li = 0;
+    function typeLine() {
+      if (li >= lines.length) return;
+      const { p, t } = lines[li];
+      const row = document.createElement('div');
+      const prompt = document.createElement('span');
+      prompt.className = 'tp'; prompt.textContent = p + ' ';
+      const text = document.createElement('span');
+      row.appendChild(prompt); row.appendChild(text);
+      terminalBody.appendChild(row);
+      let ci = 0;
+      function typeChar() {
+        if (ci < t.length) { text.textContent += t[ci]; ci++; terminalTimeouts.push(setTimeout(typeChar, 16)); }
+        else { li++; terminalTimeouts.push(setTimeout(typeLine, 240)); }
+      }
+      typeChar();
+    }
+    typeLine();
+  }
+  const termIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) { runTerminal(); termIO.unobserve(entry.target); } });
+  }, { threshold: 0.4 });
+  termIO.observe(terminalBody);
+
+  /* ==========================================================
+     SIMPLE EASTER EGG — click the terminal's title bar 5×
+  ========================================================== */
+  console.log('%cLooking under the hood?', 'font-size:16px;font-weight:700;');
+  console.log('%cI\'m Shubham — I built this whole site by hand, no template. If you\'re hiring for analytical, technical, or business problem-solving roles, my email is in the footer.', 'font-size:12px;color:#888;');
+
+  const terminalBar = document.getElementById('terminalBar');
+  let terminalClicks = 0, terminalClickTimer = null;
+  terminalBar.addEventListener('click', () => {
+    terminalClicks++;
+    clearTimeout(terminalClickTimer);
+    terminalClickTimer = setTimeout(() => { terminalClicks = 0; }, 1500);
+    if (terminalClicks >= 5) {
+      terminalClicks = 0;
+      bgBurstUntil = performance.now() + 2200;
+      showToast('🔓 You found it — thanks for looking closely');
+    }
+  });
+
+  /* ==========================================================
+     DOCK SCROLL-SPY — highlights whichever section is currently
+     in view; theme controls aren't tied
+     to a section, so only the [data-dock] nav links participate.
+  ========================================================== */
+  (function initScrollSpy() {
+    const navLinks = Array.from(document.querySelectorAll('.dock-item[data-dock]'));
+    const sections = navLinks
+      .map(link => document.getElementById(link.getAttribute('href').slice(1)))
+      .filter(Boolean);
+    if (!sections.length) return;
+
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.id;
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      });
+    }, { rootMargin: '-45% 0px -45% 0px' }); // fires when a section crosses the viewport's vertical center
+
+    sections.forEach(s => spy.observe(s));
+  })();
+
+  /* ==========================================================
+     DRAGGABLE HERO ICONS — rubber-banded at the edges instead of a hard
+     clamp, and released with real momentum (velocity is tracked during
+     the drag and projected forward on release), per Apple's fluid-
+     interfaces model: things resist softly at boundaries and carry
+     their motion forward instead of just stopping where you let go.
+  ========================================================== */
+  const heroEl = document.getElementById('hero');
+
+  // Apple's rubberband formula (Designing Fluid Interfaces, WWDC 2018) —
+  // resistance grows the further past the boundary you drag, never a hard stop.
+  function rubberband(overshoot, dimension, constant = 0.55) {
+    return (overshoot * dimension * constant) / (dimension + constant * Math.abs(overshoot));
+  }
+  // Momentum projection — where a flick would come to rest if it kept decelerating.
+  function project(velocity, decelerationRate = 0.998) {
+    return (velocity / 1000) * decelerationRate / (1 - decelerationRate);
+  }
+
+  document.querySelectorAll('.hero-float-icon').forEach(icon => {
+    let settleRAF = null; // handle for any in-progress release animation
+
+    icon.addEventListener('pointerdown', (e) => {
+      // Grabbing the icon mid-flight (while it's still settling from a
+      // previous release) cancels that animation and starts fresh from
+      // wherever it currently, visually is — never a jump.
+      if (settleRAF) { cancelAnimationFrame(settleRAF); settleRAF = null; }
+
+      icon.setPointerCapture(e.pointerId);
+      icon.classList.add('is-dragging');
+      const heroRect = heroEl.getBoundingClientRect();
+      const iconRect = icon.getBoundingClientRect();
+      const offsetX = e.clientX - iconRect.left;
+      const offsetY = e.clientY - iconRect.top;
+      const minX = 0, maxX = heroRect.width - iconRect.width;
+      const minY = 0, maxY = heroRect.height - iconRect.height;
+
+      let curX = iconRect.left - heroRect.left, curY = iconRect.top - heroRect.top;
+      const history = []; // recent {x,y,t} samples, for release velocity
+
+      function onMove(ev) {
+        let nx = ev.clientX - heroRect.left - offsetX;
+        let ny = ev.clientY - heroRect.top - offsetY;
+        if (reduced) {
+          // reduced motion: hard clamp, no rubber-band resistance
+          nx = Math.max(minX, Math.min(maxX, nx));
+          ny = Math.max(minY, Math.min(maxY, ny));
+        } else {
+          // Soft resistance past the edges instead of stopping dead
+          if (nx < minX) nx = minX + rubberband(nx - minX, heroRect.width);
+          else if (nx > maxX) nx = maxX + rubberband(nx - maxX, heroRect.width);
+          if (ny < minY) ny = minY + rubberband(ny - minY, heroRect.height);
+          else if (ny > maxY) ny = maxY + rubberband(ny - maxY, heroRect.height);
+        }
+
+        curX = nx; curY = ny;
+        icon.style.left = nx + 'px'; icon.style.top = ny + 'px';
+        icon.style.right = 'auto'; icon.style.bottom = 'auto';
+
+        history.push({ x: nx, y: ny, t: performance.now() });
+        if (history.length > 5) history.shift();
+      }
+
+      function onUp() {
+        icon.classList.remove('is-dragging');
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+
+        if (reduced) return; // already in-bounds, no momentum/overshoot to add
+
+        // Velocity from the last two samples (px/s)
+        let vx = 0, vy = 0;
+        if (history.length >= 2) {
+          const a = history[0], b = history[history.length - 1];
+          const dt = Math.max(1, b.t - a.t);
+          vx = ((b.x - a.x) / dt) * 1000;
+          vy = ((b.y - a.y) / dt) * 1000;
+        }
+
+        // Where the flick would come to rest, clamped back into bounds —
+        // the resting position is never allowed to stay out-of-bounds
+        let targetX = curX + project(vx);
+        let targetY = curY + project(vy);
+        targetX = Math.max(minX, Math.min(maxX, targetX));
+        targetY = Math.max(minY, Math.min(maxY, targetY));
+
+        // Spring toward the resting point, carrying the release velocity —
+        // a touch of bounce here is correct per Apple's rule: overshoot is
+        // earned specifically because this gesture carried real momentum.
+        let px = curX, py = curY;
+        let pvx = vx / 60, pvy = vy / 60; // px/s -> px/frame, roughly
+        const stiffness = 0.14, damping = 0.72;
+
+        function settle() {
+          const fx = (targetX - px) * stiffness;
+          const fy = (targetY - py) * stiffness;
+          pvx = (pvx + fx) * damping;
+          pvy = (pvy + fy) * damping;
+          px += pvx; py += pvy;
+          icon.style.left = px + 'px'; icon.style.top = py + 'px';
+
+          if (Math.abs(pvx) < 0.05 && Math.abs(pvy) < 0.05 &&
+              Math.abs(targetX - px) < 0.5 && Math.abs(targetY - py) < 0.5) {
+            icon.style.left = targetX + 'px'; icon.style.top = targetY + 'px';
+            settleRAF = null;
+            return;
+          }
+          settleRAF = requestAnimationFrame(settle);
+        }
+        settleRAF = requestAnimationFrame(settle);
+      }
+
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+    });
+  });
+
+  /* ==========================================================
+     CURSOR — a small, fixed-size dot that spring-follows the
+     mouse. Every earlier round of this feature tried to morph the
+     cursor to exactly cover whatever button it hovered — which
+     kept breaking in new ways (distorted radius from scale
+     transforms, a hazy gradient blob, invisible-via-blend-mode
+     against light backgrounds, and finally just opaquely hiding
+     the button's own label text). The actual fix is to stop
+     trying to make the cursor become the button. It stays small,
+     so it can never cover what you're reading, and just scales
+     up slightly on hover as feedback instead.
+  ========================================================== */
+  const cursorDot = document.getElementById('cursorDot');
+  const cursorFollow = document.getElementById('cursorFollow');
+  const cursorFollowText = document.getElementById('cursorFollowText');
+  const finePointer = window.matchMedia('(pointer:fine)').matches;
+
+  if (!reduced && !constrainedDevice && finePointer) {
+    root.classList.add('custom-cursor'); // hides the native OS pointer — see CSS
+    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+    let cx = mouseX, cy = mouseY;
+    let scale = 1, targetScale = 1;
+    let fx = mouseX, fy = mouseY;
+    let followEl = null;
+
+    window.addEventListener('mousemove', (e) => {
+      cursorDot.style.opacity = '1';
+      mouseX = e.clientX; mouseY = e.clientY;
+    });
+
+    let cursorFrame = 0;
+    function loop() {
+      cursorFrame = 0;
+      if (document.hidden) return;
+      const k = 0.26;
+      cx += (mouseX - cx) * k;
+      cy += (mouseY - cy) * k;
+      scale += (targetScale - scale) * 0.2;
+      cursorDot.style.transform = `translate(${cx - 9}px, ${cy - 9}px) scale(${scale})`;
+      if (cursorFollow && cursorFollowText) {
+        fx += (mouseX - fx) * 0.14;
+        fy += (mouseY - fy) * 0.14;
+        cursorFollow.style.transform = `translate(${fx + 13}px, ${fy + 15}px)`;
+      }
+      cursorFrame = requestAnimationFrame(loop);
+    }
+    function scheduleCursor() {
+      if (!document.hidden && !cursorFrame) cursorFrame = requestAnimationFrame(loop);
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { cancelAnimationFrame(cursorFrame); cursorFrame = 0; }
+      else scheduleCursor();
+    });
+    scheduleCursor();
+
+    document.querySelectorAll('a, button, .case-card, .roadmap-card').forEach(el => {
+      el.addEventListener('mouseenter', () => { targetScale = 1.6; });
+      el.addEventListener('mouseleave', () => { targetScale = 1; });
+    });
+
+    /* CURSOR FOLLOW — a trailing label with its own, laggier spring, showing
+       whichever element under the pointer requests text via [data-cursor-text].
+       Offset bottom-end from the cursor to match the reference component's
+       own default (side: bottom, sideOffset: 15, align: end, alignOffset: 5). */
+    if (cursorFollow && cursorFollowText) {
+      document.querySelectorAll('[data-cursor-text]').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          followEl = el;
+          cursorFollowText.textContent = el.dataset.cursorText;
+          cursorFollow.style.opacity = '1';
+        });
+        el.addEventListener('mouseleave', () => {
+          if (followEl === el) { followEl = null; cursorFollow.style.opacity = '0'; }
+        });
+      });
+
+    }
+  }
+
+  /* ==========================================================
+     STARS BACKGROUND — adaptive and non-blocking. The default path
+     keeps a lightweight drifting field; constrained devices get one
+     static draw instead of a permanent canvas loop.
+  ========================================================== */
+  let bgBurstUntil = 0;
+  (function initStarsBackground() {
+    const canvas = document.getElementById('bgCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    let w, h, stars = [];
+    const animateStars = !performanceLite;
+    const density = () => {
+      if (performanceLite) return window.innerWidth < 700 ? 14000 : 18000;
+      return window.innerWidth < 700 ? 11000 : 10000;
+    };
+    function build() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      const count = Math.max(24, Math.floor((w * h) / density()));
+      stars = Array.from({ length: count }, () => {
+        const depth = 0.12 + Math.random() * 0.88;
+        const angle = Math.random() * Math.PI * 2;
+        return {
+          x: Math.random() * w, y: Math.random() * h,
+          size: 0.6 + Math.random() * 1.8, depth,
+          cosAngle: Math.cos(angle), sinAngle: Math.sin(angle),
+          twinklePhase: Math.random() * Math.PI * 2,
+          twinkleSpeed: 0.6 + Math.random() * 1.8,
+        };
+      });
+    }
+    let resizeFrame = 0;
+    build();
+    window.addEventListener('resize', () => {
+      if (resizeFrame) cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        resizeFrame = 0;
+        build();
+        if (animateStars) scheduleDraw();
+        else draw(performance.now());
+      });
+    }, { passive: true });
+    let px = -9999, py = -9999;
+    if (animateStars) {
+      window.addEventListener('mousemove', (e) => { px = e.clientX; py = e.clientY; }, { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches[0]) { px = e.touches[0].clientX; py = e.touches[0].clientY; }
+      }, { passive: true });
+      window.addEventListener('mouseleave', () => { px = -9999; py = -9999; }, { passive: true });
+    }
+    let starFrame = 0;
+    let lastDraw = 0;
+    function draw(now) {
+      starFrame = 0;
+      if (document.hidden) return;
+      const dt = Math.min(50, now - (lastDraw || now)) / 1000;
+      lastDraw = now;
+      const time = now / 1000;
+      ctx.clearRect(0, 0, w, h);
+      const dark = root.getAttribute('data-theme') === 'dark';
+      const rgb = dark ? '255,255,255' : '10,10,10';
+      const burst = animateStars && performance.now() < bgBurstUntil;
+      ctx.fillStyle = `rgb(${rgb})`;
+      stars.forEach((star) => {
+        if (animateStars) {
+          const drift = 16 * star.depth * dt;
+          star.x += star.cosAngle * drift; star.y += star.sinAngle * drift;
+          if (star.x < -5) star.x = w + 5; if (star.x > w + 5) star.x = -5;
+          if (star.y < -5) star.y = h + 5; if (star.y > h + 5) star.y = -5;
+        }
+        let renderX = star.x, renderY = star.y, glow = 0;
+        if (animateStars) {
+          const dx = star.x - px, dy = star.y - py;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < 90) {
+            const strength = 1 - distance / 90;
+            const nx = distance > 0.01 ? dx / distance : 0;
+            const ny = distance > 0.01 ? dy / distance : 0;
+            renderX += nx * strength * 14; renderY += ny * strength * 14; glow = strength;
+          }
+        }
+        const twinkle = animateStars ? 0.55 + 0.45 * Math.sin(time * star.twinkleSpeed + star.twinklePhase) : 0.78;
+        let alpha = (dark ? 0.025 + star.depth * 0.42 : 0.018 + star.depth * 0.22) * twinkle + glow * 0.12;
+        if (burst) alpha = Math.min(0.55, alpha + 0.12);
+        ctx.globalAlpha = Math.min(0.55, alpha);
+        ctx.beginPath(); ctx.arc(renderX, renderY, star.size + glow * 1.2, 0, Math.PI * 2); ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+      if (animateStars) starFrame = requestAnimationFrame(draw);
+    }
+    function scheduleDraw() {
+      if (document.hidden || starFrame) return;
+      if (animateStars) starFrame = requestAnimationFrame(draw);
+      else draw(performance.now());
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { cancelAnimationFrame(starFrame); starFrame = 0; }
+      else { lastDraw = 0; scheduleDraw(); }
+    });
+    document.addEventListener('themechange', scheduleDraw);
+    scheduleDraw();
+  })();
+
+  /* ==========================================================
+     COMMAND PALETTE
+  ========================================================== */
+  const cmdkOverlay = document.getElementById('cmdkOverlay');
+  const cmdkInput = document.getElementById('cmdkInput');
+  const cmdkList = document.getElementById('cmdkList');
+  let cmdkActiveIndex = 0;
+  let cmdkFiltered = [];
+
+  const svgIcons = {
+    home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+    profile: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>',
+    log: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M12 19V5M20 19v-6"/></svg>',
+    cases: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+    toolkit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94z"/></svg>',
+    contact: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>',
+    swap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M8 17V9M13 17V5M18 17v-8"/></svg>',
+    theme: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
+    copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+    external: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14L21 3"/></svg>'
+  };
+
+  function getCommands() {
+    return [
+      { group: 'Navigate', icon: svgIcons.home, label: 'Go to Home', action: () => scrollToSection('hero') },
+      { group: 'Navigate', icon: svgIcons.profile, label: 'Go to Profile', action: () => scrollToSection('about') },
+      { group: 'Navigate', icon: svgIcons.log, label: 'Go to Case Log', action: () => scrollToSection('experience') },
+      { group: 'Navigate', icon: svgIcons.cases, label: 'Go to Case Files', action: () => scrollToSection('cases') },
+      { group: 'Navigate', icon: svgIcons.toolkit, label: 'Go to Toolkit', action: () => scrollToSection('toolkit') },
+      { group: 'Navigate', icon: svgIcons.contact, label: 'Go to Contact', action: () => scrollToSection('contact') },
+      { group: 'View', icon: svgIcons.theme, label: theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme', action: () => toggleTheme() },
+      { group: 'Contact', icon: svgIcons.copy, label: 'Copy email address', hint: 'shubham1sure@gmail.com', action: () => copyText('shubham1sure@gmail.com', 'Email copied') },
+      { group: 'Contact', icon: svgIcons.copy, label: 'Copy phone number', hint: '+91-7836878701', action: () => copyText('+917836878701', 'Phone copied') },
+      { group: 'Contact', icon: svgIcons.external, label: 'Send an email', action: () => window.location.href = 'mailto:shubham1sure@gmail.com' }
+    ];
+  }
+
+  function scrollToSection(id) {
+    document.getElementById(id)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+  }
+
+  function renderCmdk(query) {
+    const all = getCommands();
+    const q = (query || '').toLowerCase().trim();
+    cmdkFiltered = q ? all.filter(c => c.label.toLowerCase().includes(q) || c.group.toLowerCase().includes(q)) : all;
+    cmdkActiveIndex = 0;
+    if (cmdkFiltered.length === 0) {
+      cmdkList.innerHTML = `<div class="cmdk-empty">No commands found for "${query}"</div>`;
+      return;
+    }
+    let html = '', lastGroup = '';
+    cmdkFiltered.forEach((c, i) => {
+      if (c.group !== lastGroup) { html += `<div class="cmdk-group-label">${c.group}</div>`; lastGroup = c.group; }
+      html += `<div class="cmdk-item${i === 0 ? ' active' : ''}" data-idx="${i}">${c.icon}<span>${c.label}</span>${c.hint ? `<span class="cmdk-item-hint">${c.hint}</span>` : ''}</div>`;
+    });
+    cmdkList.innerHTML = html;
+    cmdkList.querySelectorAll('.cmdk-item').forEach(el => {
+      el.addEventListener('click', () => runCmdkItem(parseInt(el.dataset.idx, 10)));
+      el.addEventListener('mouseenter', () => setCmdkActive(parseInt(el.dataset.idx, 10)));
+    });
+  }
+  function setCmdkActive(idx) {
+    cmdkActiveIndex = idx;
+    cmdkList.querySelectorAll('.cmdk-item').forEach(el => el.classList.toggle('active', parseInt(el.dataset.idx, 10) === idx));
+  }
+  function runCmdkItem(idx) {
+    const cmd = cmdkFiltered[idx];
+    if (!cmd) return;
+    closeCmdk();
+    setTimeout(() => cmd.action(), 120);
+  }
+  function openCmdk() {
+    cmdkOverlay.classList.add('is-open');
+    cmdkInput.value = '';
+    renderCmdk('');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => cmdkInput.focus(), 50);
+  }
+  function closeCmdk() {
+    cmdkOverlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('cmdkTrigger').addEventListener('click', openCmdk);
+  cmdkOverlay.addEventListener('click', (e) => { if (e.target === cmdkOverlay) closeCmdk(); });
+  cmdkInput.addEventListener('input', () => renderCmdk(cmdkInput.value));
+
+  document.addEventListener('keydown', (e) => {
+    const isK = e.key === 'k' || e.key === 'K';
+    if ((e.metaKey || e.ctrlKey) && isK) {
+      e.preventDefault();
+      cmdkOverlay.classList.contains('is-open') ? closeCmdk() : openCmdk();
+      return;
+    }
+    if (e.key === 'Escape') {
+      if (cmdkOverlay.classList.contains('is-open')) { closeCmdk(); return; }
+      if (modalOverlay.classList.contains('is-open')) { closeModal(); return; }
+    }
+    if (cmdkOverlay.classList.contains('is-open')) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); setCmdkActive(Math.min(cmdkActiveIndex + 1, cmdkFiltered.length - 1)); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); setCmdkActive(Math.max(cmdkActiveIndex - 1, 0)); }
+      if (e.key === 'Enter') { e.preventDefault(); runCmdkItem(cmdkActiveIndex); }
+    }
+  });
+
+});
+, t: 'stack' }, { p: '→', t: 'Python · SQL · FastAPI · ML · RAG' },
+    { p: '~ 
+  const terminalBody = document.getElementById('terminalBody');
+  let terminalTimeouts = [];
+  function runTerminal() {
+    terminalTimeouts.forEach(clearTimeout);
+    terminalTimeouts = [];
+    terminalBody.innerHTML = '';
+    const lines = TERMINAL_LINES;
+    let li = 0;
+    function typeLine() {
+      if (li >= lines.length) return;
+      const { p, t } = lines[li];
+      const row = document.createElement('div');
+      const prompt = document.createElement('span');
+      prompt.className = 'tp'; prompt.textContent = p + ' ';
+      const text = document.createElement('span');
+      row.appendChild(prompt); row.appendChild(text);
+      terminalBody.appendChild(row);
+      let ci = 0;
+      function typeChar() {
+        if (ci < t.length) { text.textContent += t[ci]; ci++; terminalTimeouts.push(setTimeout(typeChar, 16)); }
+        else { li++; terminalTimeouts.push(setTimeout(typeLine, 240)); }
+      }
+      typeChar();
+    }
+    typeLine();
+  }
+  const termIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) { runTerminal(); termIO.unobserve(entry.target); } });
+  }, { threshold: 0.4 });
+  termIO.observe(terminalBody);
+
+  /* ==========================================================
+     SIMPLE EASTER EGG — click the terminal's title bar 5×
+  ========================================================== */
+  console.log('%cLooking under the hood?', 'font-size:16px;font-weight:700;');
+  console.log('%cI\'m Shubham — I built this whole site by hand, no template. If you\'re hiring for analytical, technical, or business problem-solving roles, my email is in the footer.', 'font-size:12px;color:#888;');
+
+  const terminalBar = document.getElementById('terminalBar');
+  let terminalClicks = 0, terminalClickTimer = null;
+  terminalBar.addEventListener('click', () => {
+    terminalClicks++;
+    clearTimeout(terminalClickTimer);
+    terminalClickTimer = setTimeout(() => { terminalClicks = 0; }, 1500);
+    if (terminalClicks >= 5) {
+      terminalClicks = 0;
+      bgBurstUntil = performance.now() + 2200;
+      showToast('🔓 You found it — thanks for looking closely');
+    }
+  });
+
+  /* ==========================================================
+     DOCK SCROLL-SPY — highlights whichever section is currently
+     in view; theme controls aren't tied
+     to a section, so only the [data-dock] nav links participate.
+  ========================================================== */
+  (function initScrollSpy() {
+    const navLinks = Array.from(document.querySelectorAll('.dock-item[data-dock]'));
+    const sections = navLinks
+      .map(link => document.getElementById(link.getAttribute('href').slice(1)))
+      .filter(Boolean);
+    if (!sections.length) return;
+
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.id;
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      });
+    }, { rootMargin: '-45% 0px -45% 0px' }); // fires when a section crosses the viewport's vertical center
+
+    sections.forEach(s => spy.observe(s));
+  })();
+
+  /* ==========================================================
+     DRAGGABLE HERO ICONS — rubber-banded at the edges instead of a hard
+     clamp, and released with real momentum (velocity is tracked during
+     the drag and projected forward on release), per Apple's fluid-
+     interfaces model: things resist softly at boundaries and carry
+     their motion forward instead of just stopping where you let go.
+  ========================================================== */
+  const heroEl = document.getElementById('hero');
+
+  // Apple's rubberband formula (Designing Fluid Interfaces, WWDC 2018) —
+  // resistance grows the further past the boundary you drag, never a hard stop.
+  function rubberband(overshoot, dimension, constant = 0.55) {
+    return (overshoot * dimension * constant) / (dimension + constant * Math.abs(overshoot));
+  }
+  // Momentum projection — where a flick would come to rest if it kept decelerating.
+  function project(velocity, decelerationRate = 0.998) {
+    return (velocity / 1000) * decelerationRate / (1 - decelerationRate);
+  }
+
+  document.querySelectorAll('.hero-float-icon').forEach(icon => {
+    let settleRAF = null; // handle for any in-progress release animation
+
+    icon.addEventListener('pointerdown', (e) => {
+      // Grabbing the icon mid-flight (while it's still settling from a
+      // previous release) cancels that animation and starts fresh from
+      // wherever it currently, visually is — never a jump.
+      if (settleRAF) { cancelAnimationFrame(settleRAF); settleRAF = null; }
+
+      icon.setPointerCapture(e.pointerId);
+      icon.classList.add('is-dragging');
+      const heroRect = heroEl.getBoundingClientRect();
+      const iconRect = icon.getBoundingClientRect();
+      const offsetX = e.clientX - iconRect.left;
+      const offsetY = e.clientY - iconRect.top;
+      const minX = 0, maxX = heroRect.width - iconRect.width;
+      const minY = 0, maxY = heroRect.height - iconRect.height;
+
+      let curX = iconRect.left - heroRect.left, curY = iconRect.top - heroRect.top;
+      const history = []; // recent {x,y,t} samples, for release velocity
+
+      function onMove(ev) {
+        let nx = ev.clientX - heroRect.left - offsetX;
+        let ny = ev.clientY - heroRect.top - offsetY;
+        if (reduced) {
+          // reduced motion: hard clamp, no rubber-band resistance
+          nx = Math.max(minX, Math.min(maxX, nx));
+          ny = Math.max(minY, Math.min(maxY, ny));
+        } else {
+          // Soft resistance past the edges instead of stopping dead
+          if (nx < minX) nx = minX + rubberband(nx - minX, heroRect.width);
+          else if (nx > maxX) nx = maxX + rubberband(nx - maxX, heroRect.width);
+          if (ny < minY) ny = minY + rubberband(ny - minY, heroRect.height);
+          else if (ny > maxY) ny = maxY + rubberband(ny - maxY, heroRect.height);
+        }
+
+        curX = nx; curY = ny;
+        icon.style.left = nx + 'px'; icon.style.top = ny + 'px';
+        icon.style.right = 'auto'; icon.style.bottom = 'auto';
+
+        history.push({ x: nx, y: ny, t: performance.now() });
+        if (history.length > 5) history.shift();
+      }
+
+      function onUp() {
+        icon.classList.remove('is-dragging');
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+
+        if (reduced) return; // already in-bounds, no momentum/overshoot to add
+
+        // Velocity from the last two samples (px/s)
+        let vx = 0, vy = 0;
+        if (history.length >= 2) {
+          const a = history[0], b = history[history.length - 1];
+          const dt = Math.max(1, b.t - a.t);
+          vx = ((b.x - a.x) / dt) * 1000;
+          vy = ((b.y - a.y) / dt) * 1000;
+        }
+
+        // Where the flick would come to rest, clamped back into bounds —
+        // the resting position is never allowed to stay out-of-bounds
+        let targetX = curX + project(vx);
+        let targetY = curY + project(vy);
+        targetX = Math.max(minX, Math.min(maxX, targetX));
+        targetY = Math.max(minY, Math.min(maxY, targetY));
+
+        // Spring toward the resting point, carrying the release velocity —
+        // a touch of bounce here is correct per Apple's rule: overshoot is
+        // earned specifically because this gesture carried real momentum.
+        let px = curX, py = curY;
+        let pvx = vx / 60, pvy = vy / 60; // px/s -> px/frame, roughly
+        const stiffness = 0.14, damping = 0.72;
+
+        function settle() {
+          const fx = (targetX - px) * stiffness;
+          const fy = (targetY - py) * stiffness;
+          pvx = (pvx + fx) * damping;
+          pvy = (pvy + fy) * damping;
+          px += pvx; py += pvy;
+          icon.style.left = px + 'px'; icon.style.top = py + 'px';
+
+          if (Math.abs(pvx) < 0.05 && Math.abs(pvy) < 0.05 &&
+              Math.abs(targetX - px) < 0.5 && Math.abs(targetY - py) < 0.5) {
+            icon.style.left = targetX + 'px'; icon.style.top = targetY + 'px';
+            settleRAF = null;
+            return;
+          }
+          settleRAF = requestAnimationFrame(settle);
+        }
+        settleRAF = requestAnimationFrame(settle);
+      }
+
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+    });
+  });
+
+  /* ==========================================================
+     CURSOR — a small, fixed-size dot that spring-follows the
+     mouse. Every earlier round of this feature tried to morph the
+     cursor to exactly cover whatever button it hovered — which
+     kept breaking in new ways (distorted radius from scale
+     transforms, a hazy gradient blob, invisible-via-blend-mode
+     against light backgrounds, and finally just opaquely hiding
+     the button's own label text). The actual fix is to stop
+     trying to make the cursor become the button. It stays small,
+     so it can never cover what you're reading, and just scales
+     up slightly on hover as feedback instead.
+  ========================================================== */
+  const cursorDot = document.getElementById('cursorDot');
+  const cursorFollow = document.getElementById('cursorFollow');
+  const cursorFollowText = document.getElementById('cursorFollowText');
+  const finePointer = window.matchMedia('(pointer:fine)').matches;
+
+  if (!reduced && !constrainedDevice && finePointer) {
+    root.classList.add('custom-cursor'); // hides the native OS pointer — see CSS
+    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+    let cx = mouseX, cy = mouseY;
+    let scale = 1, targetScale = 1;
+    let fx = mouseX, fy = mouseY;
+    let followEl = null;
+
+    window.addEventListener('mousemove', (e) => {
+      cursorDot.style.opacity = '1';
+      mouseX = e.clientX; mouseY = e.clientY;
+    });
+
+    let cursorFrame = 0;
+    function loop() {
+      cursorFrame = 0;
+      if (document.hidden) return;
+      const k = 0.26;
+      cx += (mouseX - cx) * k;
+      cy += (mouseY - cy) * k;
+      scale += (targetScale - scale) * 0.2;
+      cursorDot.style.transform = `translate(${cx - 9}px, ${cy - 9}px) scale(${scale})`;
+      if (cursorFollow && cursorFollowText) {
+        fx += (mouseX - fx) * 0.14;
+        fy += (mouseY - fy) * 0.14;
+        cursorFollow.style.transform = `translate(${fx + 13}px, ${fy + 15}px)`;
+      }
+      cursorFrame = requestAnimationFrame(loop);
+    }
+    function scheduleCursor() {
+      if (!document.hidden && !cursorFrame) cursorFrame = requestAnimationFrame(loop);
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { cancelAnimationFrame(cursorFrame); cursorFrame = 0; }
+      else scheduleCursor();
+    });
+    scheduleCursor();
+
+    document.querySelectorAll('a, button, .case-card, .roadmap-card').forEach(el => {
+      el.addEventListener('mouseenter', () => { targetScale = 1.6; });
+      el.addEventListener('mouseleave', () => { targetScale = 1; });
+    });
+
+    /* CURSOR FOLLOW — a trailing label with its own, laggier spring, showing
+       whichever element under the pointer requests text via [data-cursor-text].
+       Offset bottom-end from the cursor to match the reference component's
+       own default (side: bottom, sideOffset: 15, align: end, alignOffset: 5). */
+    if (cursorFollow && cursorFollowText) {
+      document.querySelectorAll('[data-cursor-text]').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          followEl = el;
+          cursorFollowText.textContent = el.dataset.cursorText;
+          cursorFollow.style.opacity = '1';
+        });
+        el.addEventListener('mouseleave', () => {
+          if (followEl === el) { followEl = null; cursorFollow.style.opacity = '0'; }
+        });
+      });
+
+    }
+  }
+
+  /* ==========================================================
+     STARS BACKGROUND — adaptive and non-blocking. The default path
+     keeps a lightweight drifting field; constrained devices get one
+     static draw instead of a permanent canvas loop.
+  ========================================================== */
+  let bgBurstUntil = 0;
+  (function initStarsBackground() {
+    const canvas = document.getElementById('bgCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    let w, h, stars = [];
+    const animateStars = !performanceLite;
+    const density = () => {
+      if (performanceLite) return window.innerWidth < 700 ? 14000 : 18000;
+      return window.innerWidth < 700 ? 11000 : 10000;
+    };
+    function build() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      const count = Math.max(24, Math.floor((w * h) / density()));
+      stars = Array.from({ length: count }, () => {
+        const depth = 0.12 + Math.random() * 0.88;
+        const angle = Math.random() * Math.PI * 2;
+        return {
+          x: Math.random() * w, y: Math.random() * h,
+          size: 0.6 + Math.random() * 1.8, depth,
+          cosAngle: Math.cos(angle), sinAngle: Math.sin(angle),
+          twinklePhase: Math.random() * Math.PI * 2,
+          twinkleSpeed: 0.6 + Math.random() * 1.8,
+        };
+      });
+    }
+    let resizeFrame = 0;
+    build();
+    window.addEventListener('resize', () => {
+      if (resizeFrame) cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        resizeFrame = 0;
+        build();
+        if (animateStars) scheduleDraw();
+        else draw(performance.now());
+      });
+    }, { passive: true });
+    let px = -9999, py = -9999;
+    if (animateStars) {
+      window.addEventListener('mousemove', (e) => { px = e.clientX; py = e.clientY; }, { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches[0]) { px = e.touches[0].clientX; py = e.touches[0].clientY; }
+      }, { passive: true });
+      window.addEventListener('mouseleave', () => { px = -9999; py = -9999; }, { passive: true });
+    }
+    let starFrame = 0;
+    let lastDraw = 0;
+    function draw(now) {
+      starFrame = 0;
+      if (document.hidden) return;
+      const dt = Math.min(50, now - (lastDraw || now)) / 1000;
+      lastDraw = now;
+      const time = now / 1000;
+      ctx.clearRect(0, 0, w, h);
+      const dark = root.getAttribute('data-theme') === 'dark';
+      const rgb = dark ? '255,255,255' : '10,10,10';
+      const burst = animateStars && performance.now() < bgBurstUntil;
+      ctx.fillStyle = `rgb(${rgb})`;
+      stars.forEach((star) => {
+        if (animateStars) {
+          const drift = 16 * star.depth * dt;
+          star.x += star.cosAngle * drift; star.y += star.sinAngle * drift;
+          if (star.x < -5) star.x = w + 5; if (star.x > w + 5) star.x = -5;
+          if (star.y < -5) star.y = h + 5; if (star.y > h + 5) star.y = -5;
+        }
+        let renderX = star.x, renderY = star.y, glow = 0;
+        if (animateStars) {
+          const dx = star.x - px, dy = star.y - py;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < 90) {
+            const strength = 1 - distance / 90;
+            const nx = distance > 0.01 ? dx / distance : 0;
+            const ny = distance > 0.01 ? dy / distance : 0;
+            renderX += nx * strength * 14; renderY += ny * strength * 14; glow = strength;
+          }
+        }
+        const twinkle = animateStars ? 0.55 + 0.45 * Math.sin(time * star.twinkleSpeed + star.twinklePhase) : 0.78;
+        let alpha = (dark ? 0.025 + star.depth * 0.42 : 0.018 + star.depth * 0.22) * twinkle + glow * 0.12;
+        if (burst) alpha = Math.min(0.55, alpha + 0.12);
+        ctx.globalAlpha = Math.min(0.55, alpha);
+        ctx.beginPath(); ctx.arc(renderX, renderY, star.size + glow * 1.2, 0, Math.PI * 2); ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+      if (animateStars) starFrame = requestAnimationFrame(draw);
+    }
+    function scheduleDraw() {
+      if (document.hidden || starFrame) return;
+      if (animateStars) starFrame = requestAnimationFrame(draw);
+      else draw(performance.now());
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { cancelAnimationFrame(starFrame); starFrame = 0; }
+      else { lastDraw = 0; scheduleDraw(); }
+    });
+    document.addEventListener('themechange', scheduleDraw);
+    scheduleDraw();
+  })();
+
+  /* ==========================================================
+     COMMAND PALETTE
+  ========================================================== */
+  const cmdkOverlay = document.getElementById('cmdkOverlay');
+  const cmdkInput = document.getElementById('cmdkInput');
+  const cmdkList = document.getElementById('cmdkList');
+  let cmdkActiveIndex = 0;
+  let cmdkFiltered = [];
+
+  const svgIcons = {
+    home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+    profile: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>',
+    log: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M12 19V5M20 19v-6"/></svg>',
+    cases: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+    toolkit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94z"/></svg>',
+    contact: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>',
+    swap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M8 17V9M13 17V5M18 17v-8"/></svg>',
+    theme: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
+    copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+    external: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14L21 3"/></svg>'
+  };
+
+  function getCommands() {
+    return [
+      { group: 'Navigate', icon: svgIcons.home, label: 'Go to Home', action: () => scrollToSection('hero') },
+      { group: 'Navigate', icon: svgIcons.profile, label: 'Go to Profile', action: () => scrollToSection('about') },
+      { group: 'Navigate', icon: svgIcons.log, label: 'Go to Case Log', action: () => scrollToSection('experience') },
+      { group: 'Navigate', icon: svgIcons.cases, label: 'Go to Case Files', action: () => scrollToSection('cases') },
+      { group: 'Navigate', icon: svgIcons.toolkit, label: 'Go to Toolkit', action: () => scrollToSection('toolkit') },
+      { group: 'Navigate', icon: svgIcons.contact, label: 'Go to Contact', action: () => scrollToSection('contact') },
+      { group: 'View', icon: svgIcons.theme, label: theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme', action: () => toggleTheme() },
+      { group: 'Contact', icon: svgIcons.copy, label: 'Copy email address', hint: 'shubham1sure@gmail.com', action: () => copyText('shubham1sure@gmail.com', 'Email copied') },
+      { group: 'Contact', icon: svgIcons.copy, label: 'Copy phone number', hint: '+91-7836878701', action: () => copyText('+917836878701', 'Phone copied') },
+      { group: 'Contact', icon: svgIcons.external, label: 'Send an email', action: () => window.location.href = 'mailto:shubham1sure@gmail.com' }
+    ];
+  }
+
+  function scrollToSection(id) {
+    document.getElementById(id)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+  }
+
+  function renderCmdk(query) {
+    const all = getCommands();
+    const q = (query || '').toLowerCase().trim();
+    cmdkFiltered = q ? all.filter(c => c.label.toLowerCase().includes(q) || c.group.toLowerCase().includes(q)) : all;
+    cmdkActiveIndex = 0;
+    if (cmdkFiltered.length === 0) {
+      cmdkList.innerHTML = `<div class="cmdk-empty">No commands found for "${query}"</div>`;
+      return;
+    }
+    let html = '', lastGroup = '';
+    cmdkFiltered.forEach((c, i) => {
+      if (c.group !== lastGroup) { html += `<div class="cmdk-group-label">${c.group}</div>`; lastGroup = c.group; }
+      html += `<div class="cmdk-item${i === 0 ? ' active' : ''}" data-idx="${i}">${c.icon}<span>${c.label}</span>${c.hint ? `<span class="cmdk-item-hint">${c.hint}</span>` : ''}</div>`;
+    });
+    cmdkList.innerHTML = html;
+    cmdkList.querySelectorAll('.cmdk-item').forEach(el => {
+      el.addEventListener('click', () => runCmdkItem(parseInt(el.dataset.idx, 10)));
+      el.addEventListener('mouseenter', () => setCmdkActive(parseInt(el.dataset.idx, 10)));
+    });
+  }
+  function setCmdkActive(idx) {
+    cmdkActiveIndex = idx;
+    cmdkList.querySelectorAll('.cmdk-item').forEach(el => el.classList.toggle('active', parseInt(el.dataset.idx, 10) === idx));
+  }
+  function runCmdkItem(idx) {
+    const cmd = cmdkFiltered[idx];
+    if (!cmd) return;
+    closeCmdk();
+    setTimeout(() => cmd.action(), 120);
+  }
+  function openCmdk() {
+    cmdkOverlay.classList.add('is-open');
+    cmdkInput.value = '';
+    renderCmdk('');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => cmdkInput.focus(), 50);
+  }
+  function closeCmdk() {
+    cmdkOverlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('cmdkTrigger').addEventListener('click', openCmdk);
+  cmdkOverlay.addEventListener('click', (e) => { if (e.target === cmdkOverlay) closeCmdk(); });
+  cmdkInput.addEventListener('input', () => renderCmdk(cmdkInput.value));
+
+  document.addEventListener('keydown', (e) => {
+    const isK = e.key === 'k' || e.key === 'K';
+    if ((e.metaKey || e.ctrlKey) && isK) {
+      e.preventDefault();
+      cmdkOverlay.classList.contains('is-open') ? closeCmdk() : openCmdk();
+      return;
+    }
+    if (e.key === 'Escape') {
+      if (cmdkOverlay.classList.contains('is-open')) { closeCmdk(); return; }
+      if (modalOverlay.classList.contains('is-open')) { closeModal(); return; }
+    }
+    if (cmdkOverlay.classList.contains('is-open')) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); setCmdkActive(Math.min(cmdkActiveIndex + 1, cmdkFiltered.length - 1)); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); setCmdkActive(Math.max(cmdkActiveIndex - 1, 0)); }
+      if (e.key === 'Enter') { e.preventDefault(); runCmdkItem(cmdkActiveIndex); }
+    }
+  });
+
+});
+, t: 'currently' }, { p: '→', t: 'Open to data, product, software and AI roles' }
   ];
   const terminalBody = document.getElementById('terminalBody');
   let terminalTimeouts = [];
