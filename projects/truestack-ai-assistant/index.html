@@ -33,7 +33,7 @@
     .true-arch-arrow{display:flex;align-items:center;justify-content:center;color:var(--report-faint);font:20px var(--report-font-mono)}
     .true-lane-title{margin:22px 0 9px;color:var(--report-faint);font:600 9px var(--report-font-mono);letter-spacing:.1em;text-transform:uppercase}
     .true-branches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
-    .true-bottom-flow{margin-top:10px}
+    .true-bottom-flow{display:grid;grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr) 22px minmax(0,1fr) 22px minmax(0,1fr);align-items:stretch;gap:8px;margin-top:10px}
     .true-ingest-flow{display:grid;grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr) 24px minmax(0,1fr);align-items:stretch;gap:8px;margin-top:16px;padding-top:16px;border-top:1px dashed var(--report-line-strong)}
     .true-route-readout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:18px;margin-top:15px;padding:16px;border:1px solid var(--report-line);border-radius:7px;background:var(--report-bg)}
     .true-route-readout h3{margin:0;font-size:17px;line-height:1.2}
@@ -154,14 +154,16 @@
         <div class="true-branches">
           <article class="true-arch-node is-active" data-node="retrieval"><span class="node-num">04A / RETRIEVAL</span><strong>Embeddings + ChromaDB</strong><p>Search policy chunks and retain source, section, version, and page metadata</p></article>
           <article class="true-arch-node" data-node="tools"><span class="node-num">04B / TOOLS</span><strong>Deterministic Python tools</strong><p>Calculate attendance, results, and eligibility using explicit rules</p></article>
-          <article class="true-arch-node" data-node="model"><span class="node-num">04C / LANGUAGE</span><strong>Local Qwen via Ollama</strong><p>Language responses and explanations when local inference is configured</p></article>
+          <article class="true-arch-node" data-node="general-route"><span class="node-num">04C / GENERAL CHAT</span><strong>Direct model route</strong><p>General questions can skip retrieval and use the configured local model</p></article>
         </div>
-        <div class="true-flow-row true-bottom-flow">
+        <div class="true-bottom-flow">
           <article class="true-arch-node is-active" data-node="evidence"><span class="node-num">05 / GUARDRAILS</span><strong>Evidence + policy checks</strong><p>Source precedence, authorization, uncertainty, and refusal paths</p></article>
           <div class="true-arch-arrow" aria-hidden="true">→</div>
-          <article class="true-arch-node" data-node="validation"><span class="node-num">06 / VALIDATE</span><strong>Response validation</strong><p>Check response type, citations, required fields, and boundary behavior</p></article>
+          <article class="true-arch-node is-active" data-node="model"><span class="node-num">06 / LANGUAGE</span><strong>Local Qwen via Ollama</strong><p>Explain checked evidence or answer general questions when configured</p></article>
           <div class="true-arch-arrow" aria-hidden="true">→</div>
-          <article class="true-arch-node" data-node="audit"><span class="node-num">07 / OUTPUT</span><strong>Answer + trace</strong><p>Source citations, trace ID, and audit record</p></article>
+          <article class="true-arch-node" data-node="validation"><span class="node-num">07 / VALIDATE</span><strong>Response validation</strong><p>Check response type, citations, required fields, and boundary behavior</p></article>
+          <div class="true-arch-arrow" aria-hidden="true">→</div>
+          <article class="true-arch-node" data-node="audit"><span class="node-num">08 / OUTPUT</span><strong>Answer + trace</strong><p>Source citations, trace ID, and audit record</p></article>
         </div>
         <div class="true-ingest-flow">
           <article class="true-arch-node" data-node="ingest"><span class="node-num">UPLOAD</span><strong>POST /ingest</strong><p>File plus source metadata</p></article>
@@ -286,7 +288,7 @@
           description: 'Student-specific requests require trusted identity context. Python tools read the relevant SQLite records and apply explicit calculation rules; unauthorized cross-student requests are rejected before personal-data tools run.',
           prompt: '“What is my attendance?”',
           path: 'Streamlit + trusted student ID → FastAPI → LangGraph → Python tools → SQLite → checks → response validation + audit.',
-          nodes: ['ui','api','workflow','tools','evidence','validation','audit']
+          nodes: ['ui','api','workflow','tools','evidence','model','validation','audit']
         },
         general: {
           title: 'GENERAL QUESTION PATH',
@@ -294,7 +296,7 @@
           description: 'General questions can be answered using the configured local Qwen model through Ollama. Mock mode is for pipeline smoke testing and is not evidence of real model quality.',
           prompt: '“Explain the difference between precision and recall.”',
           path: 'Streamlit → FastAPI → LangGraph → local Qwen / Ollama → response validation → trace.',
-          nodes: ['ui','api','workflow','model','validation','audit']
+          nodes: ['ui','api','workflow','general-route','model','validation','audit']
         },
         ingest: {
           title: 'DOCUMENT INGESTION PATH',
