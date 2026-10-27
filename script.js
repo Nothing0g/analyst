@@ -1,37 +1,59 @@
 (() => {
   const root = document.documentElement;
-  const themeToggle = document.getElementById('themeToggle');
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const sun = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>';
+  const moon = '<path d="M20.4 15.3A8.5 8.5 0 0 1 8.7 3.6 8.7 8.7 0 1 0 20.4 15.3Z"/>';
 
-  function getInitialTheme() {
-    try {
-      const saved = localStorage.getItem('theme');
-      if (saved === 'light' || saved === 'dark') return saved;
-    } catch (error) {}
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
-
-  function setTheme(theme) {
-    root.setAttribute('data-theme', theme);
-    if (themeToggle) {
-      const isDark = theme === 'dark';
-      themeToggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
-      themeToggle.title = isDark ? 'Switch to light theme' : 'Switch to dark theme';
-      themeToggle.innerHTML = isDark
-        ? '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>'
-        : '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.9 13A8.7 8.7 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg>';
+  function paintTheme(theme) {
+    root.dataset.theme = theme;
+    document.querySelectorAll("[data-theme-toggle-icon]").forEach((icon) => {
+      icon.innerHTML = theme === "dark" ? sun : moon;
+    });
+    const button = document.getElementById("themeToggle");
+    if (button) {
+      button.setAttribute("aria-pressed", String(theme === "dark"));
+      button.setAttribute("aria-label", theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
+      const icon = document.getElementById("themeIcon");
+      if (icon) icon.innerHTML = theme === "dark" ? sun : moon;
     }
-    try { localStorage.setItem('theme', theme); } catch (error) {}
+    document.dispatchEvent(new CustomEvent("themechange"));
+    try { localStorage.setItem("theme", theme); } catch (_) {}
   }
 
-  setTheme(getInitialTheme());
-  themeToggle?.addEventListener('click', () => {
-    setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  let theme = root.dataset.theme === "dark" ? "dark" : "light";
+  paintTheme(theme);
+  const themeToggle = document.getElementById("themeToggle");
+  themeToggle?.addEventListener("click", (event) => {
+    const next = theme === "dark" ? "light" : "dark";
+    root.style.setProperty("--tx", (event.clientX ?? innerWidth / 2) + "px");
+    root.style.setProperty("--ty", (event.clientY ?? innerHeight / 2) + "px");
+    if (document.startViewTransition && !reducedMotion) {
+      document.startViewTransition(() => {
+        theme = next;
+        paintTheme(next);
+      });
+    } else {
+      theme = next;
+      paintTheme(next);
+    }
   });
 
-  const chart = document.getElementById('heroChart');
-  if (chart && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    requestAnimationFrame(() => requestAnimationFrame(() => chart.classList.add('chart-ready')));
-  } else {
-    chart?.classList.add('chart-ready');
+  const search = document.getElementById("registerSearch");
+  const rows = Array.from(document.querySelectorAll(".register-row"));
+  const count = document.getElementById("registerCount");
+  const empty = document.getElementById("registerEmpty");
+  function filterRegister() {
+    const query = (search?.value || "").trim().toLowerCase();
+    let visible = 0;
+    rows.forEach((row) => {
+      const haystack = (row.dataset.search || "") + " " + row.textContent;
+      const match = haystack.toLowerCase().includes(query);
+      row.hidden = !match;
+      if (match) visible += 1;
+    });
+    if (count) count.textContent = visible + (visible === 1 ? " report" : " reports");
+    if (empty) empty.hidden = visible !== 0;
   }
+  search?.addEventListener("input", filterRegister);
+  filterRegister();
 })();
