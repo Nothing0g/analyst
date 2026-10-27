@@ -29,7 +29,7 @@
 </script>
 </head>
 <body>
-<a href="#hero" class="skip-link">Skip to content</a>
+<a href="#main" class="skip-link">Skip to main content</a>
 <div class="scroll-progress-track" aria-hidden="true"><div class="scroll-progress" id="scrollProgress"></div></div>
 
 <div class="grid-backdrop" aria-hidden="true"></div>
@@ -41,10 +41,10 @@
 <nav class="dock" aria-label="Section navigation">
   <div class="dock-inner">
     <a href="#hero" class="dock-item" data-dock><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="dock-label">Home</span></a>
-    <a href="#about" class="dock-item" data-dock><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg><span class="dock-label">Profile</span></a>
-    <a href="#experience" class="dock-item" data-dock><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M12 19V5M20 19v-6"/></svg><span class="dock-label">Case log</span></a>
-    <a href="#cases" class="dock-item" data-dock><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span class="dock-label">Case files</span></a>
-    <a href="#toolkit" class="dock-item" data-dock><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94z"/></svg><span class="dock-label">Toolkit</span></a>
+    <a href="#about" class="dock-item" data-dock><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg><span class="dock-label">About</span></a>
+    <a href="#experience" class="dock-item" data-dock><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M12 19V5M20 19v-6"/></svg><span class="dock-label">Experience</span></a>
+    <a href="#cases" class="dock-item" data-dock><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span class="dock-label">Projects</span></a>
+    <a href="#toolkit" class="dock-item" data-dock><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94z"/></svg><span class="dock-label">Skills</span></a>
     <a href="#contact" class="dock-item" data-dock><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg><span class="dock-label">Contact</span></a>
     <div class="dock-divider"></div>
     <button class="dock-item" id="dockThemeBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" id="dockThemeIcon"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><span class="dock-label">Toggle theme</span></button>
@@ -55,7 +55,7 @@
 <div class="topbar">
   <span class="topbar-brand mono"><span class="dot"></span> SHUBHAM KUMAR</span>
   <div class="topbar-right">
-    <button class="kbd-chip" id="cmdkTrigger">
+    <button class="kbd-chip" id="cmdkTrigger" aria-label="Search portfolio" aria-haspopup="dialog" aria-controls="cmdkOverlay">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
       <span class="cmdk-trigger-text">Search</span>
       <kbd>⌘K</kbd>
@@ -67,6 +67,7 @@
 </div>
 
 <!-- ============ HERO ============ -->
+<main id="main" tabindex="-1">
 <section class="hero" id="hero">
   <div class="hero-scanline" aria-hidden="true"></div>
 
@@ -108,7 +109,7 @@
         <span class="tb-dot r"></span><span class="tb-dot y"></span><span class="tb-dot g"></span>
         <span class="terminal-label mono">shubham — casefile.sh</span>
       </div>
-      <div class="terminal-body mono" id="terminalBody"></div>
+      <div class="terminal-body mono" id="terminalBody" role="img" aria-label="Portfolio summary: Python, SQL, FastAPI, machine learning, retrieval workflows, and product-focused software."><div>~ $ who_am_i</div><div>→ Data · Software · AI · Mechanical Engineering background</div><div>~ $ stack</div><div>→ Python · SQL · FastAPI · ML · RAG</div><div>~ $ currently</div><div>→ Open to data, product, software and AI roles</div></div>
     </div>
   </div>
 </section>
@@ -116,10 +117,10 @@
 <!-- ============ 01 · PROFILE ============ -->
 <section id="about" class="section">
   <div class="inner">
-    <div class="section-label reveal">
+    <h2 class="section-label reveal">
       <span class="mono tag-num">FILE / 01</span><span class="label-rule"></span>
-      <span class="mono label-text">Subject Profile</span>
-    </div>
+      <span class="mono label-text">About</span>
+    </h2>
     <div class="about-grid">
       <div class="about-text reveal">
         <p>I'm Shubham, a Mechanical Engineering student at Delhi Technological University who enjoys turning messy questions into useful tools and decisions. My work spans data analytics, machine-learning baselines, business and product questions, and software systems that connect APIs, retrieval, and deterministic tools.</p>
@@ -159,10 +160,10 @@
 <!-- ============ 02 · CASE LOG (roadmap) ============ -->
 <section id="experience" class="section">
   <div class="inner">
-    <div class="section-label reveal">
+    <h2 class="section-label reveal">
       <span class="mono tag-num">FILE / 02</span><span class="label-rule"></span>
-      <span class="mono label-text">Case Log</span>
-    </div>
+      <span class="mono label-text">Experience</span>
+    </h2>
     <p class="section-lede reveal">A roadmap of where the work happened, in order.</p>
 
     <div class="roadmap">
@@ -174,7 +175,7 @@
           <div class="roadmap-top">
             <span class="roadmap-status roadmap-status-next">Up next</span>
           </div>
-          <div class="tl-role">Next role across data, software &amp; AI</div>
+          <h3 class="tl-role">Next role across data, software &amp; AI</h3>
           <div class="tl-org mono">Analytics · Data Science · Product · Software · Applied AI</div>
         </div>
       </div>
@@ -187,7 +188,7 @@
             <span class="roadmap-status">Completed</span>
             <span class="tl-date mono">Jun '26 - Jul '26</span>
           </div>
-          <div class="tl-role">Summer Trainee — Turbine Maintenance Department</div>
+          <h3 class="tl-role">Summer Trainee — Turbine Maintenance Department</h3>
           <div class="tl-org mono">NTPC Dadri | Gautam Budh Nagar, UP</div>
           <ul class="tl-points">
             <li>Analyzed operational and maintenance data across HP/LP turbine sections of a 2000 MW coal-based thermal plant to study performance patterns in steam turbine operation and stage-wise energy conversion</li>
@@ -205,7 +206,7 @@
             <span class="roadmap-status">Completed</span>
             <span class="tl-date mono">May '26 — Jul '26</span>
           </div>
-          <div class="tl-role">Analyst Fellowship</div>
+          <h3 class="tl-role">Analyst Fellowship</h3>
           <div class="tl-org mono">CrackNonTech · Delhi</div>
           <ul class="tl-points">
             <li>Solved guesstimates and live business cases across profitability, market-entry, and industry analysis under time pressure.</li>
@@ -223,7 +224,7 @@
             <span class="roadmap-status">Completed</span>
             <span class="tl-date mono">Dec '25 — Jan '26</span>
           </div>
-          <div class="tl-role">Research Intern</div>
+          <h3 class="tl-role">Research Intern</h3>
           <div class="tl-org mono">DRDO – SSPL · Delhi</div>
           <ul class="tl-points">
             <li>Analyzed Pulse Tube Refrigerator (PTR) and Dilution Refrigeration thermodynamic cycles for ultra-low-temperature defense electronics applications.</li>
@@ -241,7 +242,7 @@
             <span class="roadmap-status">Completed</span>
             <span class="tl-date mono">Jun '25 — Jul '25</span>
           </div>
-          <div class="tl-role">Plant Design Intern</div>
+          <h3 class="tl-role">Plant Design Intern</h3>
           <div class="tl-org mono">Engineers India Limited (EIL) · Gurugram</div>
           <ul class="tl-points">
             <li>Created plant layout and piping drawings in AutoCAD for live government infrastructure projects, incorporating senior engineers' design feedback.</li>
@@ -257,13 +258,30 @@
 <!-- ============ 03 · CASE FILES ============ -->
 <section id="cases" class="section">
   <div class="inner">
-    <div class="section-label reveal">
+    <h2 class="section-label reveal">
       <span class="mono tag-num">FILE / 03</span><span class="label-rule"></span>
-      <span class="mono label-text">Selected Case Studies</span>
-    </div>
+      <span class="mono label-text">Projects</span>
+    </h2>
     <p class="section-lede reveal">Selected work across analytics, business problems, and AI-powered software. Each casefile explains the approach, evidence, and limitations; the full archive has more.</p>
 
-    <div class="case-list" id="caseList"><!-- Four featured projects injected by JS --></div>
+    <div class="case-list" id="caseList">
+      <a href="projects/uber-ride-demand/" class="case-card spotlight-card reveal" data-cursor-text="View report">
+        <div class="case-top"><div><div class="case-id mono">CASE NO. 001 · Jun — Jul '26</div><h3 class="case-title">Uber Ride Demand Analytics</h3></div><div class="case-status"><span class="dt"></span>Reported</div></div>
+        <div class="case-body"><div class="case-text"><p class="case-summary" data-field="summary">Separate changing ride volume from service health across 150,000 bookings to test whether supply failure follows peak demand.</p><p class="case-summary" data-field="finding">Demand swings around 9× through the day, while service failure stays comparatively flat.</p><div class="case-tags"><span class="case-tag">Python</span><span class="case-tag">SQL</span><span class="case-tag">Time series</span></div><span class="case-view-link">Open full case study →</span></div><div><div class="case-stat">9×</div><div class="case-stat-label">demand swing, hour to hour</div><div class="case-visual" style="margin-top:14px;"><svg class="case-line" viewBox="0 0 200 90" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,76 20,81 40,74 60,64 80,42 100,21 120,38 140,47 160,32 180,17 200,52" fill="none" stroke="var(--fg)" stroke-width="2"/></svg></div></div></div>
+      </a>
+      <a href="projects/interior-lead-funnel/" class="case-card spotlight-card reveal" data-cursor-text="View report">
+        <div class="case-top"><div><div class="case-id mono">CASE NO. 006 · Oct '26</div><h3 class="case-title">Interior Lead Funnel Leak Detector</h3></div><div class="case-status"><span class="dt"></span>Synthetic data</div></div>
+        <div class="case-body"><div class="case-text"><p class="case-summary" data-field="summary">A source-level funnel scorecard for 192 fictional enquiries, tracking response speed, consultations, wins and follow-up priorities.</p><p class="case-summary" data-field="finding">A 4× sample win-rate spread helps prioritize where to investigate the funnel.</p><div class="case-tags"><span class="case-tag">SQL</span><span class="case-tag">Python</span><span class="case-tag">Funnel analysis</span></div><span class="case-view-link">Open full case study →</span></div><div><div class="case-stat">4×</div><div class="case-stat-label">sample win-rate spread</div><div class="case-visual" style="margin-top:14px;"><div class="case-bars" aria-hidden="true"><span style="height:95%" class="hi"></span><span style="height:72%"></span><span style="height:48%"></span><span style="height:30%"></span><span style="height:18%"></span></div></div></div></div>
+      </a>
+      <a href="projects/turbine-maintenance-copilot/" class="case-card spotlight-card reveal" data-cursor-text="View report">
+        <div class="case-top"><div><div class="case-id mono">CASE NO. 007 · Engineering AI</div><h3 class="case-title">Turbine Maintenance Intelligence Copilot</h3></div><div class="case-status"><span class="dt"></span>Prototype</div></div>
+        <div class="case-body"><div class="case-text"><p class="case-summary" data-field="summary">Evidence-grounded decision support checks telemetry quality, flags rolling anomalies, retrieves maintenance evidence and returns bounded recommendations.</p><p class="case-summary" data-field="finding">The synthetic evaluation covers 144 telemetry rows, with review triggers and evidence IDs kept visible.</p><div class="case-tags"><span class="case-tag">Python</span><span class="case-tag">Anomaly detection</span><span class="case-tag">FastAPI</span></div><span class="case-view-link">Open full case study →</span></div><div><div class="case-stat">144</div><div class="case-stat-label">synthetic telemetry rows evaluated</div><div class="case-visual" style="margin-top:14px;"><div class="project-mini-signal"><span class="mono">SYNTHETIC TELEMETRY</span><svg viewBox="0 0 200 72" aria-hidden="true"><path d="M0 50 C25 47 36 54 56 49 S88 45 103 47 S130 42 146 34 S171 38 200 15" fill="none" stroke="var(--fg-faint)" stroke-width="1.5" stroke-dasharray="4 4"/><path d="M0 52 C27 55 38 47 59 53 S91 40 108 46 S135 44 150 39 S177 30 200 27" fill="none" stroke="var(--fg)" stroke-width="2.2"/></svg><span class="mono">TREND → REVIEW</span></div></div></div></div>
+      </a>
+      <a href="projects/truestack-ai-assistant/" class="case-card spotlight-card reveal" data-cursor-text="View report">
+        <div class="case-top"><div><div class="case-id mono">CASE NO. 009 · Oct '26</div><h3 class="case-title">TrueStack — Student Services AI Assistant</h3></div><div class="case-status"><span class="dt"></span>Hackathon prototype</div></div>
+        <div class="case-body"><div class="case-text"><p class="case-summary" data-field="summary">A local-first assistant routes policy questions to cited documents and student-specific requests to deterministic, access-checked tools.</p><p class="case-summary" data-field="finding">One LangGraph workflow connects FastAPI, retrieval, SQLite-backed tools, response validation and audit traces.</p><div class="case-tags"><span class="case-tag">Python</span><span class="case-tag">FastAPI</span><span class="case-tag">LangGraph</span><span class="case-tag">RAG</span></div><span class="case-view-link">Open full case study →</span></div><div><div class="case-stat">3</div><div class="case-stat-label">people on the hackathon team</div><div class="case-visual" style="margin-top:14px;"><div class="project-mini-graph"><span class="mono">REQUEST / ROUTED WORKFLOW</span><div class="mini-graph-route"><i>QUESTION</i><b>→</b><i>LANGGRAPH</i><b>→</b><i>TOOLS</i></div><span class="mono">FASTAPI · AUDIT TRACE</span></div></div></div></div>
+      </a>
+    </div>
     <div class="work-index-cta reveal"><div><span class="mono">THE FULL ARCHIVE · 9 PROJECTS</span><p>Explore work across data, software, product thinking, and applied AI.</p></div><a class="btn btn-primary" href="projects/" data-transition>Explore all projects <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
   </div>
 </section>
@@ -271,13 +289,13 @@
 <!-- ============ 04 · TOOLKIT ============ -->
 <section id="toolkit" class="section">
   <div class="inner">
-    <div class="section-label reveal">
+    <h2 class="section-label reveal">
       <span class="mono tag-num">FILE / 04</span><span class="label-rule"></span>
-      <span class="mono label-text">Toolkit</span>
-    </div>
+      <span class="mono label-text">Skills</span>
+    </h2>
     <div class="skills-grid">
       <div class="skill-card spotlight-card reveal">
-        <div class="skill-head"><span class="skill-idx mono">01</span><span class="skill-title">Data &amp; Modeling</span></div>
+        <div class="skill-head"><span class="skill-idx mono">01</span><h3 class="skill-title">Data &amp; Modeling</h3></div>
         <div class="skill-chip-list">
           <div class="skill-chip">Python</div><div class="skill-chip">SQL</div><div class="skill-chip">pandas</div>
           <div class="skill-chip">MySQL</div><div class="skill-chip">scikit-learn</div><div class="skill-chip">Statistics &amp; ML</div>
@@ -285,14 +303,14 @@
         </div>
       </div>
       <div class="skill-card spotlight-card reveal">
-        <div class="skill-head"><span class="skill-idx mono">02</span><span class="skill-title">Software &amp; AI Systems</span></div>
+        <div class="skill-head"><span class="skill-idx mono">02</span><h3 class="skill-title">Software &amp; AI Systems</h3></div>
         <div class="skill-chip-list">
           <div class="skill-chip">FastAPI</div><div class="skill-chip">Django</div><div class="skill-chip">REST APIs</div>
           <div class="skill-chip">LangGraph</div><div class="skill-chip">RAG</div><div class="skill-chip">SQLite</div><div class="skill-chip">Docker</div><div class="skill-chip">Git / GitHub</div>
         </div>
       </div>
       <div class="skill-card spotlight-card reveal">
-        <div class="skill-head"><span class="skill-idx mono">03</span><span class="skill-title">Product &amp; Delivery</span></div>
+        <div class="skill-head"><span class="skill-idx mono">03</span><h3 class="skill-title">Product &amp; Delivery</h3></div>
         <div class="skill-chip-list">
           <div class="skill-chip">Product Thinking</div><div class="skill-chip">User Research</div><div class="skill-chip">Figma</div>
           <div class="skill-chip">Power BI</div><div class="skill-chip">Looker Studio</div><div class="skill-chip">Advanced Excel</div>
@@ -337,6 +355,7 @@
     </div>
   </div>
 </section>
+</main>
 
 <!-- ============ FOOTER — giant wordmark ============ -->
 <footer class="site-footer">
@@ -352,7 +371,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
       </a>
     </div>
-    <nav class="footer-nav">
+    <nav class="footer-nav" aria-label="Footer navigation">
       <a href="#about">Profile</a><a href="#experience">Case log</a><a href="projects/" data-transition>All projects</a><a href="#cases">Featured work</a><a href="#toolkit">Toolkit</a><a href="#contact">Contact</a>
     </nav>
   </div>
@@ -363,9 +382,9 @@
 </footer>
 
 <!-- ============ CASE STUDY MODAL — dark report card ============ -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal-content" id="modalContent">
-    <button class="modal-close" id="modalClose">
+<div class="modal-overlay" id="modalOverlay" aria-hidden="true" inert>
+  <div class="modal-content" id="modalContent" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc" tabindex="-1">
+    <button class="modal-close" id="modalClose" type="button" aria-label="Close project preview">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
     <div class="modal-body">
@@ -393,11 +412,12 @@
 </div>
 
 <!-- ============ COMMAND PALETTE ============ -->
-<div class="cmdk-overlay" id="cmdkOverlay">
-  <div class="cmdk-box">
+<div class="cmdk-overlay" id="cmdkOverlay" aria-hidden="true" inert>
+  <div class="cmdk-box" role="dialog" aria-modal="true" aria-labelledby="cmdkTitle" tabindex="-1">
+      <h2 id="cmdkTitle" class="sr-only">Search the portfolio</h2>
     <div class="cmdk-input-wrap">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-      <input class="cmdk-input" id="cmdkInput" type="text" placeholder="Type a command or search…" autocomplete="off">
+      <input class="cmdk-input" id="cmdkInput" type="text" placeholder="Type a command or search…" aria-label="Search portfolio commands and projects" aria-controls="cmdkList" autocomplete="off">
       <span class="cmdk-esc">ESC</span>
     </div>
     <div class="cmdk-list" id="cmdkList"></div>
@@ -409,7 +429,7 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
 </button>
 
-<div class="toast-wrap" id="toastWrap"></div>
+<div class="toast-wrap" id="toastWrap" role="status" aria-live="polite" aria-relevant="additions text"></div>
 
 <script src="script.js?v=homepage-fix-20261027"></script>
 </body>
