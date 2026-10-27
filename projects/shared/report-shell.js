@@ -1,244 +1,70 @@
 (() => {
-  // A report may be restored from the browser back-forward cache after its
-  // transition-out class was applied. Recover the visible state immediately.
-  window.addEventListener('pageshow', () => {
-    const body = document.body;
-    if (!body) return;
-    body.classList.remove('page-exit');
-    body.style.removeProperty('opacity');
-    body.style.removeProperty('transform');
-    body.style.removeProperty('pointer-events');
-    body.classList.add('page-entered');
-  });
   const root = document.documentElement;
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const constrainedDevice = Boolean(
-    (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
-    (navigator.deviceMemory && navigator.deviceMemory <= 4) ||
-    navigator.connection?.saveData ||
-    ['slow-2g', '2g'].includes(navigator.connection?.effectiveType) ||
-    (navigator.maxTouchPoints > 0 && innerWidth < 900)
-  );
-  const performanceLite = reduced || constrainedDevice;
-  if (performanceLite) root.classList.add('performance-lite');
-  const finePointer = window.matchMedia('(pointer:fine)').matches;
   const $ = (selector, scope = document) => scope.querySelector(selector);
   const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
-
   const sunIcon = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>';
-  const moonIcon = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
-
+  const moonIcon = '<path d="M20.9 13A8.7 8.7 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/>';
   let theme = 'light';
-  try { theme = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } catch (e) {}
+  try {
+    const saved = localStorage.getItem('theme');
+    theme = saved === 'dark' || saved === 'light' ? saved : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  } catch (error) {}
 
   function paintTheme(next) {
     theme = next;
     root.setAttribute('data-theme', next);
-    document.dispatchEvent(new CustomEvent('themechange'));
     const icon = next === 'dark' ? sunIcon : moonIcon;
-    ['themeIcon', 'dockThemeIcon'].forEach((id) => { const node = document.getElementById(id); if (node) node.innerHTML = icon; });
-    const reportTheme = document.getElementById('reportThemeToggle');
-    if (reportTheme) reportTheme.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icon}</svg>`;
-    try { localStorage.setItem('theme', next); } catch (e) {}
+    ['themeToggle', 'reportThemeToggle'].forEach((id) => {
+      const button = document.getElementById(id);
+      if (!button) return;
+      button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + icon + '</svg>';
+      button.setAttribute('aria-label', next === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+    });
+    try { localStorage.setItem('theme', next); } catch (error) {}
   }
   paintTheme(theme);
-
-  function toggleTheme(event) {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    const x = event && event.clientX != null ? event.clientX : innerWidth / 2;
-    const y = event && event.clientY != null ? event.clientY : innerHeight / 2;
-    root.style.setProperty('--tx', `${x}px`);
-    root.style.setProperty('--ty', `${y}px`);
-    if (document.startViewTransition && !reduced) document.startViewTransition(() => paintTheme(next));
-    else paintTheme(next);
-  }
-  $('#themeToggle')?.addEventListener('click', toggleTheme);
-  $('#reportThemeToggle')?.addEventListener('click', toggleTheme);
-  $('#dockThemeBtn')?.addEventListener('click', toggleTheme);
+  $('#themeToggle')?.addEventListener('click', () => paintTheme(theme === 'dark' ? 'light' : 'dark'));
+  $('#reportThemeToggle')?.addEventListener('click', () => paintTheme(theme === 'dark' ? 'light' : 'dark'));
 
   function showToast(message) {
-    const wrap = $('#toastWrap'); if (!wrap) return;
+    const wrap = $('#toastWrap');
+    if (!wrap) return;
     const toast = document.createElement('div');
     toast.className = 'toast';
-    toast.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>${message}</span>`;
+    const text = document.createElement('span');
+    text.textContent = message;
+    toast.appendChild(text);
     wrap.appendChild(toast);
-    requestAnimationFrame(() => toast.classList.add('show'));
-    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2400);
+    toast.classList.add('show');
+    window.setTimeout(() => toast.remove(), 2200);
   }
-
-  function navigateWithTransition(url) {
-    if (reduced) { window.location.href = url; return; }
-    document.body.classList.add('page-exit');
-    setTimeout(() => { window.location.href = url; }, 300);
+  function fallbackCopy(value) {
+    const area = document.createElement('textarea');
+    area.value = value;
+    area.setAttribute('readonly', '');
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+    let copied = false;
+    try { copied = document.execCommand('copy'); } catch (error) {}
+    area.remove();
+    return copied;
   }
-  $$('a[data-transition]').forEach((link) => {
-    link.addEventListener('click', (event) => {
-      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank' || link.hasAttribute('download')) return;
-      const href = link.getAttribute('href');
-      if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('http')) return;
-      event.preventDefault();
-      navigateWithTransition(link.href);
+  $$('[data-copy]').forEach((node) => {
+    node.addEventListener('click', async () => {
+      const value = node.getAttribute('data-copy') || '';
+      if (!value) return;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) await navigator.clipboard.writeText(value);
+        else if (!fallbackCopy(value)) throw new Error('Copy failed');
+        showToast('Copied');
+      } catch (error) {
+        if (fallbackCopy(value)) showToast('Copied');
+        else showToast('Copy did not work; select the text instead');
+      }
     });
   });
-  requestAnimationFrame(() => document.body.classList.add('page-entered'));
-
-  function onScroll() {
-    const doc = document.documentElement;
-    const max = doc.scrollHeight - doc.clientHeight;
-    const progress = max > 0 ? (doc.scrollTop / max) * 100 : 0;
-    const bar = $('#scrollProgress');
-    if (bar) bar.style.width = `${progress}%`;
-    $('#backToTop')?.classList.toggle('visible', doc.scrollTop > 600);
-  }
-  addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-  $('#backToTop')?.addEventListener('click', () => scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }));
-
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) { entry.target.classList.add('is-visible'); io.unobserve(entry.target); }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
-  $$('.reveal').forEach((el) => io.observe(el));
-  if (!performanceLite) root.classList.add('motion-ready');
-
-  if (!reduced) {
-    document.addEventListener('mousemove', (event) => {
-      const el = event.target.closest && event.target.closest('.spotlight-card');
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      el.style.setProperty('--mx', `${event.clientX - rect.left}px`);
-      el.style.setProperty('--my', `${event.clientY - rect.top}px`);
-    });
-  }
-
-  const cursorDot = $('#cursorDot');
-  const cursorFollow = $('#cursorFollow');
-  const cursorFollowText = $('#cursorFollowText');
-  if (!reduced && !constrainedDevice && finePointer && cursorDot) {
-    root.classList.add('custom-cursor');
-    let mouseX = innerWidth / 2, mouseY = innerHeight / 2, cx = mouseX, cy = mouseY;
-    let scale = 1, targetScale = 1;
-    let fx = mouseX, fy = mouseY;
-    addEventListener('mousemove', (event) => { cursorDot.style.opacity = '1'; mouseX = event.clientX; mouseY = event.clientY; });
-    let cursorFrame = 0;
-    function cursorLoop() {
-      cursorFrame = 0;
-      if (document.hidden) return;
-      cx += (mouseX - cx) * 0.26;
-      cy += (mouseY - cy) * 0.26;
-      scale += (targetScale - scale) * 0.2;
-      cursorDot.style.transform = `translate(${cx - 9}px, ${cy - 9}px) scale(${scale})`;
-      if (cursorFollow && cursorFollowText) {
-        fx += (mouseX - fx) * 0.14;
-        fy += (mouseY - fy) * 0.14;
-        cursorFollow.style.transform = `translate(${fx + 13}px, ${fy + 15}px)`;
-      }
-      cursorFrame = requestAnimationFrame(cursorLoop);
-    }
-    function scheduleCursor() {
-      if (!document.hidden && !cursorFrame) cursorFrame = requestAnimationFrame(cursorLoop);
-    }
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) { cancelAnimationFrame(cursorFrame); cursorFrame = 0; }
-      else scheduleCursor();
-    });
-    scheduleCursor();
-    $$('a,button,.chart-card,.metric-card,.insight-card,.method-card,.report-btn,.filter-reset').forEach((el) => {
-      el.addEventListener('mouseenter', () => { targetScale = 1.6; });
-      el.addEventListener('mouseleave', () => { targetScale = 1; });
-    });
-    if (cursorFollow && cursorFollowText) {
-      $$('[data-cursor-text]').forEach((el) => {
-        el.addEventListener('mouseenter', () => { cursorFollowText.textContent = el.dataset.cursorText; cursorFollow.style.opacity = '1'; });
-        el.addEventListener('mouseleave', () => { cursorFollow.style.opacity = '0'; });
-      });
-    }
-  }
-
-  let bgBurstUntil = 0;
-  const canvas = $('#bgCanvas');
-  if (canvas) {
-    const ctx = canvas.getContext('2d', { alpha: true });
-    let width, height, stars = [];
-    const animateStars = !performanceLite;
-    const density = () => performanceLite ? (innerWidth < 700 ? 14000 : 18000) : (innerWidth < 700 ? 11000 : 10000);
-    const build = () => {
-      width = canvas.width = innerWidth; height = canvas.height = innerHeight;
-      const count = Math.max(24, Math.floor((width * height) / density()));
-      stars = Array.from({ length: count }, () => {
-        const depth = 0.12 + Math.random() * 0.88;
-        const angle = Math.random() * Math.PI * 2;
-        return { x: Math.random() * width, y: Math.random() * height, size: 0.6 + Math.random() * 1.8, depth, cosAngle: Math.cos(angle), sinAngle: Math.sin(angle), twinklePhase: Math.random() * Math.PI * 2, twinkleSpeed: 0.6 + Math.random() * 1.8 };
-      });
-    };
-    let resizeFrame = 0;
-    build();
-    addEventListener('resize', () => {
-      if (resizeFrame) cancelAnimationFrame(resizeFrame);
-      resizeFrame = requestAnimationFrame(() => {
-        resizeFrame = 0;
-        build();
-        if (animateStars) scheduleDraw();
-        else draw(performance.now());
-      });
-    }, { passive: true });
-    let px = -9999, py = -9999;
-    if (animateStars) {
-      addEventListener('mousemove', (event) => { px = event.clientX; py = event.clientY; }, { passive: true });
-      addEventListener('touchmove', (event) => { if (event.touches[0]) { px = event.touches[0].clientX; py = event.touches[0].clientY; } }, { passive: true });
-      addEventListener('mouseleave', () => { px = -9999; py = -9999; }, { passive: true });
-    }
-    let starFrame = 0;
-    let lastDraw = 0;
-    function draw(now) {
-      starFrame = 0;
-      if (document.hidden) return;
-      const dt = Math.min(50, now - (lastDraw || now)) / 1000;
-      lastDraw = now;
-      const time = now / 1000;
-      ctx.clearRect(0, 0, width, height);
-      const dark = root.getAttribute('data-theme') === 'dark';
-      const rgb = dark ? '255,255,255' : '10,10,10';
-      const burst = animateStars && performance.now() < bgBurstUntil;
-      ctx.fillStyle = `rgb(${rgb})`;
-      stars.forEach((star) => {
-        if (animateStars) {
-          const drift = 16 * star.depth * dt;
-          star.x += star.cosAngle * drift; star.y += star.sinAngle * drift;
-          if (star.x < -5) star.x = width + 5; if (star.x > width + 5) star.x = -5;
-          if (star.y < -5) star.y = height + 5; if (star.y > height + 5) star.y = -5;
-        }
-        let renderX = star.x, renderY = star.y, glow = 0;
-        if (animateStars) {
-          const dx = star.x - px, dy = star.y - py, distance = Math.sqrt(dx * dx + dy * dy);
-          if (distance < 90) {
-            const strength = 1 - distance / 90;
-            const nx = distance > 0.01 ? dx / distance : 0, ny = distance > 0.01 ? dy / distance : 0;
-            renderX += nx * strength * 14; renderY += ny * strength * 14; glow = strength;
-          }
-        }
-        const twinkle = animateStars ? 0.55 + 0.45 * Math.sin(time * star.twinkleSpeed + star.twinklePhase) : 0.78;
-        let alpha = (dark ? 0.025 + star.depth * 0.42 : 0.018 + star.depth * 0.22) * twinkle + glow * 0.12;
-        if (burst) alpha = Math.min(0.55, alpha + 0.12);
-        ctx.globalAlpha = Math.min(0.55, alpha);
-        ctx.beginPath(); ctx.arc(renderX, renderY, star.size + glow * 1.2, 0, Math.PI * 2); ctx.fill();
-      });
-      ctx.globalAlpha = 1;
-      if (animateStars) starFrame = requestAnimationFrame(draw);
-    }
-    function scheduleDraw() {
-      if (document.hidden || starFrame) return;
-      if (animateStars) starFrame = requestAnimationFrame(draw);
-      else draw(performance.now());
-    }
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) { cancelAnimationFrame(starFrame); starFrame = 0; }
-      else { lastDraw = 0; scheduleDraw(); }
-    });
-    document.addEventListener('themechange', scheduleDraw);
-    scheduleDraw();
-  }
 
   const cmdkOverlay = $('#cmdkOverlay');
   const cmdkInput = $('#cmdkInput');
@@ -248,33 +74,62 @@
     ['Navigate', 'Read the insights', '#insights'],
     ['Navigate', 'View methodology', '#method'],
     ['Navigate', 'Browse all projects', '../'],
-    ['Navigate', 'Back to portfolio', '../../index.html'],
+    ['Navigate', 'Back to portfolio', '../../index.html']
   ];
-  function closeCmdk() { cmdkOverlay?.classList.remove('is-open'); document.body.style.overflow = ''; }
-  function renderCommands(query = '') {
-    if (!cmdkList) return;
-    const q = query.toLowerCase().trim();
-    const filtered = commands.filter((command) => command[1].toLowerCase().includes(q) || command[0].toLowerCase().includes(q));
-    cmdkList.innerHTML = filtered.length ? filtered.map((command, index) => `<div class="cmdk-item${index === 0 ? ' active' : ''}" data-cmd-href="${command[2]}"><span>${command[1]}</span><span class="cmdk-item-hint">${command[0]}</span></div>`).join('') : '<div class="cmdk-empty">No commands found</div>';
-    $$('.cmdk-item', cmdkList).forEach((item) => item.addEventListener('click', () => { const href = item.dataset.cmdHref; closeCmdk(); if (href.startsWith('#')) $(href)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' }); else navigateWithTransition(href); }));
+  function closeCommands() {
+    cmdkOverlay?.classList.remove('is-open');
+    document.body.style.overflow = '';
   }
-  function openCmdk() { if (!cmdkOverlay) return; cmdkOverlay.classList.add('is-open'); document.body.style.overflow = 'hidden'; if (cmdkInput) { cmdkInput.value = ''; renderCommands(); setTimeout(() => cmdkInput.focus(), 40); } }
-  const archiveSearch = $('body.projects-index-page #projectSearch');
-  $('#reportSearch')?.addEventListener('click', () => { if (archiveSearch) archiveSearch.focus(); else openCmdk(); });
-  cmdkOverlay?.addEventListener('click', (event) => { if (event.target === cmdkOverlay) closeCmdk(); });
+  function renderCommands(query) {
+    if (!cmdkList) return;
+    const q = (query || '').trim().toLowerCase();
+    const matches = commands.filter((item) => (item[0] + ' ' + item[1]).toLowerCase().includes(q));
+    cmdkList.replaceChildren();
+    matches.forEach((item) => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'cmdk-item';
+      const label = document.createElement('span');
+      label.textContent = item[1];
+      const kind = document.createElement('span');
+      kind.className = 'cmdk-item-hint';
+      kind.textContent = item[0];
+      row.append(label, kind);
+      row.addEventListener('click', () => {
+        const target = item[2];
+        closeCommands();
+        if (target.startsWith('#')) document.querySelector(target)?.scrollIntoView();
+        else window.location.href = target;
+      });
+      cmdkList.appendChild(row);
+    });
+    if (!matches.length) {
+      const empty = document.createElement('p');
+      empty.className = 'cmdk-empty';
+      empty.textContent = 'No matching commands';
+      cmdkList.appendChild(empty);
+    }
+  }
+  function openCommands() {
+    if (!cmdkOverlay) return;
+    cmdkOverlay.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    if (cmdkInput) { cmdkInput.value = ''; renderCommands(''); cmdkInput.focus(); }
+  }
   cmdkInput?.addEventListener('input', () => renderCommands(cmdkInput.value));
+  cmdkOverlay?.addEventListener('click', (event) => {
+    if (event.target === cmdkOverlay) closeCommands();
+  });
   addEventListener('keydown', (event) => {
-    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); if (archiveSearch) archiveSearch.focus(); else cmdkOverlay?.classList.contains('is-open') ? closeCmdk() : openCmdk(); }
-    if (event.key === 'Escape') closeCmdk();
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      if ($('body.projects-index-page #projectSearch')) $('body.projects-index-page #projectSearch').focus();
+      else if (cmdkOverlay?.classList.contains('is-open')) closeCommands();
+      else openCommands();
+    }
+    if (event.key === 'Escape') closeCommands();
   });
 
-  const navLinks = $$('[data-dock]');
-  const sections = navLinks.map((link) => $(link.getAttribute('href'))).filter(Boolean);
-  if (sections.length) {
-    const spy = new IntersectionObserver((entries) => entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      navLinks.forEach((link) => link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`));
-    }), { rootMargin: '-45% 0px -45% 0px' });
-    sections.forEach((section) => spy.observe(section));
-  }
+  const backToTop = $('#backToTop');
+  backToTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'auto' }));
 })();

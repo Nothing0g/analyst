@@ -1,43 +1,26 @@
 (() => {
-  const cards = Array.from(document.querySelectorAll('.project-card'));
-  const filterButtons = Array.from(document.querySelectorAll('.filter-pill'));
-  const search = document.getElementById('projectSearch');
-  const count = document.getElementById('resultCount');
-  const empty = document.getElementById('emptyState');
-  let activeFilter = 'all';
+  const rows = Array.from(document.querySelectorAll("#projectGrid tbody tr[data-category]"));
+  const search = document.getElementById("projectSearch");
+  const filter = document.getElementById("projectFilter");
+  const count = document.getElementById("resultCount");
+  const empty = document.getElementById("emptyState");
 
   function update() {
-    const query = (search?.value || '').trim().toLowerCase();
+    const query = (search?.value || "").trim().toLowerCase();
+    const category = filter?.value || "all";
     let shown = 0;
-    cards.forEach((card) => {
-      const categoryMatches = activeFilter === 'all' || card.dataset.category === activeFilter;
-      const searchText = `${card.dataset.search || ''} ${card.textContent || ''}`.toLowerCase();
-      const searchMatches = !query || searchText.includes(query);
-      const visible = categoryMatches && searchMatches;
-      card.hidden = !visible;
+    rows.forEach((row) => {
+      const matchesCategory = category === "all" || row.dataset.category === category;
+      const haystack = ((row.dataset.search || "") + " " + row.textContent).toLowerCase();
+      const matchesQuery = !query || haystack.includes(query);
+      const visible = matchesCategory && matchesQuery;
+      row.hidden = !visible;
       if (visible) shown += 1;
     });
-    if (count) count.textContent = `${shown} ${shown === 1 ? 'project' : 'projects'}`;
-    if (empty) empty.hidden = shown !== 0;
+    if (count) count.textContent = "Showing " + shown + (shown === 1 ? " project" : " projects");
+    if (empty) empty.hidden = shown > 0;
   }
-
-  filterButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      activeFilter = button.dataset.filter || 'all';
-      filterButtons.forEach((item) => {
-        const selected = item === button;
-        item.classList.toggle('is-active', selected);
-        item.setAttribute('aria-pressed', String(selected));
-      });
-      update();
-    });
-  });
-  search?.addEventListener('input', update);
-  document.querySelectorAll('[data-filter-target]').forEach((link) => {
-    link.addEventListener('click', () => {
-      const button = filterButtons.find((item) => item.dataset.filter === link.dataset.filterTarget);
-      button?.click();
-    });
-  });
+  search?.addEventListener("input", update);
+  filter?.addEventListener("change", update);
   update();
 })();
