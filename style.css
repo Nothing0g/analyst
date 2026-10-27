@@ -1127,3 +1127,6 @@ footer,.footer{color:var(--fg-faint)}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+/* The decorative cursor is disabled in this visual direction; preserve the native pointer. */
+html.custom-cursor,html.custom-cursor *{cursor:auto!important}
