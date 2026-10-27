@@ -795,8 +795,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const cursorFollowText = document.getElementById('cursorFollowText');
   const finePointer = window.matchMedia('(pointer:fine)').matches;
 
-  if (!reduced && !constrainedDevice && finePointer) {
-    root.classList.add('custom-cursor'); // hides the native OS pointer — see CSS
+  if (!reduced && !constrainedDevice && finePointer && cursorDot && window.getComputedStyle(cursorDot).display !== 'none') {
+    root.classList.add('custom-cursor'); // only activate when the custom cursor is actually visible
     let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
     let cx = mouseX, cy = mouseY;
     let scale = 1, targetScale = 1;
@@ -865,7 +865,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let bgBurstUntil = 0;
   (function initStarsBackground() {
     const canvas = document.getElementById('bgCanvas');
-    if (!canvas) return;
+    if (!canvas || window.getComputedStyle(canvas).display === 'none') return;
     const ctx = canvas.getContext('2d', { alpha: true });
     let w, h, stars = [];
     const animateStars = !performanceLite;
