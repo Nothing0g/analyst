@@ -14,26 +14,24 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../shared/report.css?v=editorial-studio-20261027">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/report.css?v=checked-sheet-20261027">
   <link rel="stylesheet" href="loan.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"CreativeWork","name":"Loan Approval Analysis","url":"https://nothing0g.github.io/analyst/projects/loan-approval/","author":{"@type":"Person","name":"Shubham Kumar","url":"https://nothing0g.github.io/analyst/"},"isPartOf":{"@type":"WebSite","url":"https://nothing0g.github.io/analyst/"},"keywords":["loan approval","logistic regression","Python","risk analysis","interpretable machine learning"]}</script>
 </head>
 <body class="focused-report">
-  <a class="skip-link" href="#report">Skip to report</a>
-  <div class="report-progress"><span id="scrollProgress"></span></div>
-  <div class="grid-backdrop" aria-hidden="true"></div><canvas class="bg-interactive" id="bgCanvas" aria-hidden="true"></canvas><div class="cursor-dot" id="cursorDot"></div><div class="cursor-follow" id="cursorFollow"><span id="cursorFollowText"></span></div>
-  <nav class="dock" aria-label="Report navigation"><div class="dock-inner">
-    <a href="#report" class="dock-item active" data-dock data-cursor-text="Report home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="dock-label">Report home</span></a>
-    <a href="#snapshot" class="dock-item" data-dock data-cursor-text="Snapshot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg><span class="dock-label">Snapshot</span></a>
-    <a href="#dashboard" class="dock-item" data-dock data-cursor-text="Dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V9M12 19V5M20 19v-6"/></svg><span class="dock-label">Dashboard</span></a>
-    <a href="#insights" class="dock-item" data-dock data-cursor-text="Insights"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span class="dock-label">Insights</span></a>
-    <a href="#method" class="dock-item" data-dock data-cursor-text="Method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94z"/></svg><span class="dock-label">Method</span></a>
-    <a href="../" class="dock-item" data-transition data-cursor-text="All projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span class="dock-label">All projects</span></a>
-      <a href="../../index.html" class="dock-item" data-transition data-cursor-text="Portfolio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg><span class="dock-label">Portfolio</span></a><div class="dock-divider"></div><button class="dock-item" id="dockThemeBtn" data-cursor-text="Toggle theme"><svg id="dockThemeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"></svg><span class="dock-label">Toggle theme</span></button>
-  </div></nav>
-  <header class="topbar report-topbar"><a class="report-brand" href="../../index.html"><i></i> SHUBHAM KUMAR / CASEFILE</a><div class="topbar-right report-top-actions"><button class="kbd-chip report-search" id="reportSearch" type="button" data-cursor-text="Search this report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>Search</span><kbd>⌘K</kbd></button><a class="report-top-link" data-transition data-cursor-text="Back to portfolio" href="../../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5m7 7-7-7 7-7"/></svg><span>Portfolio</span></a><a class="report-top-link" data-transition data-cursor-text="Browse all projects" href="../"><span>All projects</span></a>
-      <button class="icon-btn report-icon-btn" id="reportThemeToggle" aria-label="Toggle theme"></button></div></header>
+  <a class="skip-link" href="#report">Skip to case study</a>
+  <header class="topbar report-topbar">
+    <a class="report-brand" href="../../index.html">Shubham Kumar <span>· DTU</span></a>
+    <nav class="report-site-nav" aria-label="Main navigation">
+      <a href="../">Work</a>
+      <a href="../../index.html#about">About</a>
+      <a href="mailto:shubham1sure@gmail.com">Contact</a>
+      <button class="theme-toggle report-theme-toggle" id="reportThemeToggle" type="button" aria-label="Switch theme" title="Switch theme">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+    </nav>
+  </header>
 
   <main id="report" class="report-main"><div class="report-shell">
     <section class="report-section report-hero"><div class="report-section-inner report-hero-grid"><div><div class="report-kicker"><span class="mono">FILE / PROJECT REPORT</span><span class="rule"></span><span class="mono">CASE NO. 005 · PUBLIC DATASET</span></div><h1>Loan Approval Analysis</h1><p class="lede">What applicant attributes are associated with approval, and what does an honest baseline model reveal before anyone talks about automated lending decisions?</p><div class="report-actions"><a class="report-btn" data-cursor-text="Open source" href="https://github.com/Nothing0g/loan-approval-analysis" target="_blank" rel="noreferrer">View analysis on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6-6"/></svg></a><a class="report-btn secondary" data-cursor-text="Focus dashboard" href="#dashboard">Jump to analysis <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14m7-7-7-7"/></svg></a></div></div><aside class="signal-panel" aria-label="Primary case signal"><span class="report-status">Baseline</span><h2>Credit history is the strongest observed signal.</h2><p>The notebook finds the clearest association in the selected public dataset around Credit_History — while keeping the conclusion descriptive, not causal.</p><div class="signal-line"></div><div class="signal-foot"><span>Model frame</span><strong>Logistic Regression</strong></div></aside></div></section>
@@ -50,5 +48,5 @@
   </div></main>
   <footer class="report-footer"><span>CASE NO. 005 · Educational analysis from the public repository</span><div class="report-footer-links"><a href="../" data-transition>All projects</a><a href="../../index.html" data-transition>Back to portfolio</a><a href="../posha-battery-door/index.html" data-transition>Previous case: POSHA ←</a><a href="../uber-ride-demand/index.html" data-transition>Uber demand</a></div></footer>
   <div class="chart-tooltip" aria-hidden="true"></div><div class="cmdk-overlay" id="cmdkOverlay"><div class="cmdk-box"><div class="cmdk-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input class="cmdk-input" id="cmdkInput" type="text" placeholder="Type a command or search…" autocomplete="off"><span class="cmdk-esc">ESC</span></div><div class="cmdk-list" id="cmdkList"></div></div></div><div class="wash-overlay" id="washOverlay"></div><button class="back-to-top" id="backToTop" aria-label="Back to top" data-cursor-text="Back to top">↑</button><div class="toast-wrap" id="toastWrap"></div>
-  <script src="../shared/report-shell.js?v=editorial-studio-20261027"></script>
+  <script src="../shared/report-shell.js?v=checked-sheet-20261027"></script>
 </body></html>
