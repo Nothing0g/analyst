@@ -1141,3 +1141,7 @@ html.custom-cursor,html.custom-cursor *{cursor:auto!important}
 @media(max-width:640px){
   .hero-proof-item+.hero-proof-item{border-left:0;padding-left:0}
 }
+
+/* Keep the dock from covering the final footer row. */
+.footer-bottom{padding-bottom:92px}
+@media(max-width:640px){.footer-bottom{padding-bottom:84px}}
