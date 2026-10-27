@@ -151,3 +151,135 @@ html.performance-lite .projects-index-page .project-card:hover{transform:none;bo
 @media(prefers-reduced-motion:reduce){
   .projects-index-page .project-card,.projects-index-page .project-card.reveal{transition:none;opacity:1;transform:none}
 }
+
+
+/* EDITORIAL DATA STUDIO — archive-specific hierarchy and responsive polish */
+.projects-index-page .report-topbar{
+  padding:15px max(24px,calc((100vw - 1180px)/2));
+  background:color-mix(in srgb,var(--report-bg) 94%,transparent);
+  border-bottom:1px solid var(--report-line)
+}
+.projects-index-page .report-topbar::after{display:none}
+.projects-index-page .report-brand{font-size:10px;letter-spacing:.1em}
+.projects-index-page .report-brand i{background:var(--report-coral)}
+.projects-index-page .report-top-link,.projects-index-page .report-icon-btn{
+  min-height:42px;border-radius:9px;padding:0 12px
+}
+.projects-index-page .work-hero{
+  padding:clamp(64px,9vw,104px) 28px 56px;
+  background:var(--report-bg);border-bottom:1px solid var(--report-line)
+}
+.projects-index-page .work-heading-row{align-items:flex-end;gap:40px;margin-top:28px}
+.projects-index-page .work-heading-row h1{
+  max-width:760px;font-size:clamp(52px,8vw,96px);
+  line-height:.94;letter-spacing:-.075em;font-weight:650
+}
+.projects-index-page .work-lede{
+  max-width:62ch;margin-top:22px;font-size:16px;line-height:1.7
+}
+.projects-index-page .work-back-link{
+  padding:12px 0;color:var(--report-coral);font-family:var(--report-font-sans);
+  font-size:12px;text-decoration:none;border-bottom:1px solid var(--report-coral)
+}
+.projects-index-page .work-meta-row{
+  margin-top:36px;padding-top:16px;color:var(--report-muted);
+  border-top:1px solid var(--report-line);font-size:10px
+}
+.projects-index-page .work-archive{padding:clamp(44px,6vw,72px) 28px 100px}
+.projects-index-page .archive-heading{align-items:flex-end;margin-bottom:26px}
+.projects-index-page .archive-eyebrow{color:var(--report-coral);font-size:10px}
+.projects-index-page .archive-heading h2{
+  font-size:clamp(30px,4vw,44px);letter-spacing:-.06em
+}
+.projects-index-page .result-count{
+  padding:8px 10px;border:1px solid var(--report-line);border-radius:7px;
+  font-size:10px;background:var(--report-bg)
+}
+.projects-index-page .archive-controls{
+  position:relative;gap:13px;margin-bottom:24px;padding:13px;
+  border:1px solid var(--report-line);border-radius:13px;
+  background:var(--report-surface);box-shadow:none
+}
+.projects-index-page .search-wrap{
+  min-height:50px;border:1px solid var(--report-line-strong);
+  border-radius:9px;background:var(--report-bg);padding:0 14px
+}
+.projects-index-page .search-wrap:focus-within{
+  outline:2px solid var(--report-coral);outline-offset:2px
+}
+.projects-index-page .search-wrap input{font-size:14px}
+.projects-index-page .filter-pills{gap:7px}
+.projects-index-page .filter-pill{
+  min-height:42px;padding:9px 12px;border-radius:8px;font-size:11px;
+  background:var(--report-bg);border-color:var(--report-line);color:var(--report-muted)
+}
+.projects-index-page .filter-pill span{font-size:10px;color:var(--report-faint)}
+.projects-index-page .filter-pill.is-active{
+  background:var(--report-ink);border-color:var(--report-ink);color:var(--report-bg)
+}
+.projects-index-page .filter-pill.is-active span{color:var(--report-bg)}
+.projects-index-page .project-grid{gap:18px}
+.projects-index-page .project-card{
+  border:1px solid var(--report-line);border-radius:14px;
+  background:var(--report-bg);box-shadow:none
+}
+.projects-index-page .project-visual{
+  min-height:185px;padding:17px 18px;background:var(--report-surface);
+  border-bottom:1px solid var(--report-line)
+}
+.projects-index-page .project-card-featured .project-visual{min-height:200px}
+.projects-index-page .visual-top,.projects-index-page .visual-bottom{
+  font-size:9px;letter-spacing:.08em;color:var(--report-muted)
+}
+.projects-index-page .visual-bottom{color:var(--report-ink)}
+.projects-index-page .project-card-body{padding:22px 21px 20px}
+.projects-index-page .project-meta{font-size:9px;color:var(--report-muted);letter-spacing:.065em}
+.projects-index-page .project-status{
+  padding:4px 7px;border-radius:5px;font-size:8px;
+  border-color:var(--report-line);background:var(--report-surface)
+}
+.projects-index-page .project-card h3{
+  margin:15px 0 10px;font-size:clamp(19px,2vw,24px);
+  line-height:1.18;letter-spacing:-.045em;font-weight:650
+}
+.projects-index-page .project-card p{font-size:14px;line-height:1.68;color:var(--report-muted)}
+.projects-index-page .project-card-foot{
+  align-items:flex-end;flex-wrap:wrap;gap:12px;margin-top:22px;padding-top:15px;
+  border-top:1px solid var(--report-line)
+}
+.projects-index-page .project-tags{gap:6px}
+.projects-index-page .project-tags span{
+  padding:5px 8px;border-radius:6px;background:var(--report-surface);
+  border-color:transparent;font:10px var(--report-font-sans);color:var(--report-muted)
+}
+.projects-index-page .project-open{font:600 11px var(--report-font-sans);color:var(--report-coral)}
+.projects-index-page .archive-note{
+  max-width:80ch;margin:28px 0 0;padding:15px 17px;
+  border-left:3px solid var(--report-coral);background:var(--report-surface);
+  color:var(--report-muted);font-size:12px;line-height:1.65
+}
+.projects-index-page .report-footer{padding-bottom:108px}
+@media(hover:hover) and (pointer:fine){
+  .projects-index-page .project-card:hover{
+    transform:translateY(-2px);border-color:var(--report-line-strong);
+    box-shadow:0 12px 32px rgba(28,35,29,.07)
+  }
+  .projects-index-page .filter-pill:hover{border-color:var(--report-line-strong)}
+}
+@media(max-width:760px){
+  .projects-index-page .work-hero{padding:60px 20px 40px}
+  .projects-index-page .work-heading-row{gap:20px}
+  .projects-index-page .work-heading-row h1{font-size:clamp(47px,13vw,72px)}
+  .projects-index-page .work-lede{font-size:15px}
+  .projects-index-page .work-archive{padding:42px 20px 76px}
+  .projects-index-page .project-grid{grid-template-columns:1fr;gap:14px}
+  .projects-index-page .project-card-body{padding:20px}
+  .projects-index-page .project-card h3{font-size:22px}
+  .projects-index-page .project-card p{font-size:14px}
+  .projects-index-page .archive-controls{padding:10px}
+  .projects-index-page .filter-pills{display:flex;flex-wrap:nowrap;overflow-x:auto;padding:2px 1px 5px}
+  .projects-index-page .filter-pill{flex:none;white-space:nowrap}
+}
+@media(prefers-reduced-motion:reduce){
+  .projects-index-page .project-card,.projects-index-page .project-open b{transition:none!important}
+}
