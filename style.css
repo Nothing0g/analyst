@@ -193,3 +193,23 @@ h1, h2, h3, p { margin-top: 0; }
   .contact-section { grid-template-columns: 1fr; padding: 48px 0; gap: 24px; }
   .site-footer { align-items: flex-start; flex-direction: column; padding: 18px 16px; }
 }
+
+
+/* Paired case sheets: each keeps its natural content height. */
+.sheet-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 14px; }
+.mini-sheet { min-width: 0; }
+.mini-sheet-main { padding: 24px clamp(18px, 2.5vw, 28px) 0; }
+.mini-sheet-main > h3 { margin: 0 0 15px; font-size: clamp(21px, 2.3vw, 27px); font-weight: 600; letter-spacing: -.03em; line-height: 1.2; }
+.mini-sheet-fields { display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; }
+.mini-sheet .sheet-field, .mini-sheet .sheet-field:nth-child(3n) { margin: 0; padding: 16px 0; }
+.mini-sheet .sheet-field h4 { margin: 0 0 7px; font-size: 13px; font-weight: 600; }
+.mini-sheet .sheet-field p { font-size: 13px; }
+.mini-sheet .mini-finding h4 { color: var(--redline); }
+.mini-sheet .finding-mark { right: 0; bottom: 8px; }
+.mini-title-block { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin: 22px clamp(18px, 2.5vw, 28px) 0; padding: 14px 0 18px; border-top: 1px solid var(--line); }
+.mini-title-block span { color: var(--pencil); font-size: 12px; }
+.mini-title-block strong { font-size: 12px; font-weight: 500; }
+.mini-title-block a { font-size: 13px; font-weight: 600; text-underline-offset: 4px; }
+.mini-title-block a:hover { text-decoration-color: var(--redline); }
+@media (max-width: 800px) { .sheet-pair { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .mini-sheet-fields { grid-template-columns: 1fr; } }
