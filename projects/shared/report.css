@@ -210,3 +210,11 @@ html{scroll-snap-type:none!important}
 @media(prefers-reduced-motion:reduce){#dashboard.data-refresh .chart-card,#dashboard.data-refresh .metric-card,#dashboard.data-refresh .evidence-card{animation:none}}
 
 .privacy-page{min-height:100vh;padding:clamp(120px,18vh,210px) 0 120px}.privacy-inner{max-width:1180px}.privacy-copy{max-width:980px}.privacy-copy h1{max-width:780px;font-size:clamp(42px,7vw,92px);line-height:.94;letter-spacing:-.075em;margin:28px 0 24px}.privacy-copy .lede{max-width:690px;color:var(--report-muted);font-size:clamp(16px,2vw,22px);line-height:1.55}.privacy-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:64px 0;border-top:1px solid var(--report-line-strong);border-bottom:1px solid var(--report-line-strong);background:var(--report-line)}.privacy-grid article{padding:28px 22px;min-height:220px;background:var(--report-bg)}.privacy-grid article>span{color:var(--report-faint);font-size:10px}.privacy-grid h2{font-size:20px;letter-spacing:-.04em;margin:32px 0 12px}.privacy-grid p{color:var(--report-muted);font-size:13px;line-height:1.65;margin:0}.privacy-grid a{color:var(--report-ink);text-decoration:underline;text-underline-offset:3px}.footer-bottom a{color:inherit;text-decoration:underline;text-underline-offset:3px}@media(max-width:760px){.privacy-grid{grid-template-columns:1fr;margin:44px 0}.privacy-grid article{min-height:auto}.privacy-copy h1{font-size:clamp(42px,13vw,68px)}}
+
+
+/* The shared runtime marks reduced-motion and constrained devices as performance-lite. */
+html.performance-lite .report-section-inner.reveal{opacity:1;transform:none;transition:none}
+html.performance-lite .spotlight-card::before{display:none}
+html.performance-lite .metric-card,html.performance-lite .chart-card,html.performance-lite .evidence-card,
+html.performance-lite .insight-card,html.performance-lite .method-card,html.performance-lite .segment-btn{transition:none}
+html.performance-lite .metric-card:hover,html.performance-lite .evidence-card:hover{transform:none}
