@@ -1,30 +1,29 @@
 # Interactive Project Reports
 
-These pages extend the existing portfolio without replacing its homepage:
+This folder contains the complete, nine-case project archive. Pages reuse the existing monochrome visual system, shared typography, theme toggle, navigation, reveal behavior, and page-transition runtime; the archive order follows the case numbers.
 
-- `uber-ride-demand/index.html` — interactive report for Case No. 001.
-- `interior-lead-funnel/index.html` — synthetic-data business-analysis report for Case No. 007.
-- `hr-employee-attrition/index.html` — interactive report for Case No. 002.
-- `posha-battery-door/index.html` — mechanical design report for Case No. 004.
-- `loan-approval/index.html` — educational machine-learning report for Case No. 006.
-- Homepage featured order: TrueStack Student Services AI Assistant, Turbine Maintenance Intelligence Copilot, Uber Ride Demand Analytics, and Interior Lead Funnel Leak Detector. The full archive contains all nine case studies.
-- `shared/report.css` and `shared/report.js` — shared presentation and runtime.
-- `interior-lead-funnel/lead-funnel.js` — dependency-free metric-toggle chart using the project's published synthetic scorecard.
-- `shared/uber-data.js` — source snapshot containing values published in `README.md` and `Uber_Ride_Analytics_Result.pdf` from `Nothing0g/Uber_ride_demand_analysis`.
-- `shared/hr-data.js` — deterministic aggregates generated from the original `HR_Employee_Attrition.csv` using the same cleaning/target mapping documented in `HR_Employee_Attrition_Analysis.py`. Model metrics are the documented results from the original analysis/PDF.
+## Case files
 
-The Uber repository currently publishes the README and PDF but not the underlying CSV or analysis script in the visible repository contents. For that reason, the Uber page uses only values explicitly published in those artifacts and does not invent a per-hour failure series. It shows the published 24–26% failure band and the documented quietest/busiest-hour points.
+- `uber-ride-demand/index.html` — Case 001: ride-demand patterns and supply-failure analysis.
+- `hr-employee-attrition/index.html` — Case 002: attrition drivers and model-recall trade-offs.
+- `cultfit-user-behavior/index.html` — Case 003: user research and competition-led fitness MVP.
+- `posha-battery-door/index.html` — Case 004: latch concept selection, tolerance, FEA, and DFM.
+- `loan-approval/index.html` — Case 005: interpretable logistic-regression baseline and class-imbalance limits.
+- `interior-lead-funnel/index.html` — Case 006: synthetic lead funnel, response SLA, and follow-up priorities.
+- `turbine-maintenance-copilot/index.html` — Case 007: synthetic telemetry, anomaly detection, evidence retrieval, and human review.
+- `pid-engineering-document-intelligence/index.html` — Case 008: synthetic P&ID graph extraction, revision comparison, and source-linked answers.
+- `truestack-ai-assistant/index.html` — Case 009: the HCLTech student-services assistant, with Shubham's team-lead, backend, workflow, and integration contributions documented separately from team work.
 
-The dashboard pages use no external charting dependency and are deployed as ordinary GitHub Pages-compatible static files. The existing homepage remains the source of the shared portfolio experience; the Uber, HR Attrition, POSHA, and Loan Approval case-card click handlers point to these report pages. All detail pages now load `shared/report-shell.js`, which reuses the original portfolio’s particle canvas, grid backdrop, custom circular cursor, cursor-follow label, dock navigation, command palette, scroll progress, active-section spy, theme persistence, reduced-motion handling, spotlight hover, and soft page transition. The routed homepage card handlers apply the matching `page-exit` transition before navigation, so the detail view reads as a focused continuation rather than an unrelated microsite.
+## Shared runtime and data
 
-## Complete project archive
+- `projects/index.html` — searchable, filterable archive sorted by case number.
+- `shared/report.css` — shared report styling and responsive layouts.
+- `shared/report-shell.js` — theme persistence, command palette, navigation, reveal logic, cursor, canvas backdrop, and page transitions.
+- `shared/uber-data.js` and `shared/hr-data.js` — report data snapshots derived from the documented source artifacts.
+- `interior-lead-funnel/lead-funnel.js` — dependency-free metric toggle for the synthetic funnel scorecard.
 
-- `truestack-ai-assistant/index.html` — Case No. 010; the HCLTech hackathon student-services assistant, with Shubham's team-lead, backend, workflow, and integration responsibilities called out separately from team work.
+The dashboard pages use no external charting dependency and run as static files on GitHub Pages. Low-performance mode is enabled for reduced-motion preferences and constrained/mobile devices. Animated cursor and canvas loops pause while a tab is hidden; canvas resizing is coalesced to avoid rebuilding the star field repeatedly during a resize burst.
 
-- `index.html` — searchable, filterable index for all nine case studies, grouped into Engineering AI, Data & Analytics, and Product & Design.
-- `turbine-maintenance-copilot/index.html` — synthetic telemetry, anomaly detection, evidence retrieval, and human-review casefile.
-- `pid-engineering-document-intelligence/index.html` — synthetic P&ID revision comparison and evidence-linked engineering graph casefile.
-- `cultfit-user-behavior/index.html` — user research and competition-led MVP casefile.
-- Every card in the archive links to its individual project detail page. Existing report pages link back to the archive.
+## Evidence and limitations
 
-The homepage spotlights four projects using the existing card layout and links to the complete nine-project archive.
+The Uber page uses values explicitly published in its source README/PDF and flags likely synthetic data rather than inventing unsupported per-hour failure values. The HR page uses reproducible aggregates and documented model results. The engineering-AI projects use synthetic telemetry, authored procedures, and synthetic P&ID drawings; they are prototypes, not plant deployments or safety approvals. TrueStack uses fictional student records and labels sample policies that are not official DTU policy. Its report separates documented structural checks from a full RAG/LLM evaluation that was still pending in the cited evaluation report.
