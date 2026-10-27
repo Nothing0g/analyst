@@ -324,6 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
      RENDER CASE CARDS
   ========================================================== */
   const caseList = document.getElementById('caseList');
+  const caseFragment = document.createDocumentFragment();
   ['001','006','007','009'].map(id => CASES.find(c => c.id === id)).filter(Boolean).forEach((c, i) => {
     const card = document.createElement('a');
     card.href = c.route;
@@ -358,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="case-top">
         <div>
           <div class="case-id mono">CASE NO. ${c.id} · ${c.date}</div>
-          <div class="case-title" data-field="title">${c.content.title}</div>
+          <h3 class="case-title" data-field="title">${c.content.title}</h3>
         </div>
         <div class="case-status"><span class="dt"></span>${c.status}</div>
       </div>
@@ -387,8 +388,9 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => { window.location.href = destination; }, 300);
       } else window.location.href = destination;
     });
-    caseList.appendChild(card);
+    caseFragment.appendChild(card);
   });
+  caseList.replaceChildren(caseFragment);
 
   /* ==========================================================
      MODAL — dark report card
@@ -407,6 +409,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalHighlight = document.getElementById('modalHighlight');
   const modalTags = document.getElementById('modalTags');
   const modalRepoLink = document.getElementById('modalRepoLink');
+  const modalContent = document.getElementById('modalContent');
+  let modalReturnFocus = null;
 
   function renderChart(report) {
     modalChartSvg.innerHTML = '';
@@ -532,12 +536,20 @@ document.addEventListener('DOMContentLoaded', () => {
       modalRepoLink.hidden = !c.repo;
       if (c.repo) modalRepoLink.href = c.repo;
     }
+    modalReturnFocus = document.activeElement;
+    modalOverlay.removeAttribute('inert');
+    modalOverlay.setAttribute('aria-hidden', 'false');
     modalOverlay.classList.add('is-open');
     document.body.style.overflow = 'hidden';
+    document.getElementById('modalClose').focus();
   }
   function closeModal() {
     modalOverlay.classList.remove('is-open');
+    modalOverlay.setAttribute('aria-hidden', 'true');
+    modalOverlay.setAttribute('inert', '');
     document.body.style.overflow = '';
+    if (modalReturnFocus && modalReturnFocus.isConnected) modalReturnFocus.focus();
+    modalReturnFocus = null;
   }
   document.getElementById('modalClose').addEventListener('click', closeModal);
   modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
@@ -551,6 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  if (!performanceLite) root.classList.add('motion-ready');
 
   /* ==========================================================
      SPOTLIGHT CARDS
@@ -569,9 +582,9 @@ document.addEventListener('DOMContentLoaded', () => {
      TERMINAL TYPING
   ========================================================== */
   const TERMINAL_LINES = [
-    { p: '~ $', t: 'who_am_i' }, { p: '→', t: 'Analyst · Mechanical Eng. background' },
-    { p: '~ $', t: 'stack' }, { p: '→', t: 'Python · SQL · Power BI · Statistics & ML' },
-    { p: '~ $', t: 'currently' }, { p: '→', t: 'Open to analytical and problem-solving roles' }
+    { p: '~ $', t: 'who_am_i' }, { p: '→', t: 'Data · Software · AI · Mechanical Eng.' },
+    { p: '~ $', t: 'stack' }, { p: '→', t: 'Python · SQL · FastAPI · ML · RAG' },
+    { p: '~ $', t: 'currently' }, { p: '→', t: 'Open to data, product, software and AI roles' }
   ];
   const terminalBody = document.getElementById('terminalBody');
   let terminalTimeouts = [];
@@ -1019,8 +1032,14 @@ document.addEventListener('DOMContentLoaded', () => {
     closeCmdk();
     setTimeout(() => cmd.action(), 120);
   }
+  const cmdkBox = document.querySelector('.cmdk-box');
+  let cmdkReturnFocus = null;
   function openCmdk() {
+    cmdkReturnFocus = document.activeElement;
+    cmdkOverlay.removeAttribute('inert');
+    cmdkOverlay.setAttribute('aria-hidden', 'false');
     cmdkOverlay.classList.add('is-open');
+    document.getElementById('cmdkTrigger').setAttribute('aria-expanded', 'true');
     cmdkInput.value = '';
     renderCmdk('');
     document.body.style.overflow = 'hidden';
@@ -1028,13 +1047,41 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function closeCmdk() {
     cmdkOverlay.classList.remove('is-open');
+    cmdkOverlay.setAttribute('aria-hidden', 'true');
+    cmdkOverlay.setAttribute('inert', '');
+    document.getElementById('cmdkTrigger').setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
+    if (cmdkReturnFocus && cmdkReturnFocus.isConnected) cmdkReturnFocus.focus();
+    cmdkReturnFocus = null;
   }
   document.getElementById('cmdkTrigger').addEventListener('click', openCmdk);
   cmdkOverlay.addEventListener('click', (e) => { if (e.target === cmdkOverlay) closeCmdk(); });
   cmdkInput.addEventListener('input', () => renderCmdk(cmdkInput.value));
 
+  function trapDialogFocus(event, container) {
+    const focusable = Array.from(container.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'))
+      .filter(el => !el.hidden && el.getAttribute('aria-hidden') !== 'true' && !el.closest('[hidden]'));
+    if (!focusable.length) {
+      event.preventDefault();
+      container.focus();
+      return;
+    }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && (document.activeElement === first || document.activeElement === container)) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   document.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') {
+      if (modalOverlay.classList.contains('is-open')) trapDialogFocus(e, modalContent);
+      else if (cmdkOverlay.classList.contains('is-open')) trapDialogFocus(e, cmdkBox);
+    }
     const isK = e.key === 'k' || e.key === 'K';
     if ((e.metaKey || e.ctrlKey) && isK) {
       e.preventDefault();
