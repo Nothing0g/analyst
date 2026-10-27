@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ========================================================== */
   const CASES = [
     {
-      id: '007',
+      id: '006',
       featured: true,
       date: "Oct '26",
       route: 'projects/interior-lead-funnel/',
@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
       highlight: 'Reduced the mechanism to a reliable low-tolerance-risk concept while balancing manufacturability, strength, and cost.'
     },
     {
-      id: '006',
+      id: '005',
       date: 'Public dataset',
       route: 'projects/loan-approval/',
       content: {
@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
       highlight: 'Presented at a Dell Aspire event; recognized for solving one problem well over spreading thin across many.'
     },
     {
-      id: '008',
+      id: '007',
       featured: true,
       date: 'Engineering AI',
       route: 'projects/turbine-maintenance-copilot/',
@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
       highlight: 'Trend → anomaly → retrieved procedure → bounded recommendation → human review.'
     },
     {
-      id: '009',
+      id: '008',
       featured: true,
       date: 'Engineering AI',
       route: 'projects/pid-engineering-document-intelligence/',
@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
       highlight: 'Treat a drawing as a graph and a revision-controlled engineering artifact—not just paragraphs.'
     },
     {
-      id: '010',
+      id: '009',
       featured: true,
       date: "Oct '26",
       route: 'projects/truestack-ai-assistant/',
@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
      RENDER CASE CARDS
   ========================================================== */
   const caseList = document.getElementById('caseList');
-  ['010','008','001','007'].map(id => CASES.find(c => c.id === id)).filter(Boolean).forEach((c, i) => {
+  ['001','006','007','009'].map(id => CASES.find(c => c.id === id)).filter(Boolean).forEach((c, i) => {
     const card = document.createElement('a');
     card.href = c.route;
     card.className = 'case-card spotlight-card reveal';
@@ -795,7 +795,10 @@ document.addEventListener('DOMContentLoaded', () => {
       mouseX = e.clientX; mouseY = e.clientY;
     });
 
+    let cursorFrame = 0;
     function loop() {
+      cursorFrame = 0;
+      if (document.hidden) return;
       const k = 0.26;
       cx += (mouseX - cx) * k;
       cy += (mouseY - cy) * k;
@@ -806,9 +809,16 @@ document.addEventListener('DOMContentLoaded', () => {
         fy += (mouseY - fy) * 0.14;
         cursorFollow.style.transform = `translate(${fx + 13}px, ${fy + 15}px)`;
       }
-      requestAnimationFrame(loop);
+      cursorFrame = requestAnimationFrame(loop);
     }
-    requestAnimationFrame(loop);
+    function scheduleCursor() {
+      if (!document.hidden && !cursorFrame) cursorFrame = requestAnimationFrame(loop);
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { cancelAnimationFrame(cursorFrame); cursorFrame = 0; }
+      else scheduleCursor();
+    });
+    scheduleCursor();
 
     document.querySelectorAll('a, button, .case-card, .roadmap-card').forEach(el => {
       el.addEventListener('mouseenter', () => { targetScale = 1.6; });
@@ -866,8 +876,17 @@ document.addEventListener('DOMContentLoaded', () => {
         };
       });
     }
+    let resizeFrame = 0;
     build();
-    window.addEventListener('resize', build, { passive: true });
+    window.addEventListener('resize', () => {
+      if (resizeFrame) cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        resizeFrame = 0;
+        build();
+        if (animateStars) scheduleDraw();
+        else draw(performance.now());
+      });
+    }, { passive: true });
     let px = -9999, py = -9999;
     if (animateStars) {
       window.addEventListener('mousemove', (e) => { px = e.clientX; py = e.clientY; }, { passive: true });
@@ -876,9 +895,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }, { passive: true });
       window.addEventListener('mouseleave', () => { px = -9999; py = -9999; }, { passive: true });
     }
+    let starFrame = 0;
+    let lastDraw = 0;
     function draw(now) {
-      const dt = Math.min(50, now - (draw.last || now)) / 1000;
-      draw.last = now;
+      starFrame = 0;
+      if (document.hidden) return;
+      const dt = Math.min(50, now - (lastDraw || now)) / 1000;
+      lastDraw = now;
       const time = now / 1000;
       ctx.clearRect(0, 0, w, h);
       const dark = root.getAttribute('data-theme') === 'dark';
@@ -910,10 +933,19 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.beginPath(); ctx.arc(renderX, renderY, star.size + glow * 1.2, 0, Math.PI * 2); ctx.fill();
       });
       ctx.globalAlpha = 1;
-      if (animateStars) requestAnimationFrame(draw);
+      if (animateStars) starFrame = requestAnimationFrame(draw);
     }
-    document.addEventListener('themechange', () => draw(performance.now()));
-    draw(performance.now());
+    function scheduleDraw() {
+      if (document.hidden || starFrame) return;
+      if (animateStars) starFrame = requestAnimationFrame(draw);
+      else draw(performance.now());
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { cancelAnimationFrame(starFrame); starFrame = 0; }
+      else { lastDraw = 0; scheduleDraw(); }
+    });
+    document.addEventListener('themechange', scheduleDraw);
+    scheduleDraw();
   })();
 
   /* ==========================================================
