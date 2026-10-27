@@ -272,3 +272,11 @@ html.performance-lite .metric-card,html.performance-lite .insight-card,html.perf
   .report-section-inner.reveal{opacity:1!important;transform:none!important}
   .report-btn:hover,.metric-card:hover,.evidence-card:hover{transform:none!important;box-shadow:none!important}
 }
+
+/* Restore the custom cursor on capable desktop pointers only. */
+@media (min-width: 901px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html.custom-cursor:not(.performance-lite) .cursor-dot,
+  html.custom-cursor:not(.performance-lite) .cursor-follow {
+    display: block !important;
+  }
+}
